@@ -1345,7 +1345,7 @@ function hexA(h, a){ if (h[0] !== '#') return h; const n = parseInt(h.slice(1), 
 /* =================== VEHICLE RENDERER v2 =================== */
 RD.ftext = function(c, s, x, y){ const m = c.getTransform(); if (m.a < 0) { c.save(); c.translate(x, y); c.scale(-1, 1); c.fillText(s, 0, 0); c.restore(); } else c.fillText(s, x, y); };
 const RD_vehOld = RD.vehicle;
-const V2 = new Set(['micro','microHR','jumbo','coaster','citybus','coach','sedan','hatch','suv','exec','taxi','alexTaxi','tow','police']);
+const V2 = new Set(['mini2','mini3','dd','micro','microHR','jumbo','coaster','citybus','coach','sedan','hatch','suv','exec','taxi','alexTaxi','tow','police']);
 function tp(c, a){ c.beginPath(); for (const k of a) { if (k[0] === 'M') c.moveTo(k[1], k[2]); else if (k[0] === 'L') c.lineTo(k[1], k[2]); else if (k[0] === 'Q') c.quadraticCurveTo(k[1], k[2], k[3], k[4]); else if (k[0] === 'C') c.bezierCurveTo(k[1], k[2], k[3], k[4], k[5], k[6]); else c.closePath(); } }
 const box = (x0, y0, x1, y1) => [['M', x0, y0], ['L', x1, y0], ['L', x1, y1], ['L', x0, y1], ['Z']];
 
@@ -1356,6 +1356,15 @@ function VPROF(st, L, H){ const h = L/2;
   if (st === 'microHR' || st === 'jumbo' || st === 'ambulanceV') { const gc = .38; return {gc, belt:-1.36, belt2:-.96, body:[['M',-h+.04,-gc],['L',-h,-gc-.22],['L',-h,-H+.14],['Q',-h,-H,-h+.18,-H],['L',h-1.25,-H],['Q',h-1.02,-H+.02,h-.92,-H+.18],['L',h-.36,-1.3],['Q',h-.26,-1.2,h-.14,-1.17],['Q',h-.02,-1.14,h,-1.02],['L',h+.02,-.45],['L',h-.02,-gc],['Z']],
     ws:[['M',h-.96,-H+.16],['L',h-.38,-1.3],['L',h-.52,-1.31],['L',h-1.1,-H+.17],['Z']], side:[box(-h+.2,-H+.3,-.45,-1.38), box(-.35,-H+.3,h-1.58,-1.38)], drv:[['M',h-1.48,-H+.3],['L',h-1.06,-H+.3],['L',h-.5,-1.38],['L',h-1.48,-1.38],['Z']],
     lampF:[h-.12,-1.06,.12,.16], lampR:[-h,-1.55,.07,.52], bF:[h-.3,-.66,h+.04,-.42], bR:[-h-.04,-.66,-h+.3,-.42], mir:[h-.55,-1.45], doors:[[h-1.54,-H+.22,h-1.54,-gc-.05]], hand:[[h-1.42,-1.24]], yHead:-1.62, drvX:h-1.05, exh:[-h+.4,-gc+.02] }; }
+  if (st === 'mini2') { const gc = .42; return {gc, belt:-1.52, belt2:-.86, body:[['M',-h+.05,-gc],['L',-h,-gc-.25],['L',-h,-H+.3],['Q',-h,-H,-h+.35,-H],['L',h-1.1,-H],['C',h-.4,-H+.02,h-.05,-H+.5,h-.02,-1.1],['L',h+.03,-.45],['L',h-.02,-gc],['Z']],
+    ws:[['M',h-1.05,-H+.1],['C',h-.45,-H+.14,h-.15,-H+.55,h-.08,-1.2],['L',h-.72,-1.25],['L',h-.72,-H+.1],['Z']], side:[0,1,2,3,4].map(i => box(-h+.3 + i*.98, -H+.34, -h+1.18 + i*.98, -1.52)), drv:box(h-1.62,-H+.34,h-.8,-1.52),
+    lampF:[h-.12,-.92,.12,.18], lampR:[-h,-1.62,.07,.6], bF:[h-.38,-.64,h+.05,-.42], bR:[-h-.05,-.64,-h+.36,-.42], mir:[h+.1,-1.82], busMir:1, doors:[], hand:[], yHead:-1.78, drvX:h-1.18, exh:[-h+.5,-gc+.02] }; }
+  if (st === 'mini3') { const gc = .42; return {gc, belt:-1.55, belt2:-.86, body:[['M',-h+.05,-gc],['L',-h,-gc-.25],['L',-h,-H+.2],['Q',-h,-H,-h+.25,-H],['L',h-.5,-H],['Q',h-.06,-H+.02,h-.04,-H+.4],['L',h,-.9],['L',h+.03,-.45],['L',h-.02,-gc],['Z']],
+    ws:[['M',h-.42,-H+.16],['Q',h-.1,-H+.2,h-.07,-H+.45],['L',h-.05,-1.18],['L',h-.3,-1.18],['Z']], side:[0,1,2,3,4].map(i => box(-h+.3 + i*1.02, -H+.3, -h+1.22 + i*1.02, -1.55)), drv:box(h-1.55,-H+.3,h-.5,-1.55),
+    panel:[['M',h-.3,-1.18],['L',h-.05,-1.18],['L',h-.02,-.92],['L',h-.32,-.92],['Z']], lampF:[h-.12,-.86,.12,.16], lampR:[-h,-1.6,.07,.58], bF:[h-.36,-.62,h+.05,-.42], bR:[-h-.05,-.62,-h+.36,-.42], mir:[h+.1,-1.9], busMir:1, doors:[], hand:[], yHead:-1.8, drvX:h-1.0, exh:[-h+.5,-gc+.02] }; }
+  if (st === 'dd') { const gc = .45, side = []; for (let x = -h+.35; x < h-1.3; x += 1.45) side.push(box(x, -H+.35, Math.min(x + 1.35, h-1.3), -H+1.4)); for (let x = -h+.35; x < h-2.3; x += 1.45) side.push(box(x, -H+1.8, Math.min(x + 1.35, h-2.3), -1.35));
+    return {gc, belt:-1.35, belt2:-.62, body:[['M',-h,-gc],['L',-h,-H+.35],['Q',-h,-H,-h+.4,-H],['L',h-.6,-H],['Q',h-.05,-H+.05,h,-H+.7],['L',h+.02,-.7],['Q',h+.02,-.45,h-.1,-gc],['Z']],
+    ws:[['M',h-.55,-H+.1],['Q',h-.08,-H+.12,h-.04,-H+.7],['L',h-.03,-1.3],['L',h-.4,-1.3],['L',h-.4,-H+.1],['Z']], side, drv:box(h-2.2,-H+1.8,h-.45,-1.35), bays:1, grille:[-h+.15,-1.3,.7,.55], lampF:[h-.12,-.85,.12,.14], lampR:[-h,-1.9,.06,1.1], bF:[h-.4,-.68,h+.04,-.46], bR:[-h-.04,-.68,-h+.4,-.46], mir:[h+.38,-H+1.7], busMir:2, doors:[], hand:[], yHead:-1.62, drvX:h-.95, exh:[-h+.6,-gc+.02] }; }
   if (st === 'coaster') { const gc = .42; return {gc, belt:-1.46, belt2:-.9, body:[['M',-h+.05,-gc],['L',-h,-gc-.25],['L',-h,-H+.25],['Q',-h,-H,-h+.3,-H],['L',h-.9,-H],['Q',h-.2,-H+.02,h-.08,-H+.7],['L',h,-.95],['L',h+.03,-.45],['L',h-.02,-gc],['Z']],
     ws:[['M',h-.86,-H+.12],['Q',h-.24,-H+.14,h-.12,-H+.72],['L',h-.06,-1.22],['L',h-.6,-1.22],['L',h-.6,-H+.12],['Z']], side:[0,1,2,3,4].map(i => box(-h+.25 + i*1.0, -H+.32, -h+1.15 + i*1.0, -1.46)), drv:box(h-1.5,-H+.32,h-.7,-1.46),
     panel:[['M',h-.62,-1.22],['L',h-.06,-1.22],['L',h-.02,-.96],['L',h-.66,-.96],['Z']], lampF:[h-.1,-.9,.12,.16], lampR:[-h,-1.55,.07,.55], bF:[h-.36,-.62,h+.05,-.42], bR:[-h-.05,-.62,-h+.36,-.42], mir:[h+.1,-1.75], busMir:1, doors:[], hand:[], yHead:-1.72, drvX:h-1.1, exh:[-h+.5,-gc+.02] }; }
@@ -1375,23 +1384,30 @@ function VPROF(st, L, H){ const h = L/2;
     ws:[['M',h-.4,-2.6],['Q',h-.12,-2.56,h-.06,-2.2],['L',h-.04,-1.65],['L',h-.5,-1.65],['Z']], side:[], drv:box(h-1.8,-2.55,h-.6,-1.7), lampF:[h-.1,-.9,.12,.16], lampR:[-h,-1.25,.07,.3], bF:[h-.3,-.66,h+.05,-.45], bR:[-h-.05,-.8,-h+.2,-.6], mir:[h-.1,-2.0], busMir:1, doors:[[h-1.9,-2.6,h-1.9,-.6]], hand:[[h-1.7,-1.5]], yHead:-2.05, drvX:h-1.2, exh:[h-2.3,-gc] }; }
   return null; }
 
-function drawWheel2(c, x, y, r, a, rim, spin, flat){ const t = rim.t, col = rim.c || '#cfd5da', k = (RIMS.find(q => q.id === t) || {k:.62}).k, rr2 = r*k;
+function drawWheel2(c, x, y, r, a, rim, spin, flat, sq){ const t = rim.t, col = rim.c || '#cfd5da', k = (RIMS.find(q => q.id === t) || {k:.62}).k, rr2 = r*k, sqz = flat ? .12 : Math.min(.07, sq || 0);
   c.save(); c.translate(x, y);
-  if (flat) { c.scale(1.06, .9); c.translate(0, r*.05); }
-  c.fillStyle = '#141517'; c.beginPath(); c.arc(0, 0, r, 0, 6.2832); c.fill();
-  const sw = c.createRadialGradient(0, 0, rr2, 0, 0, r); sw.addColorStop(0, '#2c2e32'); sw.addColorStop(.55, '#1d1f22'); sw.addColorStop(1, '#0c0d0e'); c.fillStyle = sw; c.beginPath(); c.arc(0, 0, r*.97, 0, 6.2832); c.fill();
-  c.strokeStyle = 'rgba(255,255,255,.05)'; c.lineWidth = r*.03; c.beginPath(); c.arc(0, 0, r*.88, 0, 6.2832); c.stroke();
-  const blur = Math.min(1, Math.abs(spin || 0)/28);
-  const rg = c.createRadialGradient(-rr2*.3, -rr2*.3, rr2*.1, 0, 0, rr2); rg.addColorStop(0, shade(col, .35)); rg.addColorStop(.7, col); rg.addColorStop(1, shade(col, -.35)); c.fillStyle = rg; c.beginPath(); c.arc(0, 0, rr2, 0, 6.2832); c.fill();
-  c.rotate(a); c.globalAlpha = 1 - blur*.75; const dk = shade(col, -.55), md = shade(col, -.25);
-  if (t === 'hubcap') { c.fillStyle = md; for (let i = 0; i < 10; i++) { c.rotate(.6283); c.beginPath(); c.ellipse(rr2*.62, 0, rr2*.22, rr2*.07, 0, 0, 6.28); c.fill(); } c.fillStyle = shade(col, .2); c.beginPath(); c.arc(0, 0, rr2*.28, 0, 6.28); c.fill(); }
-  else if (t === 'steel6') { c.fillStyle = dk; for (let i = 0; i < 6; i++) { c.rotate(1.0472); c.beginPath(); c.arc(rr2*.6, 0, rr2*.14, 0, 6.28); c.fill(); } c.fillStyle = shade(col, .15); c.beginPath(); c.arc(0, 0, rr2*.36, 0, 6.28); c.fill(); c.fillStyle = dk; for (let i = 0; i < 6; i++) { c.rotate(1.0472); c.beginPath(); c.arc(rr2*.24, 0, rr2*.045, 0, 6.28); c.fill(); } }
-  else if (t === 'bus' || t === 'alloyBus') { c.strokeStyle = dk; c.lineWidth = rr2*.06; c.beginPath(); c.arc(0, 0, rr2*.8, 0, 6.28); c.stroke(); c.fillStyle = dk; const n = t === 'bus' ? 8 : 10; for (let i = 0; i < n; i++) { c.rotate(6.2832/n); c.beginPath(); c.ellipse(rr2*.6, 0, rr2*.12, rr2*.07, 0, 0, 6.28); c.fill(); }
-    c.fillStyle = shade(col, .25); c.beginPath(); c.arc(0, 0, rr2*.4, 0, 6.28); c.fill(); c.fillStyle = '#555a60'; for (let i = 0; i < 10; i++) { c.rotate(.6283); c.beginPath(); c.arc(rr2*.3, 0, rr2*.05, 0, 6.28); c.fill(); } c.fillStyle = '#8a9096'; c.beginPath(); c.arc(0, 0, rr2*.14, 0, 6.28); c.fill(); }
-  else { const n = t === 'alloy5' ? 5 : t === 'alloy10' ? 10 : 20, w = t === 'alloy5' ? .32 : t === 'alloy10' ? .14 : .07; c.fillStyle = '#16181b'; c.beginPath(); c.arc(0, 0, rr2*.94, 0, 6.28); c.fill();
-    c.fillStyle = col; for (let i = 0; i < n; i++) { c.rotate(6.2832/n); c.beginPath(); c.moveTo(rr2*.2, -rr2*w*.5); c.lineTo(rr2*.95, -rr2*w*(t === 'multi' ? .9 : .7)); c.lineTo(rr2*.95, rr2*w*(t === 'multi' ? .9 : .7)); c.lineTo(rr2*.2, rr2*w*.5); c.fill(); }
-    c.strokeStyle = col; c.lineWidth = rr2*.07; c.beginPath(); c.arc(0, 0, rr2*.94, 0, 6.28); c.stroke(); c.fillStyle = shade(col, .2); c.beginPath(); c.arc(0, 0, rr2*.24, 0, 6.28); c.fill(); c.fillStyle = dk; c.beginPath(); c.arc(0, 0, rr2*.09, 0, 6.28); c.fill(); }
-  c.globalAlpha = 1; if (blur > .05) { c.fillStyle = `rgba(${parseInt(col.slice(1, 3), 16)},${parseInt(col.slice(3, 5), 16)},${parseInt(col.slice(5, 7), 16)},${blur*.45})`; c.beginPath(); c.arc(0, 0, rr2*.92, 0, 6.28); c.fill(); }
+  // tire with contact patch squash
+  c.save(); if (sqz > .002) { c.translate(0, r*sqz*.5); c.scale(1 + sqz*.4, 1 - sqz); }
+  const tg = c.createRadialGradient(-r*.25, -r*.3, r*.3, 0, 0, r); tg.addColorStop(0, '#2d2f33'); tg.addColorStop(.7, '#1a1b1e'); tg.addColorStop(1, '#0a0a0b'); c.fillStyle = tg; c.beginPath(); c.arc(0, 0, r, 0, 6.2832); c.fill();
+  c.save(); c.rotate(a); c.fillStyle = '#0c0c0d'; for (let i = 0; i < 28; i++) { c.rotate(6.2832/28); c.fillRect(r*.92, -r*.035, r*.08, r*.07); } c.restore();
+  const sw = c.createRadialGradient(0, 0, rr2*.98, 0, 0, r*.92); sw.addColorStop(0, '#26282c'); sw.addColorStop(.5, '#1b1d20'); sw.addColorStop(1, '#131416'); c.fillStyle = sw; c.beginPath(); c.arc(0, 0, r*.9, 0, 6.2832); c.fill();
+  c.strokeStyle = 'rgba(255,255,255,.07)'; c.lineWidth = r*.02; c.beginPath(); c.arc(0, 0, r*.84, Math.PI*1.1, Math.PI*1.8); c.stroke(); c.restore();
+  const blur = Math.min(1, Math.abs(spin || 0)/28), alloy = !(t === 'hubcap' || t === 'steel6' || t === 'bus');
+  // rim barrel (depth)
+  const bg = c.createRadialGradient(0, 0, rr2*.2, 0, 0, rr2); bg.addColorStop(0, '#0b0c0e'); bg.addColorStop(.85, shade(col, -.55)); bg.addColorStop(1, shade(col, -.2)); c.fillStyle = bg; c.beginPath(); c.arc(0, 0, rr2, 0, 6.2832); c.fill();
+  if (alloy) { c.fillStyle = '#5b5f65'; c.beginPath(); c.arc(0, 0, rr2*.78, 0, 6.28); c.fill(); c.strokeStyle = 'rgba(0,0,0,.35)'; c.lineWidth = rr2*.02; for (let i = 0; i < 3; i++) { c.beginPath(); c.arc(0, 0, rr2*(.45 + i*.1), 0, 6.28); c.stroke(); }
+    c.fillStyle = '#b8281e'; rr(c, -rr2*.2, -rr2*.86, rr2*.4, rr2*.28, rr2*.06); c.fill(); }
+  c.rotate(a); c.globalAlpha = 1 - blur*.75; const lt = shade(col, .35), dk = shade(col, -.5), md = shade(col, -.2);
+  if (t === 'hubcap') { const hg = c.createRadialGradient(-rr2*.3, -rr2*.3, 0, 0, 0, rr2); hg.addColorStop(0, lt); hg.addColorStop(.8, col); hg.addColorStop(1, md); c.fillStyle = hg; c.beginPath(); c.arc(0, 0, rr2*.97, 0, 6.28); c.fill(); c.fillStyle = dk; for (let i = 0; i < 10; i++) { c.rotate(.6283); c.beginPath(); c.ellipse(rr2*.63, 0, rr2*.2, rr2*.065, 0, 0, 6.28); c.fill(); } c.fillStyle = lt; c.beginPath(); c.arc(0, 0, rr2*.26, 0, 6.28); c.fill(); c.strokeStyle = md; c.lineWidth = rr2*.03; c.stroke(); }
+  else if (t === 'steel6' || t === 'bus') { const hg = c.createRadialGradient(-rr2*.3, -rr2*.3, 0, 0, 0, rr2); hg.addColorStop(0, lt); hg.addColorStop(1, md); c.fillStyle = hg; c.beginPath(); c.arc(0, 0, rr2*.92, 0, 6.28); c.fill(); c.strokeStyle = dk; c.lineWidth = rr2*.05; c.beginPath(); c.arc(0, 0, rr2*.8, 0, 6.28); c.stroke();
+    const n = t === 'bus' ? 8 : 6; c.fillStyle = '#0d0e10'; for (let i = 0; i < n; i++) { c.rotate(6.2832/n); c.beginPath(); c.ellipse(rr2*.6, 0, rr2*.13, rr2*(t === 'bus' ? .08 : .12), 0, 0, 6.28); c.fill(); }
+    c.fillStyle = shade(col, .2); c.beginPath(); c.arc(0, 0, rr2*.36, 0, 6.28); c.fill(); c.fillStyle = '#44484e'; for (let i = 0; i < (t === 'bus' ? 10 : 6); i++) { c.rotate(6.2832/(t === 'bus' ? 10 : 6)); c.beginPath(); c.arc(rr2*.26, 0, rr2*.045, 0, 6.28); c.fill(); } c.fillStyle = '#8a9096'; c.beginPath(); c.arc(0, 0, rr2*.12, 0, 6.28); c.fill(); }
+  else { const n = t === 'alloy5' ? 5 : t === 'alloy10' ? 10 : t === 'alloyBus' ? 10 : 20, w = t === 'alloy5' ? .3 : t === 'alloy10' || t === 'alloyBus' ? .13 : .065;
+    for (let i = 0; i < n; i++) { c.rotate(6.2832/n); const sg = c.createLinearGradient(0, -rr2*w, 0, rr2*w); sg.addColorStop(0, lt); sg.addColorStop(.5, col); sg.addColorStop(1, md); c.fillStyle = sg; c.beginPath(); c.moveTo(rr2*.24, -rr2*w*.45); c.lineTo(rr2*.95, -rr2*w*(t === 'multi' ? .95 : .75)); c.lineTo(rr2*.95, rr2*w*(t === 'multi' ? .95 : .75)); c.lineTo(rr2*.24, rr2*w*.45); c.fill(); }
+    c.strokeStyle = lt; c.lineWidth = rr2*.08; c.beginPath(); c.arc(0, 0, rr2*.95, 0, 6.28); c.stroke(); const cg = c.createRadialGradient(-rr2*.08, -rr2*.08, 0, 0, 0, rr2*.26); cg.addColorStop(0, lt); cg.addColorStop(1, md); c.fillStyle = cg; c.beginPath(); c.arc(0, 0, rr2*.25, 0, 6.28); c.fill();
+    c.fillStyle = '#2a2c30'; for (let i = 0; i < 5; i++) { c.rotate(1.2566); c.beginPath(); c.arc(rr2*.17, 0, rr2*.035, 0, 6.28); c.fill(); } }
+  c.globalAlpha = 1; if (blur > .05) { c.fillStyle = hexA(col, blur*.4); c.beginPath(); c.arc(0, 0, rr2*.93, 0, 6.28); c.fill(); }
+  c.rotate(-a); c.strokeStyle = 'rgba(255,255,255,.55)'; c.lineWidth = rr2*.04; c.beginPath(); c.arc(0, 0, rr2*.99, Math.PI*1.15, Math.PI*1.65); c.stroke();
   c.restore(); }
 
 RD.vehicle = function(o, s, sx, sy, sc){
@@ -1400,11 +1416,11 @@ RD.vehicle = function(o, s, sx, sy, sc){
   const wr = o.wr || .32, wb = o.wb || L*.6, parts = s.parts || {}, dim = x => mixHex(x, '#05070d', N*.55), lift = s.lift || 0;
   const body = o.paint || '#eee', body2 = o.paint2 || null, tint = o.tint ?? 1;
   c.save(); c.translate(sx, sy); c.scale(P*F, P);
-  c.fillStyle = 'rgba(0,0,0,.3)'; c.beginPath(); c.ellipse(0, .03, hl*1.04, .15, 0, 0, 6.28); c.fill();
+  { const sg = c.createRadialGradient(0, 0, hl*.2, 0, 0, hl*1.1); sg.addColorStop(0, 'rgba(0,0,0,.42)'); sg.addColorStop(1, 'rgba(0,0,0,0)'); c.save(); c.scale(1, .12); c.fillStyle = sg; c.beginPath(); c.arc(0, .2, hl*1.1, 0, 6.28); c.fill(); c.restore(); }
   c.save(); c.translate(0, -lift); c.rotate(-(s.pitch || 0));
   const M = {sx, sy, P, pitch:s.pitch || 0, lift, F};
   // ----- body -----
-  const grad = (col, y0) => { const g = c.createLinearGradient(0, y0, 0, -pr.gc); g.addColorStop(0, dim(shade(col, .16))); g.addColorStop(.18, dim(shade(col, .06))); g.addColorStop(.62, dim(col)); g.addColorStop(1, dim(shade(col, -.28))); return g; };
+  const grad = (col, y0) => { const g = c.createLinearGradient(0, y0, 0, -pr.gc); g.addColorStop(0, dim(shade(col, .3))); g.addColorStop(.1, dim(shade(col, .14))); g.addColorStop(.42, dim(shade(col, .05))); g.addColorStop(.5, dim(shade(col, -.1))); g.addColorStop(.56, dim(shade(col, .02))); g.addColorStop(.82, dim(shade(col, -.1))); g.addColorStop(1, dim(shade(col, -.36))); return g; };
   tp(c, pr.body); c.fillStyle = grad(body, -H); c.fill(); c.save(); c.clip();
   if (body2) { c.fillStyle = grad(body2, pr.belt2); c.fillRect(-hl - .2, pr.belt2, L + .4, 2); c.fillStyle = dim(shade(body, -.35)); c.fillRect(-hl - .2, pr.belt2 - .015, L + .4, .03); }
   // stripes / livery
@@ -1430,11 +1446,13 @@ RD.vehicle = function(o, s, sx, sy, sc){
   if (s.dmgR > .12) { c.fillStyle = `rgba(15,15,20,${Math.min(.45, s.dmgR*.55)})`; c.beginPath(); c.ellipse(-hl + .3, pr.belt2 - .15, .3 + s.dmgR*.3, .25, -.3, 0, 6.28); c.fill(); }
   if (s.scr > .08) { c.strokeStyle = `rgba(255,255,255,${Math.min(.45, s.scr)})`; c.lineWidth = .012; for (let i = 0; i < 6; i++) { c.beginPath(); c.moveTo(-hl + .4 + i*L/7, pr.belt2 - .1 - (i % 2)*.15); c.lineTo(-hl + 1.0 + i*L/7, pr.belt2 - .2 - (i % 3)*.06); c.stroke(); } }
   // arches
-  for (const x of [-wb/2, wb/2].concat(o.style === 'citybus' && L > 11 ? [] : [])) { c.fillStyle = '#0b0c0e'; c.beginPath(); c.arc(x, -wr - .02, wr*1.22, Math.PI, 0); c.lineTo(x + wr*1.22, 0); c.lineTo(x - wr*1.22, 0); c.fill(); c.strokeStyle = dim(shade(body2 || body, -.3)); c.lineWidth = .03; c.beginPath(); c.arc(x, -wr - .02, wr*1.26, Math.PI*1.02, -.02); c.stroke(); }
+  for (const x of [-wb/2, wb/2]) { const ao = c.createRadialGradient(x, -wr, wr*1.1, x, -wr, wr*1.9); ao.addColorStop(0, 'rgba(0,0,0,.35)'); ao.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = ao; c.fillRect(x - wr*2, -wr*3, wr*4, wr*3);
+    const aw = c.createRadialGradient(x, -wr - .06, wr*.5, x, -wr - .06, wr*1.2); aw.addColorStop(0, '#050506'); aw.addColorStop(1, '#17191c'); c.fillStyle = aw; c.beginPath(); c.arc(x, -wr - .06, wr*1.17, Math.PI, 0); c.lineTo(x + wr*1.17, 0); c.lineTo(x - wr*1.17, 0); c.fill();
+    c.strokeStyle = 'rgba(255,255,255,' + (.22*(1 - N*.7)) + ')'; c.lineWidth = .018; c.beginPath(); c.arc(x, -wr - .06, wr*1.2, Math.PI*1.05, -.05); c.stroke(); c.strokeStyle = dim(shade(body2 || body, -.45)); c.lineWidth = .02; c.beginPath(); c.arc(x, -wr - .06, wr*1.23, Math.PI*1.03, -.03); c.stroke(); }
   c.restore(); // end body clip
-  c.strokeStyle = dim(shade(body, -.4)); c.lineWidth = .02; tp(c, pr.body); c.stroke();
+  c.strokeStyle = 'rgba(0,0,0,.45)'; c.lineWidth = .012; tp(c, pr.body); c.stroke(); c.save(); tp(c, pr.body); c.clip(); c.strokeStyle = 'rgba(255,255,255,' + (.35*(1 - N*.7)) + ')'; c.lineWidth = .025; c.beginPath(); c.moveTo(-hl + .2, -H + .025); c.lineTo(hl - .8, -H + .025); c.stroke(); c.restore();
   // ----- glass -----
-  const gl = (cmds) => { tp(c, cmds); const b = c.createLinearGradient(0, -H, 0, pr.belt); const t0 = ['#71879b','#3f4e5e','#1c232c'][tint], t1 = ['#2e3d4d','#161e27','#07090c'][tint]; b.addColorStop(0, dim(t0)); b.addColorStop(1, dim(t1)); c.fillStyle = b; c.fill(); };
+  const gl = (cmds) => { tp(c, cmds); const b = c.createLinearGradient(0, -H, 0, pr.belt); const t0 = ['#9db3c6','#5d7082','#2a333d'][tint], tm = ['#3e5163','#1f2a36','#0e1318'][tint], t1 = ['#1d2833','#0d131a','#050709'][tint]; b.addColorStop(0, dim(t0)); b.addColorStop(.45, dim(tm)); b.addColorStop(1, dim(t1)); c.fillStyle = b; c.fill(); c.strokeStyle = '#08090b'; c.lineWidth = .035; c.stroke(); c.strokeStyle = 'rgba(255,255,255,' + (.12*(1 - N*.8)) + ')'; c.lineWidth = .01; c.stroke(); };
   const heads = (slots, yH) => { if (!s.pax) return; s.pax.forEach((p, i) => { if (i >= slots.length) return; const x = slots[i], b = p.bob || 0; c.fillStyle = dim(p.skin); circ(c, x, yH + b, .115); c.fillStyle = dim(p.hair); c.beginPath(); c.arc(x, yH - .01 + b, .122, Math.PI, 0); c.fill(); }); };
   const slots = [];
   if (pr.band) { gl(pr.band); for (let x = -hl + .5; x < hl - 2.4; x += .55) slots.push(x); heads(slots, pr.yHead); c.save(); tp(c, pr.band); c.clip(); c.strokeStyle = dim('#0c0f13'); c.lineWidth = .06; for (let x = -hl + 1.55; x < hl - 2.6; x += 1.5) { c.beginPath(); c.moveTo(x, -H); c.lineTo(x, 0); c.stroke(); } c.restore();
@@ -1463,8 +1481,8 @@ RD.vehicle = function(o, s, sx, sy, sc){
   bump(pr.bF, parts.bumperF ?? 1, true); bump(pr.bR, parts.bumperR ?? 1, false);
   // lamps
   const lf = pr.lampF, lr = pr.lampR, hOk = (parts.headL ?? 1) > 0, tOk = (parts.tailL ?? 1) > 0;
-  c.fillStyle = hOk ? (N > .3 || s.lights ? '#fff6d6' : '#dfe6ec') : '#4a4f55'; rr(c, lf[0], lf[1], lf[2], lf[3], .03); c.fill(); if (!hOk) { c.strokeStyle = '#999'; c.lineWidth = .01; c.beginPath(); c.moveTo(lf[0], lf[1]); c.lineTo(lf[0] + lf[2], lf[1] + lf[3]); c.stroke(); }
-  c.fillStyle = tOk ? (s.brake ? '#ff3b30' : '#9e1f19') : '#3a1a18'; rr(c, lr[0], lr[1], lr[2], lr[3], .02); c.fill();
+  { const lg = c.createLinearGradient(lf[0], lf[1], lf[0], lf[1] + lf[3]); lg.addColorStop(0, hOk ? '#f4f8fb' : '#4a4f55'); lg.addColorStop(.5, hOk ? (N > .3 || s.lights ? '#fff6d6' : '#b9c4cc') : '#3a3f45'); lg.addColorStop(1, hOk ? '#8a96a0' : '#2a2d31'); c.fillStyle = '#1a1c20'; rr(c, lf[0] - .02, lf[1] - .02, lf[2] + .04, lf[3] + .04, .04); c.fill(); c.fillStyle = lg; rr(c, lf[0], lf[1], lf[2], lf[3], .03); c.fill(); if (hOk) { c.fillStyle = 'rgba(255,255,255,.8)'; c.beginPath(); c.arc(lf[0] + lf[2]*.62, lf[1] + lf[3]*.5, Math.min(lf[2], lf[3])*.28, 0, 6.28); c.fill(); } } if (!hOk) { c.strokeStyle = '#999'; c.lineWidth = .01; c.beginPath(); c.moveTo(lf[0], lf[1]); c.lineTo(lf[0] + lf[2], lf[1] + lf[3]); c.stroke(); }
+  { const tg = c.createLinearGradient(lr[0], 0, lr[0] + lr[2], 0); tg.addColorStop(0, tOk ? (s.brake ? '#ff5a4a' : '#b3261d') : '#3a1a18'); tg.addColorStop(1, tOk ? (s.brake ? '#ff2a1a' : '#6d130e') : '#221010'); c.fillStyle = tg; rr(c, lr[0], lr[1], lr[2], lr[3], .02); c.fill(); c.fillStyle = 'rgba(255,255,255,.25)'; c.fillRect(lr[0], lr[1] + .02, lr[2]*.35, lr[3] - .04); }
   c.fillStyle = '#e8a200'; c.fillRect(lr[0], lr[1] + lr[3]*.75, lr[2], lr[3]*.15);
   // mirror
   if ((parts.mirror ?? 1) > 0) { const m = pr.mir; c.strokeStyle = dim('#1c1e21'); c.fillStyle = dim(pr.car ? body : '#1c1e21'); c.lineWidth = .04;
@@ -1487,7 +1505,7 @@ RD.vehicle = function(o, s, sx, sy, sc){
   c.restore(); // end body transform
   // ----- wheels -----
   const rim = o.rim || {t:'steel6', c:'#c3c8cc'};
-  if (s.wpos) { drawWheel2(c, s.wpos[1][0], s.wpos[1][1], wr, s.wa || 0, rim, s.wav, s.flatR); drawWheel2(c, s.wpos[0][0], s.wpos[0][1], wr, s.wa || 0, s.hubLost ? {t:'steel6', c:'#6a6f75'} : rim, s.wav, s.flatF); }
+  if (s.wpos) { drawWheel2(c, s.wpos[1][0], s.wpos[1][1], wr, s.wa || 0, rim, s.wav, s.flatR, s.sqR); drawWheel2(c, s.wpos[0][0], s.wpos[0][1], wr, s.wa || 0, s.hubLost ? {t:'steel6', c:'#6a6f75'} : rim, s.wav, s.flatF, s.sqF); }
   else { drawWheel2(c, -wb/2, -wr, wr, s.wa || 0, rim, s.wav); drawWheel2(c, wb/2, -wr, wr, s.wa || 0, rim, s.wav); }
   if (o.style === 'citybus' && L > 11) {} 
   c.restore();
@@ -1627,7 +1645,7 @@ function resetCarAt(car, W, x){ car.x = x; car.vx = car.vy = car.w = car.a = 0; 
   car.y = g + car.hc - car.s0 - d0; car.d0 = d0; }
 function setMass(car, paxN){ const sp = car.spec; car.pax = paxN; car.m = sp.mass + paxN*75 + (car.fuel || 0)*.84; car.I = car.m*(sp.L*sp.L + sp.H*sp.H)/12*.55;
   if (!car.k) { car.k = Math.pow(2*Math.PI*sp.fn, 2)*(sp.mass + sp.seats*30)/2; car.s0 = (sp.mass + sp.seats*30)/2*GRAV/car.k; }
-  car.c = 2*car.E.susZ*Math.sqrt(car.k*car.m/2)*(.55 + .45*car.E.susH); }
+  car.c = .85*2*car.E.susZ*Math.sqrt(car.k*car.m/2)*(.55 + .45*car.E.susH); car.lev = (car.m - (sp.mass + sp.seats*30))*GRAV/2*(sp.cat === 'bus' ? 1 : .7); }
 const torqueCurve = n => clamp(.55 + 1.8*n - 1.9*n*n, .3, 1);
 function wheelGround(W, x, r, lane){ let b = -1e9; for (let i = -3; i <= 3; i++) { const dx = i*r*.27, g = W.h(x + dx, lane) + Math.sqrt(r*r - dx*dx); if (g > b) b = g; } return b; }
 
@@ -1658,14 +1676,14 @@ function stepCar(G, car, W, dt){
     const r = ax.r*(ax.flat ? .82 : 1), Wx = Px + car.rest*sa;
     const comp = car.rest - (Py - ax.yw)/Math.max(.5, ca), cv = (comp - ax.cp)/dt; ax.cp = comp; ax.comp = comp;
     const k = car.k*(ax.kMul || 1);
-    let Fs = k*comp + (Math.abs(cv) < .35 ? car.c*cv : Math.sign(cv)*car.c*(.35 + (Math.abs(cv) - .35)*.4));
+    let Fs = k*comp + (car.lev || 0) + (comp > car.s0 ? k*1.6*Math.pow(comp - car.s0, 2)/Math.max(.05, car.travel - car.s0) : 0) + (Math.abs(cv) < .35 ? car.c*cv : Math.sign(cv)*car.c*(.35 + (Math.abs(cv) - .35)*.4));
     if (comp > car.travel) { const pen = comp - car.travel; Fs += car.k*30*pen + car.c*4*Math.max(0, cv); if (cv > .6 && G.hitCD <= 0) { G.hitCD = .25; G.onImpact(ax, cv, 'stop'); } }
     else if (cv > 1.1 && G.hitCD <= 0) { G.hitCD = .18; G.onImpact(ax, cv, 'bump'); }
     if (comp < -car.droop) Fs += car.k*30*(comp + car.droop);
     const fxS = -sa*Fs, fyS = ca*Fs; Fx += fxS; Fy += fyS; T += (Px - car.x)*fyS - (Py - car.y)*fxS;
     const Gy = wheelGround(W, Wx, r, lane), dT = Gy - ax.yw; let Nt = 0; if (dT > 0) { Nt = ax.kt*dT - ax.ct*ax.vyw; if (Nt < 0) Nt = 0; }
     ax.vyw += (Nt - Fs*ca - ax.mu*GRAV)/ax.mu*dt; ax.yw += ax.vyw*dt; if (ax.yw < Gy - r*.35) { ax.yw = Gy - r*.35; if (ax.vyw < 0) ax.vyw = 0; }
-    ax.wx = Wx; ax.wy = ax.yw; ax.contact = dT > 0; ax.N = Nt;
+    ax.wx = Wx; ax.wy = ax.yw; ax.contact = dT > 0; ax.N = Nt; ax.sq = dT > 0 ? dT/r : 0;
     const Iw = ax.Iw + (ax.drive && lockE ? car.Ie*ratio*ratio : 0);
     if (!ax.contact) { ax.om += (ax.drive ? Td : 0)/Iw*dt; ax.om *= (1 - car.brk*.2); continue; }
     const sl = (W.h(Wx + .15, lane) - W.h(Wx - .15, lane))/.3, tq = Math.hypot(1, sl), tx = 1/tq, ty = sl/tq, Cx = Wx, Cy = ax.yw - r;
@@ -1681,9 +1699,9 @@ function stepCar(G, car, W, dt){
   }
   car.slip = lerp(car.slip, slipMax, .2);
   // body scrape against ground (bottoming out)
-  for (const lx of [sp.L/2 - .2, 0, -sp.L/2 + .2]) { const ly = -car.hc + car.s0 + (car.d0 || 0) + (STYLE[sp.style]?.gc || .3)*.8;
+  for (const lx of [sp.L/2 - .2, 0, -sp.L/2 + .2]) { const ly = -car.hc + car.s0 + (car.d0 || 0) + RIDE_LIFT(sp) + (STYLE[sp.style]?.gc || .3)*.8;
     const bx = car.x + lx*ca - ly*sa, by = car.y + lx*sa + ly*ca, gy = W.h(bx, lane); if (by < gy - .005) { const pen = gy - by, vpy = car.vy + car.w*(bx - car.x); const f = car.k*6*pen - Math.min(0, vpy)*car.c*2;
-      Fy += f; T += (bx - car.x)*f; Fx -= Math.sign(car.vx)*f*.5; if (G.hitCD <= 0 && Math.abs(car.vx) > 2 && pen > .02) { G.hitCD = .5; G.onScrape(bx, gy); } } }
+      Fy += f; T += (bx - car.x)*f; Fx -= Math.sign(car.vx)*f*.5; if (G.hitCD <= 0 && Math.abs(car.vx) > 5 && pen > .03) { G.hitCD = .5; G.onScrape(bx, gy); } } }
   car.ax = Fx/m;
   car.vx += Fx/m*dt; car.vy += Fy/m*dt; car.w += T/car.I*dt; car.w *= .9995;
   car.x += car.vx*dt; car.y += car.vy*dt; car.a += car.w*dt;
@@ -2075,7 +2093,7 @@ const FEAT = {};
 const PARTS_DEF = {mirror:1, bumperF:1, bumperR:1, headL:1, tailL:1, glass:0, exhaust:1, radiator:1, spring:1, battery:1};
 const PART_COST = {mirror:250, bumperF:900, bumperR:800, headL:600, tailL:350, glass:1200, exhaust:700, radiator:1100, spring:1400, battery:1600};
 FEAT.diff = () => ({easy:{fine:.5, brk:.5, fuel:.8, ev:.8}, normal:{fine:1, brk:1, fuel:1, ev:1}, sim:{fine:1.3, brk:1.3, fuel:1, ev:1.3}})[(GAME.save && GAME.save.set.difficulty) || 'normal'];
-FEAT.brokenList = own => Object.keys(PARTS_DEF).filter(k => k === 'glass' ? (own.parts[k] || 0) > .1 : (own.parts[k] ?? 1) < 1);
+FEAT.brokenList = own => { own.parts = Object.assign({}, PARTS_DEF, own.parts || {}); return Object.keys(PARTS_DEF).filter(k => k === 'glass' ? (own.parts[k] || 0) > .1 : (own.parts[k] ?? 1) < 1); };
 FEAT.aiDress = function(o){ const R = Math.random, t = o.type;
   o.rim = t === 'citybus' || t === 'coach' || t === 'truck' ? {t:'bus', c:'#d0d5da'} : t === 'micro' ? {t:R() < .5 ? 'hubcap' : 'steel6', c:'#cdd2d6'} : {t:['hubcap','alloy5','alloy10','multi'][Math.floor(R()*4)], c:R() < .7 ? '#c9cfd4' : '#2a2d31'};
   if (t === 'micro') { o.style = R() < .5 ? 'micro' : 'microHR'; if (R() < .35) o.paint2 = '#b8b0a0'; if (R() < .6) o.stk = [{t:STK[Math.floor(R()*24)], pos:R() < .6 ? 'rear' : 'side', col:STK_COL[Math.floor(R()*4)]}]; if (R() < .3) o.stripe = 'retro'; o.H = o.style === 'microHR' ? 2.45 : 2.2; }
@@ -2249,7 +2267,7 @@ const S = () => GAME.save;
 /* ---------- vehicle helpers ---------- */
 function topSpeed(sp, own){ const E = effSpec(sp, own || {up:{}, cond:{}}); const vg = sp.rpmMax*2*Math.PI/60/(sp.gears[sp.gears.length - 1]*sp.fd)*sp.wr; let P = 0; for (let n = .2; n <= 1; n += .02) P = Math.max(P, E.tq*torqueCurve(n)*(E.turbo ? 1 + (E.turboK - 1)*.8 : 1)*n*sp.rpmMax*.10472);
   let v = 10; for (let i = 0; i < 60; i++) { const need = .5*1.2*sp.cdA*v*v*v + .012*sp.mass*GRAV*v; v += need < P*.85 ? .5 : -.25; } return Math.round(Math.min(vg, v)*3.6); }
-function newOwn(sp, used){ const c = {}; COND.forEach(k => c[k] = used ? [82, 86, 68, 74, 80, 76][COND.indexOf(k)] : 100); return {up:{}, cond:c, paint:null, horn:null, sticker:sp.cat === 'micro' ? 's1' : 'none', fuel:sp.tank*(used ? .45 : 1)}; }
+function newOwn(sp, used){ const c = {}; COND.forEach(k => c[k] = used ? [82, 86, 68, 74, 80, 76][COND.indexOf(k)] : 100); return {up:{}, cond:c, paint:null, horn:null, stk:[], dirt:0, parts:Object.assign({}, PARTS_DEF), fuel:sp.tank*(used ? .45 : 1)}; }
 function catOf(sp){ return sp.cat === 'car' ? 'car' : sp.cat === 'bus' ? 'bus' : 'micro'; }
 
 /* =================== SCREENS =================== */
@@ -2383,7 +2401,7 @@ UI.after.settings = function(){ document.querySelectorAll('input[data-v]').forEa
 function todayStr(){ const d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
 UI.act = function(a, p, el){ const s = S(), u = UI.sel; AU.init(); AU.ui();
   switch (a) {
-  case 'nav': UI.show(p, el.dataset.q); break;
+  case 'nav': UI.show(p, el && el.dataset ? el.dataset.q : undefined); break;
   case 'lang': case 'setlang': setLang(a === 'lang' ? (LANG.cur === 'ar' ? 'en' : 'ar') : p); UI.refresh(); break;
   case 'tab': u.tab = p; UI.show('routes', p); break;
   case 'filter': u.filter = p; UI.refresh(); break;
@@ -2708,7 +2726,7 @@ UI.stageDraw = function(vid){ const cv = $('#stage'); if (!cv) return; const v =
     const g = c.createLinearGradient(0, fy, 0, r.height); g.addColorStop(0, 'rgba(255,182,39,.14)'); g.addColorStop(1, 'transparent'); c.fillStyle = g; c.fillRect(0, fy, r.width, r.height - fy);
     c.strokeStyle = 'rgba(46,230,255,.16)'; for (let i = 0; i < 14; i++) { c.beginPath(); c.moveTo(r.width/2 + (i - 7)*r.width*.02, fy); c.lineTo(r.width/2 + (i - 7)*r.width*.12, r.height); c.stroke(); }
     const P = Math.min(r.width*.82/v.L, r.height*.6/v.H), sv = {ctx:RD.ctx, PPM:RD.PPM, night:RD.night, lights:RD.lights}; RD.ctx = c; RD.night = 0; RD.lights = []; const sc = P/RD.PPM;
-    const o = dressOwn({style:v.style, L:v.L, H:v.H, wb:v.wb, wr:v.wr}, v, own); const st = {pitch:Math.sin(tm/900)*.01, lift:Math.sin(tm/700)*.015, wa:tm/600, lights:true, pax:[], flip:!!S().set.mirror, parts:own ? own.parts : null, dirt:own ? own.dirt : 0};
+    const o = dressOwn({style:v.style, L:v.L, H:v.H, wb:v.wb, wr:v.wr}, v, own); const st = {pitch:Math.sin(tm/900)*.01, lift:.05 + Math.sin(tm/700)*.015, wa:tm/600, lights:true, pax:[], flip:!!S().set.mirror, parts:own ? own.parts : null, dirt:own ? own.dirt : 0};
     RD.vehicle(o, st, r.width/2, fy, sc); c.save(); c.globalAlpha = .1; c.translate(0, fy*2); c.scale(1, -1); RD.vehicle(o, st, r.width/2, fy, sc); c.restore(); Object.assign(RD, sv); UI.stageRAF = requestAnimationFrame(draw); };
   UI.stageRAF = requestAnimationFrame(draw); };
 UI.after.workshop = function(){ const el = $('#say'); if (el) { const full = el.dataset.full; let i = 0; clearInterval(UI.typeT); UI.typeT = setInterval(() => { i += 2; el.textContent = full.slice(0, i); if (i >= full.length) clearInterval(UI.typeT); }, 28); }
@@ -3005,6 +3023,33 @@ document.head.insertAdjacentHTML('beforeend', `<style>
   if (l.st === 'y' && !l.warned && dm < 120) { l.warned = true; AU.alert(); } if (l.st === 'g') l.warned = false; }; }
 
 
+/* =================== v4: ride height, 9 new vehicles, louder engines =================== */
+const RIDE_LIFT = s => s.cat === 'car' ? .035 : s.cat === 'bus' ? .06 : .055;
+const cp = (id, o) => Object.assign({}, vehById(id), o);
+VEH.push(
+ cp('coaster', {id:'coaster_old', n:{en:'Coaster Classic 22',ar:'كوستر قديم 22'}, yr:2006, price:380000, lvl:7, seats:22, stand:6, paint:'#e8e3d3', tq:420, tank:90, lp100:18.5, rim:{t:'bus', c:'#cfd3d6'}, d:{en:'Old but gold. The workhorse of Egyptian intercity lines.',ar:'قديم بس جامد. حصان خطوط السفر المصرية.'}}),
+ cp('coaster', {id:'mini_rosa', style:'mini2', n:{en:'Rosa-style Minibus 25',ar:'ميني باص روزا 25'}, yr:2023, price:700000, lvl:10, seats:25, stand:4, L:7.0, H:2.7, paint:'#f2f2ee', tq:500, rim:{t:'bus', c:'#dfe3e6'}, d:{en:'Rounded modern minibus, smooth and quiet.',ar:'ميني باص حديث مدوّر، ناعم وهادي.'}}),
+ cp('coaster', {id:'mini_county', style:'mini3', n:{en:'County-style Minibus 29',ar:'ميني باص كاونتي 29'}, yr:2022, price:760000, lvl:10, seats:29, stand:4, L:7.1, H:2.78, wb:4.0, paint:'#d8dde2', tq:530, rim:{t:'bus', c:'#d5d9dc'}, d:{en:'Flat-front minibus with big capacity.',ar:'ميني باص وش مفلطح وسعة كبيرة.'}}),
+ cp('van_euro', {id:'van_xl', cat:'minibus', cls:'minibus', n:{en:'Long Van 20',ar:'فان طويل 20'}, yr:2024, price:450000, lvl:8, seats:20, stand:0, L:6.9, H:2.65, wb:4.3, mass:3200, tq:380, tank:90, lp100:12.5, paint:'#eceef0', d:{en:'Extra-long van with 20 seats. Great on minibus lines.',ar:'فان طويل 20 كرسي. ممتاز على خطوط الميني باص.'}}),
+ cp('citybus', {id:'bus_cta_old', n:{en:'Classic City Bus 40',ar:'أتوبيس نقل عام قديم 40'}, yr:2008, price:900000, lvl:11, seats:30, stand:25, L:11, H:3.0, paint:'#c9342b', tq:980, tank:200, lp100:35, rim:{t:'bus', c:'#c9cdd0'}, d:{en:'The famous red-and-white city bus. Loud, slow, loved.',ar:'الأتوبيس الأحمر في أبيض المشهور. دوشة وبطيء بس محبوب.'}}),
+ cp('coach', {id:'coach_dd', style:'dd', n:{en:'Double-Deck Coach 70',ar:'أتوبيس دورين 70'}, yr:2025, price:4200000, lvl:25, seats:70, stand:0, L:12.8, H:4.1, wb:6.5, mass:16500, tq:2300, tank:400, lp100:36, paint:'#f4f4f4', rim:{t:'alloyBus', c:'#e6eaed'}, d:{en:'Two decks, 70 seats, panoramic windows. The premium long-haul giant.',ar:'دورين، 70 كرسي، شبابيك بانوراما. عملاق السفر الفاخر.'}}),
+ cp('sedan16', {id:'sedan_compact', n:{en:'Compact Sedan 1.5',ar:'سيدان صغيرة 1.5'}, tier:'eco', yr:2022, price:170000, lvl:3, L:4.35, wb:2.6, mass:1120, tq:140, lp100:6.3, paint:'#9aa3ab', rim:{t:'alloy5', c:'#c9cfd4'}, d:{en:'Reliable compact sedan. Cheap to run on Ogra Go.',ar:'سيدان صغيرة مضمونة. اقتصادية في أجرة جو.'}}),
+ cp('sedan16', {id:'sedan_mid', n:{en:'Mid Sedan 2.0',ar:'سيدان متوسطة 2.0'}, tier:'comfort', yr:2024, price:380000, lvl:9, L:4.8, H:1.45, wb:2.82, mass:1420, tq:240, lp100:7.6, paint:'#8b1e24', rim:{t:'multi', c:'#c9cfd4'}, d:{en:'Spacious family sedan. Comfort riders love it.',ar:'سيدان عائلية واسعة. زباين الكومفورت بيحبوها.'}}),
+ cp('exec', {id:'sedan_lux', n:{en:'Luxury Sedan V8',ar:'سيدان فاخرة V8'}, yr:2025, price:2200000, lvl:24, L:5.2, H:1.48, wb:3.15, mass:2050, tq:560, cyl:8, rpmMax:6600, lp100:12.8, paint:'#15171b', rim:{t:'multi', c:'#2a2d31'}, d:{en:'The ultimate VIP car. Biggest tips in the city.',ar:'عربية الـVIP. أكبر بقشيش في البلد.'}})
+);
+Object.assign(EPROF, {coaster_old:Object.assign({}, EPROF.coaster, {cl:.02, lp:560}), mini_rosa:Object.assign({}, EPROF.coaster, {lp:680, rb:.2}), mini_county:Object.assign({}, EPROF.coaster, {lp:640}), van_xl:Object.assign({}, EPROF.micro_hr, {lp:800}), van_euro:Object.assign({}, EPROF.micro_hr, {lp:900, cl:.01}),
+  bus_cta_old:Object.assign({}, EPROF.citybus, {cl:.018, lp:520, rb:.34}), coach_dd:Object.assign({}, EPROF.coach, {lp:400, rb:.3}), citybus2:Object.assign({}, EPROF.citybus, {lp:460, cl:.008}), coach2:Object.assign({}, EPROF.coach),
+  minibus_ac:Object.assign({}, EPROF.coaster, {lp:700}), sedan_compact:Object.assign({}, EPROF.car_old, {lp:1050}), sedan_mid:Object.assign({}, EPROF.sedan16, {lp:1000}), sedan_lux:Object.assign({}, EPROF.exec, {lp:950, roll:.9, ev:.8, rb:.12}), hatch_city:Object.assign({}, EPROF.car_old, {lp:1250}), suv_big:Object.assign({}, EPROF.exec)});
+for (const k in EPROF) EPROF[k].g = (EPROF[k].g || .3)*1.5;
+{ const _sv = AU.setVol; AU.setVol = function(){ _sv.call(this); if (this.ok) this.buses.engine.gain.value = this.vol.engine*1.5; }; }
+Object.assign(TSPEC, {mini2:{L:7,H:2.7,wb:3.9,wr:.39,m:4400}, mini3:{L:7.1,H:2.78,wb:4,wr:.39,m:4500}, dd:{L:12.8,H:4.1,wb:6.5,wr:.53,m:16000}});
+TMIX.city.push(['mini2',3],['mini3',3]); TMIX.popular.push(['mini3',3]); TMIX.highway.push(['mini2',4],['dd',3]); TMIX.alex.push(['mini2',2]); TMIX.rural.push(['mini3',2]);
+{ const _ma = mkAI; mkAI = function(G, type, x, lane, v){ const o = _ma(G, type, x, lane, v), R = Math.random;
+  if (type === 'mini2' || type === 'mini3') { o.paint = ['#f2f2ee','#1e6fb0','#d8dde2','#e9e6de','#c8202b'][Math.floor(R()*5)]; o.rim = {t:'bus', c:'#dfe3e6'}; o.skinKey = 'ai_minibus'; o.line = R() < .4; }
+  if (type === 'dd') { o.paint = ['#f4f4f4','#0d5fa6','#1e8449'][Math.floor(R()*3)]; o.rim = {t:'alloyBus', c:'#e6eaed'}; o.skinKey = 'ai_coach'; }
+  return o; }; }
+
+
 /* =================== MOBILE SCALE =================== */
 document.head.insertAdjacentHTML('beforeend', `<style>
 @media (pointer:coarse){
@@ -3096,13 +3141,17 @@ function updPeople(G, dt){ const W = G.world, car = G.car, th = W.themeAt(car.x)
   for (const p of G.walkers) { p.x += p.v*dt; p.ph += dt*6; p.t += dt*.3; } G.walkers = G.walkers.filter(p => p.x > vl - 20 && p.x < vr + 20);
   for (const p of G.peds) { if (p.walkTo != null) { const d = p.walkTo - p.x; p.face = Math.sign(d) || 1; p.x += Math.sign(d)*Math.min(Math.abs(d), 1.7*dt); p.walk = true; p.ph += dt*7; if (Math.abs(d) < .3) p.t = 99; } else if (p.leave) { p.x += p.leave*dt; p.walk = true; p.face = Math.sign(p.leave); p.ph += dt*7; } } }
 function renderScene(G, dt){ const c = RD.ctx, W = G.world, car = G.car, set = GAME.save.set; RD.lights = [];
-  const zt = (set.zoom || 1)*(set.dynZoom && G.mode !== 'attract' ? lerp(1.08, RD.coarse ? .86 : .76, clamp(Math.abs(car.vx)/26, 0, 1)) : 1);
-  RD.zoom = lerp(RD.zoom || zt, zt, 1 - Math.exp(-dt*1.4)); const z = RD.zoom; RD.W = RD.Ws/z; RD.H = RD.Hs/z; RD.ROADY = RD.RYs/z;
-  const vw = RD.W/RD.PPM; let frac = .34;
-  if (G.mode !== 'attract') { const behind = G.traffic.some(o => o.lane === 0 && !o.parked && o.x < car.x && car.x - o.x < car.spec.L/2 + o.L/2 + 22); const moving = car.vx > 2.5;
-    frac = car.vx < -.5 ? .6 : behind ? .44 : moving ? .16 + car.spec.L/vw*.5 : .3; }
-  G.camFrac = lerp(G.camFrac ?? frac, frac, 1 - Math.exp(-dt*(G.camFrac != null && frac > G.camFrac ? 1.8 : .9)));
-  RD.camL = lerp(RD.camL, car.x - vw*G.camFrac, 1 - Math.exp(-dt*3.2)); RD.camY = lerp(RD.camY, W.h(car.x), 1 - Math.exp(-dt*2.5));
+  const spd = Math.abs(car.vx)*3.6, L = car.spec.L; let behind = null;
+  if (G.mode !== 'attract') for (const o of G.traffic) { if (o.parked || o.isTow) continue; const gap = car.x - o.x - (L + o.L)/2; if ((o.lane === 0 || o.over) && gap > -2 && gap < (o.siren ? 45 : 18) && (!behind || o.x > behind.x)) behind = o; }
+  // zoom: steady in town, eases out on open road; long vehicles and a car behind widen the view
+  let zt = 1 - clamp((spd - 25)/70, 0, 1)*(RD.coarse ? .2 : .26) - clamp((L - 5)/8, 0, 1)*.1 - (behind ? .06 + clamp((car.x - behind.x - 14)/40, 0, .1) : 0);
+  if (!set.dynZoom || G.mode === 'attract') zt = 1 - clamp((L - 5)/8, 0, 1)*.1;
+  zt *= (set.zoom || 1); RD.zoom = RD.zoom || zt; RD.zoom = lerp(RD.zoom, zt, 1 - Math.exp(-dt*(zt < RD.zoom ? 1.1 : .45)));
+  const z = RD.zoom; RD.W = RD.Ws/z; RD.H = RD.Hs/z; RD.ROADY = RD.RYs/z;
+  const vw = RD.W/RD.PPM, minF = (L/2 + 1.2)/vw; let frac;
+  if (G.mode === 'attract') frac = .34; else if (car.vx < -.5 || car.gear < 0) frac = Math.max(.55, 1 - minF - .05); else if (behind) frac = clamp((car.x - behind.x + behind.L/2 + 2)/vw, Math.max(.38, minF + .05), .66); else frac = Math.max(.15, minF);
+  G.camFrac = G.camFrac ?? frac; G.camFrac = lerp(G.camFrac, frac, 1 - Math.exp(-dt*(frac > G.camFrac ? 1.6 : .7)));
+  RD.camL = G.mode === 'attract' ? lerp(RD.camL, car.x - vw*G.camFrac, 1 - Math.exp(-dt*3.2)) : car.x - vw*G.camFrac; RD.camY = lerp(RD.camY, W.h(car.x), 1 - Math.exp(-dt*2.5));
   const sh = set.shake ? (Math.random() - .5)*RD.shake*7 : 0; RD.shake *= Math.exp(-dt*5);
   RD.mirror = !!set.mirror; c.setTransform((RD.mirror ? -1 : 1)*DPR*z, 0, 0, DPR*z, RD.mirror ? RD.Ws*DPR : 0, sh*DPR); c.clearRect(-20, -40, RD.W + 40, RD.H + 80);
   RD.drawSky(W); RD.drawClouds2(W, G); RD.drawFar(W); RD.drawMid(W); RD.drawMist(W, G); RD.drawNearBack(W); RD.drawRoad(W, G); RD.drawProps(W, G); RD.drawEnvProps(W, G); RD.drawSites(W, G); RD.drawShops(W, G); RD.drawFestive(W, G);
@@ -3116,7 +3165,7 @@ function renderScene(G, dt){ const c = RD.ctx, W = G.world, car = G.car, set = G
   let drewRoadPeds = false;
   for (const e of vs) { if (!drewRoadPeds && e.d > .3) { drawPeople(G, true); drewRoadPeds = true; }
     if (e.me) drawPlayer(G); else { const o = e.o; const sx = RD.sx(o.x); if (sx < -700 || sx > RD.W + 700) continue; const d = o.lp*DEP.lane1;
-      RD.vehicle(o, {pitch:o.pitch || 0, wa:o.wa, brake:o.brake, lights:RD.night > .45 || G.weather !== 'clear', blink:o.blink || o.hz ? 1 : 0, lightbar:o.lightbar, flip:o.lane === 1, dmgF:o.crashed ? .6 : 0, pax:o.paxH || (o.paxH = mkHeads(o)), interior:o.type === 'micro' && o.id % 3 === 0 ? '#ff4fd8' : null, wav:o.v/o.wr}, sx, RD.sy(o.y ?? W.h(o.x), d), 1 + d*.06); } }
+      RD.vehicle(o, {lift:(o.L > 6 ? .06 : o.H > 1.9 ? .055 : .035) + Math.max(-.03, Math.min(.03, (o.bv || 0)*.01)), pitch:o.pitch || 0, wa:o.wa, brake:o.brake, lights:RD.night > .45 || G.weather !== 'clear', blink:o.blink || o.hz ? 1 : 0, lightbar:o.lightbar, flip:o.lane === 1, dmgF:o.crashed ? .6 : 0, pax:o.paxH || (o.paxH = mkHeads(o)), interior:o.type === 'micro' && o.id % 3 === 0 ? '#ff4fd8' : null, wav:o.v/o.wr}, sx, RD.sy(o.y ?? W.h(o.x), d), 1 + d*.06); } }
   if (!drewRoadPeds) drawPeople(G, true);
   RD.drawParticles(G); RD.drawHaze(W, G); RD.drawLighting(G);
   c.setTransform(DPR, 0, 0, DPR, 0, 0); const Ws = RD.Ws, Hs = RD.Hs;
@@ -3126,12 +3175,12 @@ function renderScene(G, dt){ const c = RD.ctx, W = G.world, car = G.car, set = G
   if (G.fade > 0) { c.fillStyle = `rgba(0,0,0,${G.fade})`; c.fillRect(0, 0, Ws, Hs); }
   RD.W = Ws; RD.H = Hs; RD.ROADY = RD.RYs; }
 function mkHeads(o){ const n = o.type === 'citybus' ? 12 : o.type === 'micro' ? 3 + (o.id % 8) : o.type === 'coach' ? 10 : 1 + (o.id % 2); const R = rng(o.id*7); return Array.from({length:n}, () => { const l = mkLook(R); return {skin:l.skin, hair:l.type === 'f' ? l.scarf : l.hair, bob:0}; }); }
-function drawPlayer(G){ const car = G.car, sp = car.spec, own = G.own || {}, ca = Math.cos(car.a), sa = Math.sin(car.a), hd = car.hc - car.s0;
+function drawPlayer(G){ const car = G.car, sp = car.spec, own = G.own || {}, ca = Math.cos(car.a), sa = Math.sin(car.a), hd = car.hc - car.s0 - (car.d0 || 0) - RIDE_LIFT(sp);
   const Ox = car.x + hd*sa, Oy = car.y - hd*ca, d = car.lane*DEP.lane1, sc = 1 + car.lane*.06, sx = RD.sx(Ox), sy = RD.sy(Oy, d);
   const vib = car.on && Math.abs(car.vx) < 2 ? Math.sin(performance.now()/1000*car.rpm/60*3.14)*.0022*(sp.fuel === 'diesel' ? 1.6 : .5) : 0;
   const o = dressOwn({style:sp.style, L:sp.L, H:sp.H, wb:sp.wb, wr:sp.wr, roofRack:car.rack ? car.rack.filter(b => !b.lost) : null, sign:G.route ? tn(G.route.st[G.route.st.length - 1].n) : '', appSign:G.mode === 'go'}, sp, own);
   const heads = G.mode === 'go' ? (G.ride && G.ride.state === 'trip' ? [{skin:G.ride.offer.look.skin, hair:G.ride.offer.look.type === 'f' ? G.ride.offer.look.scarf : G.ride.offer.look.hair, bob:0}] : []) : G.onboard;
-  const st = {pitch:car.a + vib, lift:0, wa:car.axles[1].wa || 0, wav:car.axles[1].om, brake:car.brk > .08, lights:car.lights, blink:car.blink ? 1 : 0, rev:car.gear < 0, pax:heads, dmgF:car.dmgF || 0, dmgR:car.dmgR || 0, scr:car.scr || 0, interior:(own.up || {}).lights >= 2 ? '#ff4fd8' : (heads.length ? '#ffe2a8' : null), beam:car.E.beam, hubLost:car.hubLost,
+  const st = {sqF:car.axles[0].sq, sqR:car.axles[1].sq, pitch:car.a*1.25 + vib, lift:0, wa:car.axles[1].wa || 0, wav:car.axles[1].om, brake:car.brk > .08, lights:car.lights, blink:car.blink ? 1 : 0, rev:car.gear < 0, pax:heads, dmgF:car.dmgF || 0, dmgR:car.dmgR || 0, scr:car.scr || 0, interior:(own.up || {}).lights >= 2 ? '#ff4fd8' : (heads.length ? '#ffe2a8' : null), beam:car.E.beam, hubLost:car.hubLost,
     wpos:car.axles.map(ax => [ax.wx - Ox, -(ax.wy - Oy)]), parts:own.parts, dirt:own.dirt, flatF:car.axles[0].flat, flatR:car.axles[1].flat};
   RD.vehicle(o, st, sx, sy, sc); RD.carScr = [RD.mirror ? RD.Ws - sx*RD.zoom : sx*RD.zoom, (sy - sp.H*RD.PPM*sc)*RD.zoom]; }
 
