@@ -1245,7 +1245,7 @@ RD.drawRoad = function(world, G){
   // features
   const vl = this.camL - 5, vr = this.camL + W/P + 5; const f = world.feat;
   for (let i = world.featRange(vl); i < f.length && f[i].x < vr; i++) { const e = f[i], x0 = this.sx(e.x), x1 = this.sx(e.x + e.w), yT = this.sy(world.h(e.x), -.28), yB = this.sy(world.h(e.x), DEP.near);
-    if (e.t === 'hump' || e.t === 'hump2') { c.fillStyle = mixHex('#555', '#000', N*.4); c.fillRect(x0, yT, x1 - x0, yB - yT); if (e.mark) { const n = 8; for (let k = 0; k < n; k++) { c.fillStyle = k % 2 ? mixHex('#f2c230', '#000', N*.4) : mixHex('#111', '#000', N*.4); c.fillRect(x0 + (x1 - x0)*.2, yT + k*(yB - yT)/n, (x1 - x0)*.6, (yB - yT)/n); } } }
+    if (e.t === 'hump' || e.t === 'hump2') RD.drawHump(c, e, x0, x1, yT, yB, N);
     else if (e.t === 'hole') { const ly = this.sy(world.h(e.x + e.w/2), e.lane ? DEP.lane1 - .3 : -.1); c.fillStyle = mixHex('#1a1a1c', '#000', N*.3); c.beginPath(); c.ellipse((x0 + x1)/2, ly, (x1 - x0)/2, .22*P, 0, 0, 6.28); c.fill(); c.strokeStyle = 'rgba(0,0,0,.4)'; c.lineWidth = 2; c.stroke(); if (G && G.wet) { c.fillStyle = 'rgba(150,170,200,.35)'; c.beginPath(); c.ellipse((x0 + x1)/2, ly, (x1 - x0)/2.4, .15*P, 0, 0, 6.28); c.fill(); } }
     else if (e.t === 'rough') { c.fillStyle = `rgba(80,75,70,${.35 - N*.15})`; c.fillRect(x0, yT, x1 - x0, yB - yT); c.strokeStyle = 'rgba(0,0,0,.35)'; c.lineWidth = 1; for (let k = 0; k < e.w; k += 2.2) { const xx = this.sx(e.x + k); c.beginPath(); c.moveTo(xx, yT + (hsh(k, 1))*(yB - yT)); c.lineTo(xx + 12, yT + hsh(k, 2)*(yB - yT)); c.lineTo(xx + 20, yT + hsh(k, 3)*(yB - yT)); c.stroke(); } }
     else if (e.t === 'cobble') { c.fillStyle = `rgba(120,105,85,${.55 - N*.25})`; c.fillRect(x0, yT, x1 - x0, yB - yT); c.strokeStyle = 'rgba(40,30,20,.35)'; c.lineWidth = 1; for (let y = yT; y < yB; y += .35*P) { c.beginPath(); c.moveTo(x0, y); c.lineTo(x1, y); c.stroke(); } }
@@ -3578,6 +3578,92 @@ document.head.insertAdjacentHTML('beforeend', `<style>
 #boot .logo .tg{font-size:min(calc(var(--u)*2.1),3.6vw,2.6vh);margin-top:.8em;letter-spacing:.08em;white-space:nowrap}
 #boot .tap{font-size:min(calc(var(--u)*2.2),4vw,2.8vh);margin-top:5vh;white-space:nowrap}
 @keyframes logoIn{from{opacity:0;transform:scale(.7) translateY(24px);filter:blur(10px)}to{opacity:1;transform:none;filter:none}}
+</style>`);
+
+
+/* =================== v8 =================== */
+Object.assign(L, {free:['Free roam','تجوّل حر'], free_d:['Drive any of your vehicles anywhere, day or night — no fares, no timetable. Just you and the city.','سوق أي عربية عندك في أي حتة، بالنهار أو بالليل — من غير أجرة ولا مواعيد. إنت والشارع وبس.'], free_go:['Start driving','يلا نسوق'], free_mode:['Free roam','تجوّل حر'], hump_sign:['BUMP','مطب'], angry_only:['The other driver is furious at you','السواق التاني اتعصب عليك']});
+/* ---------- iOS / mobile audio: survive the silent switch & app switching ---------- */
+(function(){ let htmlA = null; const silentWav = () => { const n = 4000, b = new ArrayBuffer(44 + n), v = new DataView(b), w = (o, s) => [...s].forEach((ch, i) => v.setUint8(o + i, ch.charCodeAt(0)));
+    w(0, 'RIFF'); v.setUint32(4, 36 + n, true); w(8, 'WAVE'); w(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, 8000, true); v.setUint32(28, 8000, true); v.setUint16(32, 1, true); v.setUint16(34, 8, true); w(36, 'data'); v.setUint32(40, n, true); for (let i = 0; i < n; i++) v.setUint8(44 + i, 128);
+    return URL.createObjectURL(new Blob([b], {type:'audio/wav'})); };
+  const unlock = () => { try { if (navigator.audioSession && navigator.audioSession.type !== 'playback') navigator.audioSession.type = 'playback'; } catch(e) {}
+    try { if (!htmlA) { htmlA = new Audio(silentWav()); htmlA.loop = true; htmlA.setAttribute('playsinline', ''); htmlA.setAttribute('webkit-playsinline', ''); htmlA.volume = .01; } if (htmlA.paused) htmlA.play().catch(() => {}); } catch(e) {}
+    try { if (!AU.ctx) AU.init(); if (AU.ctx && AU.ctx.state !== 'running') AU.ctx.resume(); } catch(e) {} };
+  ['touchend','pointerup','click','keydown'].forEach(ev => addEventListener(ev, unlock, {passive:true, capture:true}));
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) { try { AU.ctx && AU.ctx.resume(); htmlA && htmlA.play().catch(() => {}); } catch(e) {} } }); })();
+/* ---------- realistic speed bumps, warning signs, rumble strips ---------- */
+{ const _h = World.prototype.h; World.prototype.h = function(x, lane){ let y = _h.call(this, x, lane); const rs = this.rum; if (rs) for (const e of rs) { if (x >= e.x && x <= e.x + e.w) { const u = (x - e.x)/e.w; if (fract(u*7) < .32) y += e.h; } } return y; }; }
+{ const _gc = World.prototype.genChunk; World.prototype.genChunk = function(a, b){ _gc.call(this, a, b); this.rum = this.rum || [];
+  for (const e of this.feat) { if (e.x < a || e.x >= b || e.signed || !(e.t === 'hump' || e.t === 'hump2')) continue; e.signed = 1; if (e.t === 'hump2') { e.h = Math.max(e.h, .12); e.w = 1.4 + this.R()*.4; } if (e.mark || this.R() < .4) this.props.push({x:e.x - 28 - this.R()*10, t:'humpSign'}); }
+  for (const q of this.isx || []) { const x = q.x - q.w/2 - 24; if (x >= a && x < b && !q.rum) { q.rum = 1; this.rum.push({x, w:3.6, h:.022}); } }
+  this.props.sort((p, q) => p.x - q.x); }; }
+RD.drawHump = function(c, e, x0, x1, yT, yB, N){ const w = Math.max(2, x1 - x0), sh = 1 - N*.6;
+  c.fillStyle = mixHex('#444549', '#05070d', N*.5); c.globalAlpha = .6; c.fillRect(x0, yT, w, yB - yT); c.globalAlpha = 1;
+  const g = c.createLinearGradient(x0, 0, x1, 0); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(.2, `rgba(255,255,255,${.1*sh})`); g.addColorStop(.42, `rgba(255,255,255,${.17*sh})`); g.addColorStop(.6, 'rgba(0,0,0,.1)'); g.addColorStop(.86, 'rgba(0,0,0,.26)'); g.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = g; c.fillRect(x0, yT, w, yB - yT);
+  c.strokeStyle = 'rgba(15,15,18,.5)'; c.lineWidth = 1; c.beginPath(); for (const xx of [x0 + w*.03, x1 - w*.03]) { c.moveTo(xx, yT); for (let y = yT; y < yB; y += 5) c.lineTo(xx + Math.sin(y*.8 + e.x)*1.4, y); } c.stroke();
+  const R = rng(Math.floor(e.x*10)); for (let i = 0; i < 6; i++) { c.fillStyle = `rgba(30,28,26,${.2 + R()*.2})`; c.beginPath(); c.ellipse(x0 + w*(.15 + R()*.7), yT + (yB - yT)*R(), 1.5 + R()*3, 1 + R()*2, 0, 0, 6.28); c.fill(); }
+  if (e.mark) { const n = 7, sw = (yB - yT)/n; for (let k = 0; k < n; k++) { if (R() < .3) continue; const yy = yT + (k + .5)*sw; c.fillStyle = `rgba(${k % 2 ? '232,188,44' : '238,238,232'},${(.3 + R()*.3)*sh})`; c.beginPath(); c.moveTo(x0 + w*.22, yy - sw*.34); c.lineTo(x0 + w*.52, yy - sw*.34); c.lineTo(x0 + w*.78, yy + sw*.34); c.lineTo(x0 + w*.48, yy + sw*.34); c.fill(); } } };
+{ const _dr = RD.drawRoad; RD.drawRoad = function(world, G){ _dr.call(this, world, G); const c = this.ctx, P = this.PPM, N = this.night, vl = this.camL - 5, vr = this.camL + this.W/P + 5;
+  for (const e of world.rum || []) { if (e.x + e.w < vl || e.x > vr) continue; const yT = this.sy(world.h(e.x), -.28), yB = this.sy(world.h(e.x), DEP.near); c.fillStyle = mixHex('#e8e6df', '#05070d', N*.5); for (let k = 0; k < 7; k++) c.fillRect(this.sx(e.x + (k + .05)*e.w/7), yT + 2, Math.max(1.5, e.w/7*.32*P), yB - yT - 4); } }; }
+{ const _dp = RD.drawEnvProps; RD.drawEnvProps = function(world, G){ _dp.call(this, world, G); const c = this.ctx, P = this.PPM, N = this.night, vl = this.camL - 10, vr = this.camL + this.W/P + 10;
+  for (const p of world.props) { if (p.x < vl) continue; if (p.x > vr) break; if (p.t !== 'humpSign') continue; const x = this.sx(p.x), gy = this.sy(world.h(p.x), DEP.bld + .3), s = P*.62;
+    c.fillStyle = mixHex('#7d858c', '#000', N*.4); c.fillRect(x - .05*P, gy - 3*P, .1*P, 3*P); c.fillStyle = '#fff'; c.beginPath(); c.moveTo(x, gy - 4.3*P); c.lineTo(x + s, gy - 3.05*P); c.lineTo(x - s, gy - 3.05*P); c.closePath(); c.fill(); c.strokeStyle = '#d6322c'; c.lineWidth = .12*P; c.stroke();
+    c.fillStyle = '#111'; c.beginPath(); c.moveTo(x - s*.5, gy - 3.35*P); c.quadraticCurveTo(x, gy - 3.85*P, x + s*.5, gy - 3.35*P); c.fill(); c.fillStyle = '#fff'; c.fillRect(x - .45*P, gy - 2.95*P, .9*P, .38*P); c.fillStyle = '#111'; c.font = `900 ${.28*P}px Cairo, sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; RD.ftext(c, t('hump_sign'), x, gy - 2.76*P); } }; }
+/* ---------- fines only for high-speed crashes; otherwise an angry driver ---------- */
+{ const _fi = FEAT.init; FEAT.init = function(G){ _fi(G); const oc = G.onCrash; G.onCrash = (o, E, side, rel) => { const tr = G.trip, f0 = tr.fines, i0 = tr.ins, n0 = tr.fineN, fl = G.feed.length; oc(o, E, side, rel);
+  if (Math.abs(rel) < 6) { tr.fines = f0; tr.ins = i0; tr.fineN = n0; G.feed = G.feed.filter((f, i) => !(i < G.feed.length - fl + 1 && (f.k === 'crash_car' || f.k === 'crash_police' || f.k === 'ev_crash'))); G.feedAdd('angry_only', {}, 'warn');
+    const pan = clamp((o.x - G.car.x)/25, -1, 1); o.flash = 2; AU.distantHorn(pan, .11); setTimeout(() => AU.distantHorn(pan, .1), 420); setTimeout(() => AU.distantHorn(pan, .1), 900); if (G.shout) G.shout(o, AU.voice('angry') || pickTx('angry')); } }; }; }
+/* ---------- free roam ---------- */
+function startFree(){ const u = UI.sel, s = S(); const vid = u.fvid && s.owned[u.fvid] ? u.fvid : s.cur.line; AU.init(); AU.sirenSet(false);
+  const G = newSession({mode:'free', vid, region:u.fr || 'cairo_c', tod:TODS[u.tod || 'morning']}); prepSession(G); G.car.manual = s.set.manual; G.ride = {state:'off'};
+  GAME.state = 'play'; GAME.paused = false; UI.show(null); UI.buildHud(G); const ph = $('#phone'); if (ph) ph.remove(); snapCam(G); saveGame(); }
+UI.scr.free = function(){ const s = S(), u = UI.sel; u.fr = u.fr || 'cairo_c'; const owned = Object.keys(s.owned).map(vehById).filter(Boolean); if (!owned.find(v => v.id === u.fvid)) u.fvid = (owned.find(v => v.id === s.cur.line) || owned[0]).id; u.tod = u.tod || 'morning';
+  return `<div class="scr dim"><div class="hdr"><button class="back" data-a="nav" data-p="modes">${ic('back')}</button><h2>${t('free')}</h2><span class="sub">${t('free_d')}</span><span class="sp"></span><div class="cash pn led">${money(s.cash)}</div></div>
+   <div class="grid scroll" style="grid-template-columns:repeat(auto-fill,minmax(calc(var(--u)*36),1fr));flex:1;min-height:0;align-content:start;padding:2px 4px 12px">${REGIONS.map(r => `<div class="card ${u.fr === r.id ? 'sel' : ''}" data-a="freeReg" data-p="${r.id}"><div class="t1">${tn(r.n)}</div><div class="lbl" style="margin:.3em 0">${r.streets.slice(0, 3).map(x => LANG.cur === 'ar' ? x[1] : x[0]).join(' · ')}</div><div class="row" style="gap:.35em;flex-wrap:wrap">${r.themes.map(th => `<span class="tag">${tn(THEMES[th].n)}</span>`).join('')}</div></div>`).join('')}</div>
+   <div class="pn" style="margin-top:1em;padding:calc(var(--u)*1.4);display:flex;gap:calc(var(--u)*2);align-items:center;flex-wrap:wrap"><div><div class="lbl">${t('vehicle')}</div><div class="row" style="gap:.4em;flex-wrap:wrap;margin-top:.3em">${owned.map(v => `<button class="chip ${u.fvid === v.id ? 'on' : ''}" data-a="freeVeh" data-p="${v.id}">${tn(v.n)}</button>`).join('')}</div></div>
+    <div><div class="lbl">${t('depart')}</div><div class="row" style="gap:.4em;flex-wrap:wrap;margin-top:.3em">${Object.keys(TODS).map(k => `<button class="chip ${u.tod === k ? 'on' : ''}" data-a="freeTod" data-p="${k}">${t(k)}</button>`).join('')}</div></div><span style="flex:1"></span><button class="btn" data-a="freeGo">${t('free_go')} ›</button></div></div>`; };
+UI.scr.modes = function(){ const lk = S().lvl < 14;
+  return `<div class="scr dim"><div class="hdr"><button class="back" data-a="nav" data-p="hub">${ic('back')}</button><h2>${t('choose_mode')}</h2></div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,calc(var(--u)*40)),1fr));gap:calc(var(--u)*2);flex:1;align-content:center">
+   <button class="play pn glow" style="min-height:calc(var(--u)*28)" data-a="mode" data-p="line"><span class="pi">🚐🚌</span><b>${t('mode_lines')}</b><span style="max-width:40ch">${t('mode_lines_d')}</span></button>
+   <button class="play cy pn ${lk ? 'locked' : ''}" style="min-height:calc(var(--u)*28)" data-a="mode" data-p="go"><span class="pi">${lk ? '🔒' : '📱🚗'}</span><b>${t('go')}</b>${lk ? `<span class="tag r">${t('go_locked')}</span>` : ''}<span style="max-width:40ch">${t('mode_go_d')}</span></button>
+   <button class="play pn" style="min-height:calc(var(--u)*28);background:linear-gradient(150deg,rgba(57,242,139,.22),rgba(20,24,40,.9) 55%);border-color:rgba(57,242,139,.5)" data-a="nav" data-p="free"><span class="pi">🗺️</span><b>${t('free')}</b><span style="max-width:40ch">${t('free_d')}</span></button></div></div>`; };
+{ const _a = UI.act; UI.act = function(a, p, el){
+  if (a === 'freeReg') { UI.sel.fr = p; UI.refresh(); return; } if (a === 'freeVeh') { UI.sel.fvid = p; UI.refresh(); return; } if (a === 'freeTod') { UI.sel.tod = p; UI.refresh(); return; }
+  if (a === 'freeGo') { startFree(); return; }
+  if (a === 'again' && GAME.G && GAME.G.mode === 'free') { AU.pauseGame(false); UI.modalHide(); startFree(); return; }
+  return _a(a, p, el); }; }
+{ const _hd = UI.hud; UI.hud = function(G, dt){ _hd(G, dt); if (G.mode === 'free') { const e = document.getElementById('hGo'); const tx = `🗺️ ${t('free_mode')} · ${tn(G.region.n)}`; if (e && e.textContent !== tx) e.textContent = tx; const px = document.getElementById('hPax'); if (px && px.dataset.f !== '1') { px.dataset.f = '1'; px.innerHTML = '🗺️'; } } }; }
+/* ---------- styles: locked card, compact mobile HUD with no overlaps ---------- */
+document.head.insertAdjacentHTML('beforeend', `<style>
+.play.locked{filter:grayscale(1) brightness(.55);opacity:.7;cursor:not-allowed;box-shadow:none!important;border-color:rgba(255,255,255,.15)!important}
+.play.locked:hover{transform:none}
+@media (pointer:coarse){
+ .ctlrow{display:grid!important;grid-template-columns:repeat(2,auto);gap:6px}
+ .ctlcol{gap:6px}
+ #hTL{position:absolute!important;bottom:100%;left:50%;transform:translateX(-50%);margin:0 0 6px 0!important;white-space:nowrap}
+ .act{top:calc(var(--u)*12)!important;bottom:auto!important;left:50%!important;right:auto!important;transform:translateX(-50%);animation:none}
+}
+@media (pointer:coarse) and (orientation:landscape){
+ #cl{width:min(calc(var(--u)*40),31vw)!important;height:min(calc(var(--u)*17.5),13.5vw)!important}
+ .h-bl{gap:6px!important} .hb{min-width:max(38px,calc(var(--u)*6));height:max(38px,calc(var(--u)*6))}
+ .gearbox button{width:max(44px,calc(var(--u)*6.8));height:max(36px,calc(var(--u)*5.4))} .lanepad button{width:max(44px,calc(var(--u)*6.8));height:max(38px,calc(var(--u)*5.6))}
+ .eng{width:max(58px,calc(var(--u)*9.5));height:max(58px,calc(var(--u)*9.5))}
+ .h-route{width:28vw!important;left:42%!important}.h-tl{width:24vw!important}
+ #phone{max-height:calc(100vh - var(--u)*42);overflow:auto}
+}
+@media (pointer:coarse) and (orientation:portrait){
+ .h-tl{width:50vw!important}.h-tr{max-width:46vw!important}
+ .eng{width:15vw!important;height:15vw!important}.hb{min-width:0!important;width:11vw;height:11vw}
+ .h-bl{gap:2vw!important;left:2.5vw!important}.h-br{right:2.5vw!important}
+ .gearbox button{width:12vw!important}.lanepad button{width:11vw!important}
+ .act{top:auto!important;bottom:calc(25vh + 34vw + 64px)!important}
+}
+</style>`);
+document.head.insertAdjacentHTML('beforeend', `<style>
+@media (pointer:coarse) and (orientation:landscape){ .h-tr{max-width:33vw!important;flex-wrap:wrap!important;justify-content:flex-end!important;row-gap:6px} .h-route{left:39%!important;width:25vw!important} }
+@media (pointer:coarse) and (orientation:portrait){ .h-tr{display:grid!important;grid-template-columns:auto auto;gap:6px!important;max-width:44vw!important;justify-items:end} .h-tl{width:48vw!important} }
 </style>`);
 
 
