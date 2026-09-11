@@ -654,25 +654,27 @@ AU.say = function(ar, en){ try { if (!window.speechSynthesis || !GAME.save.set.v
 /* =================== AUDIO v2: calm, per-vehicle voices =================== */
 // h = harmonic spectrum, lp = exhaust low-pass base, cl = diesel clatter, rb = low rumble, g = loudness, sub = 2nd-order hum, wh = transmission whine
 const EPROF = {
-  micro_classic:{h:[0,1,.45,.3,.22,.14,.09,.05], lp:780, cl:.022, rb:.2, g:.2, sub:.45, wh:0},
-  micro_hr:{h:[0,1,.4,.26,.16,.1,.06], lp:860, cl:.014, rb:.16, g:.18, sub:.35, wh:0},
-  micro_jumbo:{h:[0,1,.42,.3,.2,.12,.07], lp:820, cl:.016, rb:.18, g:.19, sub:.4, wh:0},
-  coaster:{h:[0,1,.55,.4,.25,.2,.12,.08], lp:620, cl:.012, rb:.24, g:.2, sub:.5, wh:.01},
-  citybus:{h:[0,1,.6,.45,.3,.22,.14], lp:480, cl:.01, rb:.3, g:.22, sub:.6, wh:.018},
-  coach:{h:[0,1,.5,.35,.2,.14], lp:430, cl:.006, rb:.26, g:.17, sub:.55, wh:.012},
-  car_old:{h:[0,1,.3,.18,.1,.06], lp:1150, cl:0, rb:.08, g:.14, sub:.25, wh:0},
-  hatch:{h:[0,1,.28,.16,.12,.05], lp:1350, cl:0, rb:.07, g:.13, sub:.2, wh:0},
-  sedan16:{h:[0,1,.22,.1,.05], lp:980, cl:0, rb:.06, g:.11, sub:.2, wh:0},
-  crossover:{h:[0,1,.25,.12,.06], lp:900, cl:0, rb:.08, g:.12, sub:.22, wh:0},
-  exec:{h:[0,1,.18,.34,.08,.14,.04], lp:1100, cl:0, rb:.07, g:.13, sub:.3, wh:0}
+  micro_classic:{h:[0,1,.45,.3,.22,.14,.09,.05], lp:780, cl:.022, rb:.2, g:0.55, roll:0.78, ev:0.75, sub:.45, wh:0},
+  micro_hr:{h:[0,1,.4,.26,.16,.1,.06], lp:860, cl:.014, rb:.16, g:0.5, roll:0.84, ev:0.65, sub:.35, wh:0},
+  micro_jumbo:{h:[0,1,.42,.3,.2,.12,.07], lp:820, cl:.016, rb:.18, g:0.52, roll:0.8, ev:0.7, sub:.4, wh:0},
+  coaster:{h:[0,1,.55,.4,.25,.2,.12,.08], lp:620, cl:.012, rb:.24, g:0.55, roll:0.74, ev:0.8, sub:.5, wh:.01},
+  citybus:{h:[0,1,.6,.45,.3,.22,.14], lp:480, cl:.01, rb:.3, g:0.58, roll:0.7, ev:0.85, sub:.6, wh:.018},
+  coach:{h:[0,1,.5,.35,.2,.14], lp:430, cl:.006, rb:.26, g:0.48, roll:0.8, ev:0.7, sub:.55, wh:.012},
+  car_old:{h:[0,1,.3,.18,.1,.06], lp:1150, cl:0, rb:.08, g:0.42, roll:0.95, ev:0.45, sub:.25, wh:0},
+  hatch:{h:[0,1,.28,.16,.12,.05], lp:1350, cl:0, rb:.07, g:0.4, roll:1.0, ev:0.4, sub:.2, wh:0},
+  sedan16:{h:[0,1,.22,.1,.05], lp:980, cl:0, rb:.06, g:0.36, roll:1.1, ev:0.35, sub:.2, wh:0},
+  crossover:{h:[0,1,.25,.12,.06], lp:900, cl:0, rb:.08, g:0.38, roll:1.05, ev:0.4, sub:.22, wh:0},
+  exec:{h:[0,1,.18,.34,.08,.14,.04], lp:1100, cl:0, rb:.07, g:0.4, roll:0.98, ev:0.55, sub:.3, wh:0}
 };
 AU.vol.ui = AU.vol.ui ?? .6;
 AU.buildEngine = function(){
   const C = this.ctx, e = this.eng = {};
   e.out = C.createGain(); e.out.gain.value = 0;
-  e.hs = C.createBiquadFilter(); e.hs.type = 'highshelf'; e.hs.frequency.value = 2200; e.hs.gain.value = -9;
+  e.hs = C.createBiquadFilter(); e.hs.type = 'highshelf'; e.hs.frequency.value = 2200; e.hs.gain.value = -3;
   e.out.connect(e.hs); e.hs.connect(this.buses.engine);
-  e.lp = C.createBiquadFilter(); e.lp.type = 'lowpass'; e.lp.Q.value = .5; e.lp.connect(e.out);
+  e.pk = C.createBiquadFilter(); e.pk.type = 'peaking'; e.pk.frequency.value = 650; e.pk.Q.value = .8; e.pk.gain.value = 9; e.pk.connect(e.out);
+  e.hp = C.createBiquadFilter(); e.hp.type = 'highshelf'; e.hp.frequency.value = 90; e.hp.gain.value = 0;
+  e.lp = C.createBiquadFilter(); e.lp.type = 'lowpass'; e.lp.Q.value = .5; e.lp.connect(e.pk);
   e.lp2 = C.createBiquadFilter(); e.lp2.type = 'lowpass'; e.lp2.Q.value = .4; e.lp2.connect(e.lp);
   e.o1 = C.createOscillator(); e.g1 = C.createGain(); e.g1.gain.value = .5; e.o1.connect(e.g1); e.g1.connect(e.lp2);
   e.o2 = C.createOscillator(); e.o2.type = 'sine'; e.g2 = C.createGain(); e.g2.gain.value = .3; e.o2.connect(e.g2); e.g2.connect(e.lp2);
@@ -688,7 +690,7 @@ AU.buildEngine = function(){
 };
 AU.engineType = function(spec){ if (!this.ok || !spec) return; const e = this.eng; if (e.type === spec.id) return; e.type = spec.id;
   const P = e.P = EPROF[spec.id] || (spec.fuel === 'diesel' ? EPROF.micro_hr : EPROF.sedan16);
-  const imag = new Float32Array(P.h.length), real = new Float32Array(P.h.length); P.h.forEach((v, i) => imag[i] = v);
+  const NH = 40, imag = new Float32Array(NH), real = new Float32Array(NH); for (let n = 1; n < NH; n++) { const cyl = (spec.cyl || 4)/2; imag[n] = Math.pow(n, -(P.roll || .9))*(n % 2 ? 1 : (P.ev || .6))*(n % Math.max(2, cyl) === 0 ? 1.35 : 1)*(1 + .25*Math.sin(n*1.7 + spec.id.length)); }
   e.o1.setPeriodicWave(this.ctx.createPeriodicWave(real, imag, {disableNormalization:false}));
   e.diesel = spec.fuel === 'diesel'; e.big = spec.cat === 'bus' || spec.cat === 'minibus'; e.cyl = spec.cyl || 4; };
 AU.engineTick = function(p){
@@ -698,16 +700,16 @@ AU.engineTick = function(p){
   e.o1.frequency.setTargetAtTime(base, t, .05); e.o2.frequency.setTargetAtTime(base*.5, t, .05);
   e.mod.frequency.setTargetAtTime(fire, t, .05); e.cmod.frequency.setTargetAtTime(fire, t, .05);
   e.g2.gain.setTargetAtTime(P.sub*(.5 + .5*(1 - n)), t, .1);
-  e.nbp.frequency.setTargetAtTime(220 + p.rpm*.22, t, .08); e.nam.gain.setTargetAtTime((.04 + load*.12)*(1 + ex*2), t, .08); e.modG.gain.setTargetAtTime(.05 + load*.06, t, .1);
-  const cut = P.lp*(.55 + .55*n) + load*P.lp*.45; e.lp.frequency.setTargetAtTime(cut*(1 + ex*1.2), t, .08); e.lp2.frequency.setTargetAtTime(cut*1.6, t, .08);
+  e.nbp.frequency.setTargetAtTime(420 + p.rpm*.3, t, .08); e.nam.gain.setTargetAtTime((.1 + load*.2)*(1 + ex*1.5), t, .08); e.modG.gain.setTargetAtTime(.12 + load*.1, t, .1);
+  const cut = Math.max(520, P.lp*1.9*(.5 + .6*n) + load*P.lp*.9); e.lp.frequency.setTargetAtTime(cut*(1 + ex*1.2), t, .08); e.lp2.frequency.setTargetAtTime(cut*1.6, t, .08);
   e.cmodG.gain.setTargetAtTime(P.cl*(1.2 - load*.5), t, .1);
   e.rg.gain.setTargetAtTime(P.rb*(.35 + .3*load)*(e.big ? 1.2 : 1), t, .1); e.rlp.frequency.setTargetAtTime(70 + p.rpm*.03, t, .1);
   e.boost += ((p.turbo ? p.thr*Math.min(1, n/.55) : 0) - e.boost)*.06;
   e.tb.frequency.setTargetAtTime(2400 + e.boost*3000, t, .06); e.tg.gain.setTargetAtTime(e.boost*.006*(p.turbo || 0), t, .06);
   if (p.turbo && e.lastThr > .6 && p.thr < .15 && e.boost > .4) this.blowoff(); e.lastThr = p.thr;
   const sp = Math.abs(p.speed || 0); e.wh.frequency.setTargetAtTime(180 + sp*38, t, .1); e.whg.gain.setTargetAtTime(P.wh*Math.min(1, sp/12)*(p.gear > 0 ? 1 : .3), t, .15);
-  let g = P.g*(.4 + load*.42 + n*.25)*(1 + ex*.9); if (p.limiter && (t*12 % 1) < .45) g *= .4; if (p.shifting) g *= .6;
-  e.out.gain.setTargetAtTime(g, t, .06);
+  let g = P.g*(.55 + load*.35 + n*.25)*(1 + ex*.7); if (p.limiter && (t*12 % 1) < .45) g *= .4; if (p.shifting) g *= .6;
+  e.pk.frequency.setTargetAtTime(480 + p.rpm*.12, t, .1); e.out.gain.setTargetAtTime(g, t, .06);
 };
 const _rt = AU.roadTick; AU.roadTick = function(v, surf, slip, wet, rain){ if (!this.ok) return; _rt.call(this, v, surf, slip, wet, rain); const r = this.road, t = this.ctx.currentTime, s = Math.abs(v), f = Math.min(1, s/28);
   r.g.gain.setTargetAtTime(f*(surf === 'cobble' ? .3 : .17), t, .12); r.lp.frequency.setTargetAtTime(110 + s*14 + (surf === 'sand' ? 250 : 0), t, .12);
@@ -1622,7 +1624,7 @@ function mkCar(spec, own, x, W){
 }
 function resetCarAt(car, W, x){ car.x = x; car.vx = car.vy = car.w = car.a = 0; const g = W.h(x); let d0 = 0;
   for (const ax of car.axles) { d0 = (car.m*GRAV/2 + ax.mu*GRAV)/ax.kt; ax.ly = car.spec.wr + car.rest - car.hc; ax.yw = g + car.spec.wr - d0; ax.vyw = 0; ax.comp = ax.cp = car.s0; ax.om = 0; ax.wx = x + ax.lx; ax.wy = ax.yw; }
-  car.y = g + car.hc - car.s0 - d0; }
+  car.y = g + car.hc - car.s0 - d0; car.d0 = d0; }
 function setMass(car, paxN){ const sp = car.spec; car.pax = paxN; car.m = sp.mass + paxN*75 + (car.fuel || 0)*.84; car.I = car.m*(sp.L*sp.L + sp.H*sp.H)/12*.55;
   if (!car.k) { car.k = Math.pow(2*Math.PI*sp.fn, 2)*(sp.mass + sp.seats*30)/2; car.s0 = (sp.mass + sp.seats*30)/2*GRAV/car.k; }
   car.c = 2*car.E.susZ*Math.sqrt(car.k*car.m/2)*(.55 + .45*car.E.susH); }
@@ -1679,9 +1681,9 @@ function stepCar(G, car, W, dt){
   }
   car.slip = lerp(car.slip, slipMax, .2);
   // body scrape against ground (bottoming out)
-  for (const lx of [sp.L/2 - .2, 0, -sp.L/2 + .2]) { const ly = -car.hc + car.s0*.3 + .05 + (STYLE[sp.style]?.gc || .3)*.45;
-    const bx = car.x + lx*ca - ly*sa, by = car.y + lx*sa + ly*ca, gy = W.h(bx, lane); if (by < gy) { const pen = gy - by, vpy = car.vy + car.w*(bx - car.x); const f = car.k*6*pen - Math.min(0, vpy)*car.c*2;
-      Fy += f; T += (bx - car.x)*f; Fx -= Math.sign(car.vx)*f*.5; if (G.hitCD <= 0 && Math.abs(car.vx) > 2) { G.hitCD = .3; G.onScrape(bx, gy); } } }
+  for (const lx of [sp.L/2 - .2, 0, -sp.L/2 + .2]) { const ly = -car.hc + car.s0 + (car.d0 || 0) + (STYLE[sp.style]?.gc || .3)*.8;
+    const bx = car.x + lx*ca - ly*sa, by = car.y + lx*sa + ly*ca, gy = W.h(bx, lane); if (by < gy - .005) { const pen = gy - by, vpy = car.vy + car.w*(bx - car.x); const f = car.k*6*pen - Math.min(0, vpy)*car.c*2;
+      Fy += f; T += (bx - car.x)*f; Fx -= Math.sign(car.vx)*f*.5; if (G.hitCD <= 0 && Math.abs(car.vx) > 2 && pen > .02) { G.hitCD = .5; G.onScrape(bx, gy); } } }
   car.ax = Fx/m;
   car.vx += Fx/m*dt; car.vy += Fy/m*dt; car.w += T/car.I*dt; car.w *= .9995;
   car.x += car.vx*dt; car.y += car.vy*dt; car.a += car.w*dt;
@@ -1884,9 +1886,10 @@ function newSession(opt){
     if (i > .45 && !car[side > 0 ? 'noBumpF' : 'noBumpR']) { car[side > 0 ? 'noBumpF' : 'noBumpR'] = true; G.debris.push({k:'bumper', x:cx, y:car.y - .5, vx:car.vx*.5 - side*2, vy:2.5, a:0, w:(Math.random() - .5)*6, d:car.lane*DEP.lane1 + .3, col:mixHex(car.own.paint || car.spec.paint, '#000', .2), life:25}); }
     o.crashed = 12; o.hz = true;
     if (G.onboard.length) { G.onboard.forEach(p => { p.mood -= 25*i + 5; p.bv += 4*i; }); G.bubble(pickLine('brake')); }
-    const atFault = side > 0 && !o.lane, cost = Math.round((250 + E/60)/50)*50;
-    if (atFault || o.lane) { G.trip.ins += Math.min(4000, cost); G.feedAdd('ev_crash', {c:fmt(Math.min(4000, cost))}, 'bad'); } else G.feedAdd('ev_hit', {}, 'bad');
-    if (o.type === 'police') { G.trip.fines += 1000; G.trip.fineN++; } };
+    const atFault = side > 0 || o.lane === 1, cost = Math.min(4000, Math.round((250 + E/60)/50)*50), dm = FEAT.diff().fine;
+    if (o.type === 'police' || o.siren) { const f = Math.round(5000*dm/50)*50 + cost; G.trip.fines += f; G.trip.fineN++; G.feedAdd('crash_police', {c:fmt(f)}, 'bad'); AU.sirenSet(true, 0); setTimeout(() => AU.sirenSet(false), 2500); o.lightbar = true; }
+    else if (atFault) { const f = Math.round(300*dm/50)*50; G.trip.ins += cost; G.trip.fines += f; G.trip.fineN++; G.feedAdd('crash_car', {c:fmt(cost), f:fmt(f)}, 'bad'); }
+    else G.feedAdd('ev_hit', {}, 'bad'); };
   G.fine = (k, amt, v) => { G.trip.fines += amt; G.trip.fineN++; G.feedAdd(k, Object.assign({c:fmt(amt)}, v || {}), 'bad'); AU.camera(); };
   if (route) seedStations(G);
   if (world.mode === 'go') world.segAt(0);
@@ -2628,7 +2631,7 @@ document.head.insertAdjacentHTML('beforeend', `<style>
   s.set = Object.assign({mirror:0, dynZoom:true, zoom:1, particles:true, clouds:true, fps:false, haptics:true, leftHand:false, btn:1, difficulty:'normal', events:1, abs:true, tcs:true, autoLights:true, hints:true, laneSwipe:true}, s.set); s.set.vol.ui = s.set.vol.ui ?? .6;
   for (const id in s.owned) { const o = s.owned[id]; if (!o.stk) o.stk = []; o.parts = Object.assign({}, PARTS_DEF, o.parts || {}); o.dirt = o.dirt || 0; delete o.sticker; } }; }
 function dressOwn(o, sp, own){ own = own || {}; o.paint = own.paint || sp.paint; o.paint2 = own.paint2 || null; o.stripe = own.stripe || 'none'; o.stripeCol = own.stripeCol || '#c8202b';
-  o.rim = {t:own.rimT || sp.rim.t, c:own.rimC || sp.rim.c}; o.tint = own.tint ?? 1; o.stk = own.stk || []; return o; }
+  o.rim = {t:own.rimT || sp.rim.t, c:own.rimC || sp.rim.c}; o.tint = own.tint ?? 1; o.stk = own.stk || []; o.skinKey = sp.id; return o; }
 function spendLive(amt){ const G = GAME.G, s = S(); if (G && GAME.state === 'play') { if (s.cash + tripNet(G) < amt) { UI.toast(t('need_cash')); AU.ui('no'); return false; } G.trip.svc = (G.trip.svc || 0) + amt; } else { if (s.cash < amt) { UI.toast(t('need_cash')); AU.ui('no'); return false; } s.cash -= amt; } AU.cash(); return true; }
 
 /* ---------- hub ---------- */
@@ -2675,7 +2678,7 @@ UI.scr.routes = function(p){ const s = S(), u = UI.sel; if (p) u.tab = p; const 
     <button class="btn" data-a="start" ${owned.length ? '' : 'disabled'}>${t('go_btn')} ›</button></div></div>`; };
 
 /* ---------- garage / workshop ---------- */
-UI.scr.workshop = function(vq){ const s = S(), u = UI.sel; if (vq) u.wvid = vq; const ids = Object.keys(s.owned); if (!ids.includes(u.wvid)) u.wvid = s.cur.line; const v = vehById(u.wvid), own = s.owned[v.id], cat = v.cat; u.wtab = ['repair','up','paint','wheels','stk','horn'].includes(u.wtab) ? u.wtab : 'repair';
+UI.scr.workshop = function(vq){ const s = S(), u = UI.sel; if (vq) u.wvid = vq; const ids = Object.keys(s.owned); if (!ids.includes(u.wvid)) u.wvid = s.cur.line; const v = vehById(u.wvid), own = s.owned[v.id], cat = v.cat; u.wtab = ['repair','up','paint','wheels','stk','horn','skin'].includes(u.wtab) ? u.wtab : 'repair';
   const repCost = k => Math.round((100 - own.cond[k])*REPAIR_PER[k]*(CATMUL[cat] || 1)), br = FEAT.brokenList(own), all = COND.reduce((a, k) => a + repCost(k), 0) + br.reduce((a, k) => a + Math.round(PART_COST[k]*(CATMUL[cat] || 1)), 0);
   const worst = COND.slice().sort((a, b) => own.cond[a] - own.cond[b])[0], line = UI.mechLine || (br.length ? t('mech_bad', {p:t('pt_' + br[0])}) : own.cond[worst] < 60 ? t('mech_bad', {p:t('c_' + worst)}) : t('mech_hi')); UI.mechLine = null;
   const sw = (a, c, on, sm) => `<div class="sw ${sm ? 'sm' : ''} ${on ? 'on' : ''}" style="background:${c}" data-a="${a}" data-p="${c}"></div>`;
@@ -2693,10 +2696,11 @@ UI.scr.workshop = function(vq){ const s = S(), u = UI.sel; if (vq) u.wvid = vq; 
     <div class="lbl">${t('rim_col')} · ${money(300)}</div><div class="row" style="flex-wrap:wrap;gap:.45em;margin-top:.5em">${RIMCOL.map(c => sw('cRimC', c, (own.rimC || v.rim.c) === c)).join('')}</div>`;
   else if (u.wtab === 'stk') body = `<div class="lbl">${t('stk_mine')}</div><div class="grid" style="margin:.5em 0 1em">${[0, 1].map(i => { const k = own.stk[i]; return k ? `<div class="cond" style="grid-template-columns:1fr auto auto"><b style="color:${k.col}">${esc(k.t)}</b><div class="row" style="gap:.3em;flex-wrap:wrap">${STK_POS.map(q => `<button class="chip ${k.pos === q.id ? 'on' : ''}" data-a="cStkPos" data-p="${i}|${q.id}">${tn(q.n)}</button>`).join('')}${STK_COL.map(c => `<span class="sw sm ${k.col === c ? 'on' : ''}" style="background:${c};display:inline-block" data-a="cStkCol" data-p="${i}|${c}"></span>`).join('')}</div><button class="btn bad sm" data-a="cStkDel" data-p="${i}">${t('remove')}</button></div>` : ''; }).join('')}</div>
     <div class="row" style="justify-content:space-between"><div class="lbl">${t('stk_lib')} · ${money(100)}</div><button class="chip on" data-a="cStkWrite">✎ ${t('stk_write')}</button></div><div class="row" style="flex-wrap:wrap;gap:.45em;margin-top:.6em">${STK.map((q, i) => `<span class="stkchip" data-a="cStkAdd" data-p="${i}">${esc(q)}</span>`).join('')}</div>`;
+  else if (u.wtab === 'skin') body = UI.skinTab();
   else body = `<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(calc(var(--u)*24),1fr))">${HORNS.map(h => { const has = (own.horns || ['std']).includes(h.id), on = (own.horn || 'std') === h.id; return `<div class="card ${on ? 'sel' : ''}" style="cursor:default"><b>${tn(h.n)}</b><div class="row" style="margin-top:.5em;gap:.4em"><button class="chip" data-a="hornTest" data-p="${h.id}">${ic('horn')} ${t('test')}</button>${on ? '' : has ? `<button class="btn sm" data-a="horn" data-p="${h.id}">${t('select')}</button>` : `<button class="btn sm" data-a="horn" data-p="${h.id}" ${s.cash < h.price ? 'disabled' : ''}>${money(h.price)}</button>`}</div></div>`; }).join('')}</div>`;
   return `<div class="scr dim"><div class="hdr"><button class="back" data-a="nav" data-p="hub">${ic('back')}</button><h2>${t('garage')}</h2><span class="sp"></span>${ids.map(id => `<button class="chip ${u.wvid === id ? 'on' : ''}" data-a="wveh" data-p="${id}">${tn(vehById(id).n)}</button>`).join('')}<div class="cash pn led">${money(s.cash)}</div></div>
    <div class="shop"><div class="pn mech glow"><div class="stage" style="height:calc(var(--u)*20);border-radius:14px"><canvas id="stage"></canvas></div><b class="t1" style="color:var(--amb2)">${t('mech_name')}</b><div class="say" id="say" data-full="${esc(line)}"></div></div>
-    <div style="display:flex;flex-direction:column;min-height:0"><div class="tabs">${[['repair','t_repair'],['up','t_up'],['paint','t_paint'],['wheels','t_wheels'],['stk','t_stk'],['horn','t_horn']].map(([k, lb]) => `<button class="chip ${u.wtab === k ? 'on' : ''}" data-a="wtab" data-p="${k}">${t(lb)}</button>`).join('')}</div>
+    <div style="display:flex;flex-direction:column;min-height:0"><div class="tabs">${[['repair','t_repair'],['up','t_up'],['paint','t_paint'],['wheels','t_wheels'],['stk','t_stk'],['horn','t_horn'],['skin','t_skin']].map(([k, lb]) => `<button class="chip ${u.wtab === k ? 'on' : ''}" data-a="wtab" data-p="${k}">${t(lb)}</button>`).join('')}</div>
     <div class="grid scroll" style="align-content:start;padding:2px;flex:1;min-height:0">${body}</div></div></div></div>`; };
 UI.stageDraw = function(vid){ const cv = $('#stage'); if (!cv) return; const v = vehById(vid), own = S().owned[vid];
   const draw = (tm) => { if (!document.body.contains(cv)) return; const r = cv.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1); if (cv.width !== Math.round(r.width*dpr)) { cv.width = Math.round(r.width*dpr); cv.height = Math.round(r.height*dpr); }
@@ -2908,6 +2912,99 @@ UI.hudAct = function(a, p){ const G = GAME.G, car = G && G.car; if (!car) return
   UI.modalShow(`<div class="mtitle">${t('change_t')}</div><div class="lbl">${t('change_q', {b:d.big})} (${t('fare')}: ${d.fare})</div><div class="mrow">${opts.map(v => `<button class="btn gh" data-a="chg" data-p="${v}"><span class="num">${v}</span> ${LANG.cur === 'ar' ? 'ج' : 'EGP'}</button>`).join('')}</div>`); }; }
 
 
+/* =================== v3: more vehicles, photo skins, traffic-light HUD, start flow =================== */
+Object.assign(L, {
+ start_game:['START GAME','ابدأ اللعب'], choose_mode:['Choose how to play','اختار هتلعب إزاي'], mode_lines:['Public transport lines','خطوط المواصلات'], mode_lines_d:['Drive real Egyptian routes: microbus, minibus, city bus and intercity coach. Pick up passengers at stations and on the street.','سوق على خطوط مصرية حقيقية: ميكروباص وميني باص وأتوبيس وسفر. لم الركاب من المحطات ومن الشارع.'],
+ mode_go_d:['Work as a ride-hailing driver with your car. Accept requests, pick up riders, earn fares, tips and stars.','اشتغل سواق تطبيق بعربيتك. اقبل الطلبات ووصّل الزباين واكسب أجرة وبقشيش ونجوم.'],
+ crash_police:['You crashed into a police car! Fine EGP {c}','خبطت عربية شرطة! غرامة {c} ج'], crash_car:['You hit a car — damages EGP {c} + fine EGP {f}','خبطت عربية — تعويض {c} ج + غرامة {f} ج'],
+ tl_next:['Traffic light','إشارة'], t_skin:['Photo skins','صور العربيات'], skin_info:['Upload a side-view picture (PNG/JPG) of any vehicle — the game will use that exact image. White backgrounds are removed automatically. Please use pictures you own or have a licence for; watermarked previews will show their watermark.','ارفع صورة جانبية (PNG/JPG) لأي عربية — اللعبة هتستخدم الصورة دي بالظبط. الخلفية البيضا بتتشال لوحدها. استخدم صور بتاعتك أو مرخصة؛ صور المعاينة اللي عليها علامة مائية هتظهر بالعلامة.'],
+ upload:['Upload','ارفع صورة'], flip:['Flip','اقلب'], size:['Size','الحجم'], height:['Height','الارتفاع'], my_veh:['My vehicles','عربياتي'], traffic_types:['Traffic on the road','العربيات اللي في الشارع'], processing:['Processing image…','بنجهز الصورة…'], saved_skin:['Photo skin applied','الصورة اتركبت'],
+ ai_car:['Cars & taxis','ملاكي وتاكسي'], ai_suv:['SUVs & police','SUV وشرطة'], ai_micro:['Microbuses','ميكروباصات'], ai_van:['Vans','فانات'], ai_minibus:['Minibuses','ميني باص'], ai_bus:['City buses','أتوبيسات'], ai_coach:['Coaches','أتوبيسات سفر'], ai_truck:['Trucks','نقل']
+});
+/* ---------- more vehicles ---------- */
+VEH.push(
+ {id:'van_euro',cat:'micro',cls:'micro',n:{en:'Euro Van 16',ar:'فان أوروبي 16'},yr:2023,price:260000,lvl:5,seats:16,stand:0,style:'van',L:5.6,H:2.5,wb:3.7,wr:.34,mass:2450,paint:'#f2f3f4',fuel:'diesel',tank:80,lp100:10.8,tq:340,rpmMax:3800,idle:760,cyl:4,gears:[4.2,2.4,1.5,1.0,.8,.66],fd:3.9,rev:3.8,cdA:2.6,fn:1.12,z:.3,grip:1,brake:7000,rim:{t:'steel6',c:'#c3c8cc'},d:{en:'Modern long van: quiet cabin, 6 gears, great on the Ring Road.',ar:'فان حديث طويل: كابينة هادية و6 سرعات، ممتاز على الدائري.'}},
+ {id:'hatch_city',cat:'car',cls:'car',tier:'eco',n:{en:'City Hatch 1.2',ar:'هاتشباك 1.2'},yr:2019,price:90000,lvl:2,seats:3,stand:0,style:'hatch',L:3.9,H:1.5,wb:2.45,wr:.29,mass:980,paint:'#e9c43a',fuel:'b92',tank:40,lp100:5.8,tq:110,rpmMax:6200,idle:850,cyl:3,gears:[3.55,1.95,1.3,.95,.76],fd:4.3,rev:3.5,cdA:.64,fn:1.4,z:.3,grip:.96,brake:3300,rim:{t:'hubcap',c:'#c9cfd4'},d:{en:'Cheapest to run. Perfect first app car.',ar:'أوفر عربية في البنزين. أحسن أول عربية للتطبيق.'}},
+ {id:'minibus_ac',cat:'minibus',cls:'minibus',n:{en:'AC Minibus 28',ar:'ميني باص مكيف 28'},yr:2024,price:820000,lvl:11,seats:28,stand:4,style:'coaster',L:7.4,H:2.8,wb:4.2,wr:.4,mass:4700,paint:'#1e6fb0',fuel:'diesel',tank:100,lp100:17.5,tq:560,rpmMax:3200,idle:700,cyl:6,gears:[5.1,2.8,1.7,1.0,.78],fd:4.5,rev:5.0,cdA:4.4,fn:1.05,z:.33,grip:1,brake:16500,rim:{t:'bus',c:'#dfe3e6'},d:{en:'Air-conditioned minibus for the 25-EGP lines.',ar:'ميني باص مكيف لخطوط الـ25 جنيه.'}},
+ {id:'citybus2',cat:'bus',cls:'city',n:{en:'AC City Bus 50',ar:'أتوبيس مكيف 50'},yr:2024,price:1650000,lvl:14,seats:36,stand:30,style:'citybus',L:12,H:3.2,wb:6.1,wr:.5,mass:11500,paint:'#1d4f9c',fuel:'diesel',tank:240,lp100:33,tq:1250,rpmMax:2600,idle:620,cyl:6,gears:[3.4,2.0,1.4,1.0,.82,.7],fd:5.1,rev:4.0,cdA:7.7,fn:.95,z:.36,grip:1,brake:45000,rim:{t:'alloyBus',c:'#dfe4e8'},d:{en:'Modern AC bus with more room and smoother ride.',ar:'أتوبيس مكيف حديث أوسع وركوبته أنعم.'}},
+ {id:'coach2',cat:'bus',cls:'coach',n:{en:'Sahel Coach 53',ar:'أتوبيس الساحل 53'},yr:2025,price:3200000,lvl:22,seats:53,stand:0,style:'coach',L:13,H:3.7,wb:6.6,wr:.53,mass:14200,paint:'#f4f4f4',fuel:'diesel',tank:350,lp100:31,tq:2000,rpmMax:2400,idle:600,cyl:6,gears:[3.8,2.2,1.5,1.12,.88,.72],fd:4.1,rev:4.0,cdA:8,fn:.9,z:.38,grip:1.03,brake:60000,rim:{t:'alloyBus',c:'#e6eaed'},d:{en:'Flagship long-distance coach. The Cairo–Alex king.',ar:'أحسن أتوبيس سفر. ملك طريق القاهرة إسكندرية.'}},
+ {id:'suv_big',cat:'car',cls:'car',tier:'premium',n:{en:'Grand SUV 3.5',ar:'جراند SUV 3.5'},yr:2025,price:1600000,lvl:20,seats:4,stand:0,style:'suv',L:5.0,H:1.85,wb:2.95,wr:.37,mass:2150,paint:'#202326',fuel:'b95',tank:80,lp100:12,tq:420,rpmMax:6400,idle:720,cyl:6,gears:[4.4,2.6,1.7,1.25,1.0,.8,.65],fd:3.5,rev:3.4,cdA:.95,fn:1.25,z:.4,grip:1.1,brake:7600,rim:{t:'alloy10',c:'#8d949b'},d:{en:'Big premium SUV for VIP airport runs.',ar:'SUV فخمة كبيرة لمشاوير المطار والـVIP.'}}
+);
+Object.assign(TSPEC, {van:{L:5.6,H:2.5,wb:3.7,wr:.34,m:2500}, coaster:{L:7,H:2.65,wb:3.95,wr:.39,m:4500}, citybus2:{L:12,H:3.2,wb:6.1,wr:.5,m:11500}});
+TMIX.city.push(['van',7],['coaster',4],['police',2],['citybus2',2]); TMIX.popular.push(['coaster',4],['van',3],['police',1]); TMIX.highway.push(['van',8],['coaster',5],['police',2]); TMIX.alex.push(['van',5],['coaster',3],['police',1]); TMIX.rural.push(['van',4],['coaster',3]);
+{ const _ma = mkAI; mkAI = function(G, type, x, lane, v){ const o = _ma(G, type, x, lane, v); const R = Math.random;
+  if (type === 'citybus2') { o.style = 'citybus'; o.paint = '#1d4f9c'; o.rim = {t:'alloyBus', c:'#dfe4e8'}; }
+  if (type === 'van') { o.paint = ['#f2f3f4','#e6e8ea','#c9ced3','#2f5fa5'][Math.floor(R()*4)]; o.rim = {t:'steel6', c:'#c3c8cc'}; }
+  if (type === 'coaster') { o.paint = ['#f0efe8','#1e6fb0','#e9e6de'][Math.floor(R()*3)]; o.rim = {t:'bus', c:'#dfe3e6'}; o.line = R() < .4; }
+  o.skinKey = {sedan:'ai_car', taxi:'ai_car', alexTaxi:'ai_car', hatch:'ai_car', suv:'ai_suv', police:'ai_suv', micro:'ai_micro', van:'ai_van', coaster:'ai_minibus', citybus:'ai_bus', citybus2:'ai_bus', coach:'ai_coach', truck:'ai_truck', pickup:'ai_truck'}[type] || null;
+  return o; }; }
+{ const _vp = VPROF; VPROF = function(st, L, H){ const h = L/2; if (st === 'van') { const gc = .36; return {gc, belt:-1.38, belt2:-.62, clad:1, body:[['M',-h+.04,-gc],['L',-h,-gc-.2],['L',-h,-H+.1],['Q',-h,-H,-h+.15,-H],['L',h-1.45,-H],['Q',h-1.2,-H+.03,h-1.1,-H+.25],['L',h-.62,-1.28],['Q',h-.4,-1.18,h-.12,-1.02],['Q',h+.02,-.9,h+.02,-.62],['L',h+.03,-.42],['L',h-.02,-gc],['Z']],
+    ws:[['M',h-1.14,-H+.24],['L',h-.64,-1.3],['L',h-.8,-1.32],['L',h-1.3,-H+.25],['Z']], side:[box(-h+.25,-H+.36,-.25,-1.44), box(-.15,-H+.36,h-1.85,-1.44)], drv:[['M',h-1.75,-H+.36],['L',h-1.26,-H+.36],['L',h-.82,-1.44],['L',h-1.75,-1.44],['Z']],
+    lampF:[h-.32,-1.04,.28,.12], lampR:[-h,-1.36,.07,.42], bF:[h-.42,-.62,h+.05,-.4], bR:[-h-.05,-.62,-h+.36,-.4], mir:[h-.82,-1.5], doors:[[h-1.82,-H+.3,h-1.82,-gc-.05]], hand:[[h-1.66,-1.26],[-.2,-1.26]], yHead:-1.68, drvX:h-1.4, exh:[-h+.4,-gc+.02]}; } return _vp(st, L, H); }; V2.add('van'); }
+
+/* ---------- photo skins ---------- */
+GAME.skins = {}; RD.skinCache = {};
+async function loadSkins(){ try { if (!window.storage) return; const idx = await window.storage.get('ogra-skin-index', false); const keys = idx && idx.value ? JSON.parse(idx.value) : [];
+  for (const k of keys) { try { const r = await window.storage.get('ogra-skin-' + k, false); if (r && r.value) GAME.skins[k] = JSON.parse(r.value); } catch(e) {} } } catch(e) {} }
+async function saveSkin(k){ try { if (!window.storage) return; if (GAME.skins[k]) await window.storage.set('ogra-skin-' + k, JSON.stringify(GAME.skins[k]), false); else await window.storage.delete('ogra-skin-' + k, false); await window.storage.set('ogra-skin-index', JSON.stringify(Object.keys(GAME.skins)), false); } catch(e) {} }
+{ const _lg = loadGame; loadGame = async function(){ await _lg(); await loadSkins(); }; }
+function processSkin(file){ return new Promise((res, rej) => { const fr = new FileReader(); fr.onerror = rej; fr.onload = () => { const img = new Image(); img.onerror = rej; img.onload = () => {
+  const sc = Math.min(1, 1000/img.width), w = Math.round(img.width*sc), h = Math.round(img.height*sc), cv = document.createElement('canvas'); cv.width = w; cv.height = h; const c = cv.getContext('2d'); c.drawImage(img, 0, 0, w, h);
+  const id = c.getImageData(0, 0, w, h), d = id.data, seen = new Uint8Array(w*h), q = [];
+  const cr = [0, w - 1, (h - 1)*w, h*w - 1].map(i => [d[i*4], d[i*4 + 1], d[i*4 + 2]]), bg = cr.reduce((a, b) => [a[0] + b[0]/4, a[1] + b[1]/4, a[2] + b[2]/4], [0, 0, 0]);
+  const isBg = i => { const r = d[i*4], g = d[i*4 + 1], b = d[i*4 + 2]; return d[i*4 + 3] < 20 || (Math.abs(r - bg[0]) + Math.abs(g - bg[1]) + Math.abs(b - bg[2]) < 60) || (r > 232 && g > 232 && b > 232); };
+  for (let x = 0; x < w; x++) { q.push(x, (h - 1)*w + x); } for (let y = 0; y < h; y++) { q.push(y*w, y*w + w - 1); }
+  while (q.length) { const i = q.pop(); if (seen[i]) continue; seen[i] = 1; if (!isBg(i)) continue; d[i*4 + 3] = 0; const x = i % w, y = (i/w) | 0; if (x > 0) q.push(i - 1); if (x < w - 1) q.push(i + 1); if (y > 0) q.push(i - w); if (y < h - 1) q.push(i + w); }
+  let x0 = w, x1 = 0, y0 = h, y1 = 0; for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (d[(y*w + x)*4 + 3] > 30) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  c.putImageData(id, 0, 0); if (x1 <= x0) { res(cv.toDataURL('image/png')); return; } const out = document.createElement('canvas'); out.width = x1 - x0 + 1; out.height = y1 - y0 + 1; out.getContext('2d').drawImage(cv, -x0, -y0); res(out.toDataURL('image/png')); }; img.src = fr.result; }; fr.readAsDataURL(file); }); }
+RD.skinRec = function(k){ const sk = GAME.skins[k]; if (!sk) return null; let r = this.skinCache[k]; if (!r || r.src !== sk.d) { r = this.skinCache[k] = {src:sk.d, img:new Image(), dark:null}; r.img.onload = () => { const cv = document.createElement('canvas'); cv.width = r.img.naturalWidth; cv.height = r.img.naturalHeight; const c = cv.getContext('2d'); c.drawImage(r.img, 0, 0); c.globalCompositeOperation = 'source-atop'; c.fillStyle = '#05070d'; c.fillRect(0, 0, cv.width, cv.height); r.dark = cv; }; r.img.src = sk.d; } return r.img.complete && r.img.naturalWidth ? r : null; };
+{ const _veh = RD.vehicle; RD.vehicle = function(o, s, sx, sy, sc){ const sk = o.skinKey && GAME.skins[o.skinKey], rec = sk && this.skinRec(o.skinKey); if (!rec) return _veh.call(this, o, s, sx, sy, sc);
+  const c = this.ctx, P = this.PPM*sc, F = s.flip ? -1 : 1, N = this.night, img = rec.img, w = o.L*1.04*(sk.k || 1), h = w*img.naturalHeight/img.naturalWidth, oy = (sk.y || 0), lift = s.lift || 0;
+  c.save(); c.translate(sx, sy); c.scale(P*F, P); c.fillStyle = 'rgba(0,0,0,.3)'; c.beginPath(); c.ellipse(0, .03, w*.5, .15, 0, 0, 6.28); c.fill();
+  c.translate(0, -lift); c.rotate(-(s.pitch || 0)); if (sk.flip) c.scale(-1, 1); c.drawImage(img, -w/2, -h + .02 - oy, w, h); if (N > .02 && rec.dark) { c.globalAlpha = N*.58; c.drawImage(rec.dark, -w/2, -h + .02 - oy, w, h); c.globalAlpha = 1; } c.restore();
+  const ca = Math.cos(s.pitch || 0), sa = Math.sin(s.pitch || 0), tr = (lx, ly) => [sx + F*(lx*ca + ly*sa)*P, sy + (-lx*sa + ly*ca - lift)*P], hlp = tr(w*.48, -h*.4 - oy), tlp = tr(-w*.49, -h*.5 - oy), lightsOn = s.lights || N > .45;
+  if (lightsOn) { this.lights.push(['beam', hlp[0], hlp[1], (s.beam || 11)*P*F, P, .36]); this.lights.push(['glow', hlp[0], hlp[1], .7*P, '#fff5d6', .9]); }
+  const tail = s.brake ? 1 : lightsOn ? .45 : 0; if (tail > 0) this.lights.push(['glow', tlp[0], tlp[1], (s.brake ? 1.2 : .7)*P, '#ff2a2a', tail]);
+  if (s.blink && Math.floor(performance.now()/380) % 2) { this.lights.push(['glow', hlp[0], hlp[1] + .12*P, .6*P, '#ffae00', 1]); this.lights.push(['glow', tlp[0], tlp[1] + .2*P, .6*P, '#ffae00', 1]); }
+  if (s.lightbar) { const on = Math.floor(performance.now()/150) % 2; const lb = tr(0, -h - oy); this.lights.push(['glow', lb[0], lb[1], 1.6*P, on ? '#ff3030' : '#3060ff', .9]); }
+  return {hlp, tlp}; }; }
+UI.skinTab = function(){ const s = S(), row = (k, name) => { const sk = GAME.skins[k]; return `<div class="cond" style="grid-template-columns:auto 1fr auto">${sk ? `<img src="${sk.d}" style="height:calc(var(--u)*6);max-width:calc(var(--u)*16);object-fit:contain">` : `<span class="tag">—</span>`}<b>${name}</b>
+   <div class="row" style="gap:.35em;flex-wrap:wrap;justify-content:flex-end"><button class="btn sm" data-a="skinUp" data-p="${k}">${ic('car')} ${t('upload')}</button>${sk ? `<button class="chip ${sk.flip ? 'on' : ''}" data-a="skinFlip" data-p="${k}">⇆ ${t('flip')}</button><label class="chip">${t('size')} <input type="range" min=".8" max="1.25" step=".01" value="${sk.k || 1}" data-sk="${k}|k" style="width:5em"></label><label class="chip">${t('height')} <input type="range" min="-.4" max=".4" step=".01" value="${sk.y || 0}" data-sk="${k}|y" style="width:5em"></label><button class="btn bad sm" data-a="skinDel" data-p="${k}">${t('remove')}</button>` : ''}</div></div>`; };
+  return `<div class="lbl" style="line-height:1.6;margin-bottom:.8em">${t('skin_info')}</div><b>${t('my_veh')}</b><div class="grid" style="margin:.5em 0 1.2em">${Object.keys(s.owned).map(id => row(id, tn(vehById(id).n))).join('')}</div>
+   <b>${t('traffic_types')}</b><div class="grid" style="margin-top:.5em">${['ai_car','ai_suv','ai_micro','ai_van','ai_minibus','ai_bus','ai_coach','ai_truck'].map(k => row(k, t(k))).join('')}</div>`; };
+{ const fi = document.createElement('input'); fi.type = 'file'; fi.accept = 'image/*'; fi.style.display = 'none'; document.body.appendChild(fi);
+  fi.addEventListener('change', async () => { const f = fi.files[0], k = UI.skinKey; fi.value = ''; if (!f || !k) return; UI.toast(t('processing'), 1500); try { const d = await processSkin(f); GAME.skins[k] = {d, flip:false, k:1, y:0}; await saveSkin(k); UI.toast(t('saved_skin')); AU.ding(); UI.refresh(); } catch(e) { AU.ui('no'); } });
+  const _a = UI.act; UI.act = function(a, p, el){ if (a === 'skinUp') { UI.skinKey = p; fi.click(); return; } if (a === 'skinFlip') { GAME.skins[p].flip = !GAME.skins[p].flip; saveSkin(p); UI.refresh(); return; } if (a === 'skinDel') { delete GAME.skins[p]; delete RD.skinCache[p]; saveSkin(p); UI.refresh(); return; }
+    if (a === 'mode') { UI.sel.tab = p; UI.show('routes', p); return; } return _a(a, p, el); }; }
+{ const _aw = UI.after.workshop; UI.after.workshop = function(){ _aw(); document.querySelectorAll('input[data-sk]').forEach(i => { i.addEventListener('pointerdown', e => e.stopPropagation()); i.addEventListener('input', () => { const [k, f] = i.dataset.sk.split('|'); GAME.skins[k][f] = +i.value; }); i.addEventListener('change', () => saveSkin(i.dataset.sk.split('|')[0])); }); }; }
+
+/* ---------- start flow ---------- */
+UI.scr.modes = function(){ return `<div class="scr dim"><div class="hdr"><button class="back" data-a="nav" data-p="hub">${ic('back')}</button><h2>${t('choose_mode')}</h2></div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,calc(var(--u)*50)),1fr));gap:calc(var(--u)*2);flex:1;align-content:center">
+   <button class="play pn glow" style="min-height:calc(var(--u)*30)" data-a="mode" data-p="line"><span class="pi">🚐🚌</span><b>${t('mode_lines')}</b><span style="max-width:40ch">${t('mode_lines_d')}</span></button>
+   <button class="play cy pn" style="min-height:calc(var(--u)*30)" data-a="mode" data-p="go"><span class="pi">📱🚗</span><b>${t('go')}</b><span style="max-width:40ch">${t('mode_go_d')}</span></button></div></div>`; };
+{ const _hub = UI.scr.hub; UI.scr.hub = function(){ let h = _hub(); const i0 = h.indexOf('<div class="dock">'), i1 = h.indexOf('<div class="tiles">');
+  if (i0 > 0 && i1 > i0) h = h.slice(0, i0) + `<div class="dock"><button class="btn startbtn" data-a="nav" data-p="modes">▶ ${t('start_game')}</button>` + h.slice(i1); return h; }; }
+document.head.insertAdjacentHTML('beforeend', `<style>
+.hub2 .dock{grid-template-columns:1.2fr 1.6fr;align-items:stretch}
+.startbtn{font-size:max(20px,calc(var(--u)*4));font-weight:900;border-radius:20px;min-height:calc(var(--u)*16);letter-spacing:.04em;animation:pulseS 2.4s ease-in-out infinite}
+@keyframes pulseS{50%{box-shadow:0 0 0 6px rgba(255,182,39,.25),0 10px 40px rgba(255,160,30,.5)}}
+@media (orientation:portrait){.hub2 .dock{grid-template-columns:1fr}.hub2 .dock .tiles{grid-column:auto}}
+.tlw{display:flex;align-items:center;gap:8px;padding:6px 10px;margin-bottom:calc(var(--u)*2);border-radius:14px;font-weight:800;font-size:max(12px,calc(var(--u)*1.8))}
+.tlw .box{display:flex;flex-direction:column;gap:3px;padding:4px;border-radius:8px;background:#0b0e14;border:1px solid #333}.tlw .box i{width:calc(var(--u)*1.8);height:calc(var(--u)*1.8);min-width:10px;min-height:10px;border-radius:50%;background:#222}
+.tlw .box i.r.on{background:#ff3b3b;box-shadow:0 0 10px #ff3b3b}.tlw .box i.y.on{background:#ffb627;box-shadow:0 0 10px #ffb627}.tlw .box i.g.on{background:#2dff7a;box-shadow:0 0 10px #2dff7a}
+@media (orientation:portrait){#hTL{position:absolute;right:0;bottom:100%;margin-bottom:6px}}
+</style>`);
+/* ---------- traffic light indicator ---------- */
+{ const _bh = UI.buildHud; UI.buildHud = function(G){ _bh(G); const bc = document.querySelector('.h-bc'); if (bc) bc.insertAdjacentHTML('afterbegin', `<div class="pn tlw hidden" id="hTL"><div class="box"><i class="r"></i><i class="y"></i><i class="g"></i></div><div><div class="lbl">${t('tl_next')}</div><div class="num" id="hTLd"></div></div></div>`); }; }
+{ const _hd = UI.hud; UI.hud = function(G, dt){ _hd(G, dt); const el = document.getElementById('hTL'); if (!el) return; const car = G.car, l = G.world.tl.find(q => q.x + 1 > car.x + car.spec.L/2 - .5 && q.x - car.x < 260);
+  if (!l) { if (!el.classList.contains('hidden')) el.classList.add('hidden'); return; } el.classList.remove('hidden');
+  const cyc = l.g + 3 + l.r, tt = (G.clock + l.ph) % cyc, rem = l.st === 'g' ? l.g - tt : l.st === 'y' ? l.g + 3 - tt : cyc - tt;
+  el.querySelectorAll('.box i').forEach(i => i.classList.toggle('on', i.classList.contains(l.st))); const dm = Math.max(0, Math.round((l.x - car.x - car.spec.L/2)*G.scale));
+  const tx = `${dm} m · ${Math.ceil(rem)}s`; const d = document.getElementById('hTLd'); if (d.textContent !== tx) d.textContent = tx;
+  if (l.st === 'y' && !l.warned && dm < 120) { l.warned = true; AU.alert(); } if (l.st === 'g') l.warned = false; }; }
+
+
 /* =================== MOBILE SCALE =================== */
 document.head.insertAdjacentHTML('beforeend', `<style>
 @media (pointer:coarse){
@@ -3001,8 +3098,11 @@ function updPeople(G, dt){ const W = G.world, car = G.car, th = W.themeAt(car.x)
 function renderScene(G, dt){ const c = RD.ctx, W = G.world, car = G.car, set = GAME.save.set; RD.lights = [];
   const zt = (set.zoom || 1)*(set.dynZoom && G.mode !== 'attract' ? lerp(1.08, RD.coarse ? .86 : .76, clamp(Math.abs(car.vx)/26, 0, 1)) : 1);
   RD.zoom = lerp(RD.zoom || zt, zt, 1 - Math.exp(-dt*1.4)); const z = RD.zoom; RD.W = RD.Ws/z; RD.H = RD.Hs/z; RD.ROADY = RD.RYs/z;
-  const vw = RD.W/RD.PPM, look = G.mode === 'attract' ? 0 : clamp(car.vx*.25, -3, vw*.12);
-  RD.camL = lerp(RD.camL, car.x - vw*.34 + look - (car.spec.L - 5)*.2, 1 - Math.exp(-dt*3.2)); RD.camY = lerp(RD.camY, W.h(car.x), 1 - Math.exp(-dt*2.5));
+  const vw = RD.W/RD.PPM; let frac = .34;
+  if (G.mode !== 'attract') { const behind = G.traffic.some(o => o.lane === 0 && !o.parked && o.x < car.x && car.x - o.x < car.spec.L/2 + o.L/2 + 22); const moving = car.vx > 2.5;
+    frac = car.vx < -.5 ? .6 : behind ? .44 : moving ? .16 + car.spec.L/vw*.5 : .3; }
+  G.camFrac = lerp(G.camFrac ?? frac, frac, 1 - Math.exp(-dt*(G.camFrac != null && frac > G.camFrac ? 1.8 : .9)));
+  RD.camL = lerp(RD.camL, car.x - vw*G.camFrac, 1 - Math.exp(-dt*3.2)); RD.camY = lerp(RD.camY, W.h(car.x), 1 - Math.exp(-dt*2.5));
   const sh = set.shake ? (Math.random() - .5)*RD.shake*7 : 0; RD.shake *= Math.exp(-dt*5);
   RD.mirror = !!set.mirror; c.setTransform((RD.mirror ? -1 : 1)*DPR*z, 0, 0, DPR*z, RD.mirror ? RD.Ws*DPR : 0, sh*DPR); c.clearRect(-20, -40, RD.W + 40, RD.H + 80);
   RD.drawSky(W); RD.drawClouds2(W, G); RD.drawFar(W); RD.drawMid(W); RD.drawMist(W, G); RD.drawNearBack(W); RD.drawRoad(W, G); RD.drawProps(W, G); RD.drawEnvProps(W, G); RD.drawSites(W, G); RD.drawShops(W, G); RD.drawFestive(W, G);
