@@ -5786,41 +5786,54 @@ const FUNEV = {
     return _se(G, k); }; }
 
 
-/* ================= HUD layout: three fixed columns, nothing overlaps ================= */
+/* ================= HUD layout =================
+   Controls hug the screen edges; the middle of the screen stays clear. */
 document.head.insertAdjacentHTML('beforeend', `<style>
-#hud{--pad:max(calc(var(--u)*1.2),env(safe-area-inset-left));}
-/* bottom row: brake | centre controls | throttle, each with its own lane */
-#hud .h-bl,#hud .h-br{bottom:max(calc(var(--u)*1.2),env(safe-area-inset-bottom));
-  width:26vw;max-width:calc(var(--u)*16);flex-direction:column;align-items:stretch;gap:calc(var(--u)*.7)}
+#hud{--pad:max(calc(var(--u)*1),env(safe-area-inset-left));
+     --padr:max(calc(var(--u)*1),env(safe-area-inset-right));
+     --padb:max(calc(var(--u)*.8),env(safe-area-inset-bottom));
+     --padt:max(calc(var(--u)*.8),env(safe-area-inset-top))}
+
+/* --- pedals: tall columns pinned to the outer edges --- */
+#hud .h-bl,#hud .h-br{bottom:var(--padb);flex-direction:column;align-items:stretch;gap:calc(var(--u)*.6);
+  width:auto;max-width:none}
 #hud .h-bl{left:var(--pad);right:auto}
-#hud .h-br{right:var(--pad);left:auto}
-#hud .pedal{width:100%;height:calc(var(--u)*13);margin:0}
-#hud .h-bc{position:absolute;bottom:max(calc(var(--u)*1.2),env(safe-area-inset-bottom));
-  left:50%;transform:translateX(-50%);z-index:5;pointer-events:auto;
-  display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*.7);
-  width:min(46vw,calc(var(--u)*40))}
-#hud .h-bc .gearbox{flex-direction:row;gap:calc(var(--u)*.5);padding:calc(var(--u)*.4);
-  background:rgba(10,16,28,.6);backdrop-filter:blur(6px);border-radius:calc(var(--u)*1.4)}
-#hud .h-bc .gearbox button{width:calc(var(--u)*4.6);height:calc(var(--u)*4.6);font-size:calc(var(--u)*2.1)}
-#hud .h-bc .auxrow{display:flex;gap:calc(var(--u)*.6);align-items:center;justify-content:center;flex-wrap:wrap}
-/* gauges sit above the controls, never under them */
-#hud .dash{position:absolute;left:50%;transform:translateX(-50%) scale(.8);transform-origin:bottom center;
-  bottom:calc(max(calc(var(--u)*1.2),env(safe-area-inset-bottom)) + var(--u)*12)}
-/* top row keeps clear of the notch */
-#hud .h-route{top:max(calc(var(--u)*1),env(safe-area-inset-top))}
-#hud .h-tl,#hud .h-tr{top:calc(max(calc(var(--u)*1),env(safe-area-inset-top)) + var(--u)*10.2)}
-#hud .h-tl{left:var(--pad)}
-#hud .h-tr{right:var(--pad)}
+#hud .h-br{right:var(--padr);left:auto}
+#hud .pedal{margin:0;width:calc(var(--u)*11);height:min(52vh,calc(var(--u)*34))}
+
+/* --- bottom strip: gear, gauges and the small buttons, flat against the bottom --- */
+#hud .h-bc{position:absolute;bottom:var(--padb);left:50%;transform:translateX(-50%);z-index:5;
+  pointer-events:auto;display:flex;flex-direction:row;align-items:flex-end;justify-content:center;
+  gap:calc(var(--u)*.8);width:auto;max-width:calc(100vw - var(--u)*30)}
+#hud .h-bc .gearbox{flex-direction:row;gap:calc(var(--u)*.4);padding:calc(var(--u)*.4);
+  background:rgba(10,16,28,.62);backdrop-filter:blur(6px);border-radius:calc(var(--u)*1.2)}
+#hud .h-bc .gearbox button{width:calc(var(--u)*4.4);height:calc(var(--u)*4.4);font-size:calc(var(--u)*2)}
+#hud .h-bc .auxrow{display:flex;gap:calc(var(--u)*.5);align-items:flex-end}
+#hud .h-bc .auxrow .ctlcol{flex-direction:row;align-items:flex-end;gap:calc(var(--u)*.5)}
+/* the instrument panel, small and low */
+#hud .h-bc>.pn:has(#cl),#hud .h-bc .clpn{transform:scale(.62);transform-origin:bottom center;margin:0 calc(var(--u)*-3)}
+
+/* --- top row --- */
+#hud .h-route{top:var(--padt)}
+#hud .h-tl,#hud .h-tr{top:calc(var(--padt) + var(--u)*8.6)}
+#hud .h-tl{left:var(--pad)} #hud .h-tr{right:var(--padr)}
+
+@media (orientation:landscape){
+  #hud .pedal{height:min(56vh,calc(var(--u)*40));width:calc(var(--u)*10)}
+  #hud .h-bc>.pn:has(#cl),#hud .h-bc .clpn{transform:scale(.55);margin:0 calc(var(--u)*-5)}
+  #hud .h-tl,#hud .h-tr{top:calc(var(--padt) + var(--u)*7.6)}
+}
 @media (orientation:portrait){
   #hud .h-route{width:min(94vw,calc(var(--u)*86))}
-  #hud .h-tl,#hud .h-tr{max-width:46vw}
-  #hud .dash{transform:translateX(-50%) scale(.68)}
-  #hud .h-bl,#hud .h-br{width:28vw}
-  #hud .h-bc{width:min(40vw,calc(var(--u)*34))}
-  #hud .pedal{height:calc(var(--u)*11)}
-}
-@media (orientation:landscape){
-  #hud .dash{transform:translateX(-50%) scale(.82)}
+  #hud .h-tl,#hud .h-tr{max-width:46vw;top:calc(var(--padt) + var(--u)*10.2)}
+  #hud .pedal{width:calc(var(--u)*12);height:min(30vh,calc(var(--u)*30))}
+  /* gauges on their own line, then gear + buttons side by side underneath */
+  #hud .h-bc{flex-direction:row;flex-wrap:wrap;align-items:flex-end;justify-content:center;
+    gap:calc(var(--u)*.6);max-width:calc(100vw - var(--u)*28)}
+  #hud .h-bc>.clpn{flex:0 0 100%;display:flex;justify-content:center;
+    transform:scale(.58);transform-origin:bottom center;margin:0 0 calc(var(--u)*-1) 0}
+  #hud .h-bc .auxrow .ctlcol{flex-direction:row;align-items:flex-end}
+  #hud .h-bc .gearbox button{width:calc(var(--u)*4);height:calc(var(--u)*4);font-size:calc(var(--u)*1.9)}
 }
 </style>`);
 /* move everything that is not a pedal into the centre column.
@@ -5851,6 +5864,7 @@ document.head.insertAdjacentHTML('beforeend', `<style>
       /* keep the gauges above the controls */
       const cl = document.getElementById('cl');
       if (cl) { const w = cl.closest('.pn') || cl;
+        w.classList.add('clpn');
         if (w.parentElement !== bc) bc.insertBefore(w, bc.firstChild); }
     } catch(e) { console.warn('hud layout', e); }
     return r;
