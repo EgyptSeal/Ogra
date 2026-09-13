@@ -5147,7 +5147,7 @@ const MUSIC = {
   }
 };
 /* menus play it, driving does not */
-{ const MENU_SCREENS = ['hub','routes','modes','showroom','workshop','dmv','gas','profile','missions','rewards','settings'];
+{ const MENU_SCREENS = ['hub'];   /* the main menu only - anywhere else is silent */
   const _s = UI.show;
   UI.show = function(n, p){ const r = _s.apply(this, arguments);
     try { MUSIC.init(); MUSIC.want(MENU_SCREENS.indexOf(n) >= 0); } catch(e) {}
@@ -5158,6 +5158,11 @@ const MUSIC = {
     return r; };
 }
 /* browsers need a gesture before audio plays */
+function musicStop(){ try { MUSIC.want(false); if (MUSIC.el) { MUSIC.el.pause(); MUSIC.el.volume = 0; } } catch(e) {} }
+addEventListener('pagehide', musicStop);
+addEventListener('beforeunload', musicStop);
+addEventListener('blur', musicStop);
+document.addEventListener('visibilitychange', () => { if (document.hidden) musicStop(); });
 ['pointerdown','touchstart','keydown'].forEach(k => addEventListener(k, function once(){
   try { MUSIC.init(); if (UI.cur && MUSIC.wanted) MUSIC.apply(); } catch(e) {}
 }, {once:true, passive:true}));
@@ -5309,7 +5314,7 @@ const RADIO = {
   }
 };
 document.head.insertAdjacentHTML('beforeend', `<style>
-#hRadio{container-type:inline-size;position:absolute;bottom:calc(var(--u)*3.2);left:calc(50% + min(21vw,calc(var(--u)*30)));
+#hRadio{display:none!important;position:absolute;bottom:calc(var(--u)*3.2);left:calc(50% + min(21vw,calc(var(--u)*30)));
   z-index:7;pointer-events:auto;width:min(30vw,calc(var(--u)*28));aspect-ratio:512/120;
   background:url('assets/ui_radio.webp') center/100% 100% no-repeat;
   filter:drop-shadow(0 8px 18px rgba(0,0,0,.6))}
@@ -5328,25 +5333,7 @@ document.head.insertAdjacentHTML('beforeend', `<style>
 #hud.lh #hRadio{left:auto;right:calc(50% + min(21vw,calc(var(--u)*30)))}
 @media (orientation:portrait){#hRadio{left:50%;transform:translateX(-50%);width:min(72vw,calc(var(--u)*40));bottom:calc(var(--u)*22)}}
 </style>`);
-{ const _bh = UI.buildHud;
-  UI.buildHud = function(G){ const r = _bh.apply(this, arguments);
-    try { const hud = document.getElementById('hud');
-      if (hud && !document.getElementById('hRadio')) {
-        const el = document.createElement('div'); el.id = 'hRadio'; el.className = 'off';
-        /* zones line up with the buttons moulded into the faceplate */
-        const zone = (a2, l, t2, w, h) => `<button class="z" data-a="${a2}" style="left:${l}%;top:${t2}%;width:${w}%;height:${h}%"></button>`;
-        el.innerHTML =
-          zone('radPow',  3.2, 10, 9.2, 38) +
-          zone('radMute', 3.2, 54, 9.2, 38) +
-          zone('radUp',  12.6, 10, 9.2, 38) +
-          zone('radDown',12.6, 54, 9.2, 38) +
-          zone('radNext',82.0, 10, 9.6, 38) +
-          zone('radPrev',82.0, 54, 9.6, 38) +
-          `<div class="scr"><div class="st">--</div>
-             <div class="lo"><span class="vn">60</span><span class="vb"><i></i></span></div></div>`;
-        hud.appendChild(el); RADIO.paint();
-      } } catch(e) {}
-    return r; }; }
+/* radio removed */
 { const _ha = UI.hudAct;
   UI.hudAct = function(a, p){
     if (a === 'radPow') return RADIO.power();
@@ -5797,6 +5784,78 @@ const FUNEV = {
     if (FUNEV[k]) { const W = G.world, x = G.car.x + 140;
       if (W.len < Infinity && x > W.len - 160) return; return FUNEV[k](G); }
     return _se(G, k); }; }
+
+
+/* ================= HUD layout: three fixed columns, nothing overlaps ================= */
+document.head.insertAdjacentHTML('beforeend', `<style>
+#hud{--pad:max(calc(var(--u)*1.2),env(safe-area-inset-left));}
+/* bottom row: brake | centre controls | throttle, each with its own lane */
+#hud .h-bl,#hud .h-br{bottom:max(calc(var(--u)*1.2),env(safe-area-inset-bottom));
+  width:26vw;max-width:calc(var(--u)*16);flex-direction:column;align-items:stretch;gap:calc(var(--u)*.7)}
+#hud .h-bl{left:var(--pad);right:auto}
+#hud .h-br{right:var(--pad);left:auto}
+#hud .pedal{width:100%;height:calc(var(--u)*13);margin:0}
+#hud .h-bc{position:absolute;bottom:max(calc(var(--u)*1.2),env(safe-area-inset-bottom));
+  left:50%;transform:translateX(-50%);z-index:5;pointer-events:auto;
+  display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*.7);
+  width:min(46vw,calc(var(--u)*40))}
+#hud .h-bc .gearbox{flex-direction:row;gap:calc(var(--u)*.5);padding:calc(var(--u)*.4);
+  background:rgba(10,16,28,.6);backdrop-filter:blur(6px);border-radius:calc(var(--u)*1.4)}
+#hud .h-bc .gearbox button{width:calc(var(--u)*4.6);height:calc(var(--u)*4.6);font-size:calc(var(--u)*2.1)}
+#hud .h-bc .auxrow{display:flex;gap:calc(var(--u)*.6);align-items:center;justify-content:center;flex-wrap:wrap}
+/* gauges sit above the controls, never under them */
+#hud .dash{position:absolute;left:50%;transform:translateX(-50%) scale(.8);transform-origin:bottom center;
+  bottom:calc(max(calc(var(--u)*1.2),env(safe-area-inset-bottom)) + var(--u)*12)}
+/* top row keeps clear of the notch */
+#hud .h-route{top:max(calc(var(--u)*1),env(safe-area-inset-top))}
+#hud .h-tl,#hud .h-tr{top:calc(max(calc(var(--u)*1),env(safe-area-inset-top)) + var(--u)*10.2)}
+#hud .h-tl{left:var(--pad)}
+#hud .h-tr{right:var(--pad)}
+@media (orientation:portrait){
+  #hud .h-route{width:min(94vw,calc(var(--u)*86))}
+  #hud .h-tl,#hud .h-tr{max-width:46vw}
+  #hud .dash{transform:translateX(-50%) scale(.68)}
+  #hud .h-bl,#hud .h-br{width:28vw}
+  #hud .h-bc{width:min(40vw,calc(var(--u)*34))}
+  #hud .pedal{height:calc(var(--u)*11)}
+}
+@media (orientation:landscape){
+  #hud .dash{transform:translateX(-50%) scale(.82)}
+}
+</style>`);
+/* move everything that is not a pedal into the centre column.
+   This must never destroy nodes: the gauge cluster lives here too. */
+{ const _bh = UI.buildHud;
+  UI.buildHud = function(G){
+    const r = _bh.apply(this, arguments);
+    try {
+      const hud = document.getElementById('hud');
+      const bl = hud.querySelector('.h-bl'), br = hud.querySelector('.h-br');
+      if (!bl || !br) return r;
+      let bc = hud.querySelector('.h-bc');
+      if (!bc) { bc = document.createElement('div'); bc.className = 'h-bc'; hud.appendChild(bc); }
+      let row = bc.querySelector('.auxrow');
+      if (!row) { row = document.createElement('div'); row.className = 'auxrow'; }
+      const brake = hud.querySelector('.pedal.brk'), gas = hud.querySelector('.pedal.gas');
+      const gear = hud.querySelector('.gearbox');
+      /* everything still sitting in a bottom corner that is not a pedal */
+      const strays = [];
+      [bl, br].forEach(col => Array.from(col.children).forEach(ch => {
+        if (ch !== brake && ch !== gas) strays.push(ch);
+      }));
+      if (gear && gear.parentElement !== bc) bc.appendChild(gear);
+      strays.forEach(ch => { if (ch !== gear) row.appendChild(ch); });
+      if (row.childElementCount && row.parentElement !== bc) bc.appendChild(row);
+      if (brake && brake.parentElement !== bl) bl.appendChild(brake);
+      if (gas && gas.parentElement !== br) br.appendChild(gas);
+      /* keep the gauges above the controls */
+      const cl = document.getElementById('cl');
+      if (cl) { const w = cl.closest('.pn') || cl;
+        if (w.parentElement !== bc) bc.insertBefore(w, bc.firstChild); }
+    } catch(e) { console.warn('hud layout', e); }
+    return r;
+  };
+}
 
 try{window.__ogStage='2b (game code parsed, starting)'}catch(e){}
 (async function boot(){
