@@ -527,7 +527,10 @@ AU.init = function(){
   } catch(e) { this.ok = false; }
 };
 AU.noise = function(type, dest){ const s = this.ctx.createBufferSource(); s.buffer = this.nb[type]; s.loop = true; s.loopStart = Math.random(); if (dest) s.connect(dest); s.start(0, Math.random()*2); return s; };
-AU.setVol = function(){ if (!this.ok) return; this.master.gain.value = this.vol.master; for (const b in this.buses) this.buses[b].gain.value = this.vol[b]; };
+AU.BOOST = 1.5;   /* 50% louder across the board */
+AU.setVol = function(){ if (!this.ok) return; const B = AU.BOOST;
+  this.master.gain.value = Math.min(1.6, this.vol.master*B);
+  for (const b in this.buses) this.buses[b].gain.value = Math.min(1.6, (this.vol[b] || 0)*B); };
 
 /* ---------- engine voice ---------- */
 AU.buildEngine = function(){
@@ -3905,7 +3908,7 @@ const SAVE_KEY = 'ogra-save-v1';
 const STARTER = 'v_n300';   /* Standard Van 11 */
 function defSave(){ const o1 = newOwn(vehById(STARTER), true);
   return {v:1, name:'', lang:'ar', cash:7000, xp:0, lvl:1, owned:{[STARTER]:o1}, cur:{line:STARTER, go:null}, stats:{}, ach:{}, ratings:[],
-    missions:{day:'', list:[]}, daily:{last:'', streak:0, spin:''}, set:{voice:true, autoDoor:true, manual:false, traffic:1, shake:true, hints:false, music:true, q:'high', vol:{master:.85, engine:.8, fx:.9, amb:.7, music:.5}}, tod:8,
+    missions:{day:'', list:[]}, daily:{last:'', streak:0, spin:''}, set:{voice:true, autoDoor:true, manual:false, traffic:1, shake:true, hints:false, music:true, q:'high', vol:{master:1, engine:1, fx:1, amb:1, music:.75}}, tod:8,
     lic:{cls:'none', exp:0, pts:0, issued:0}}; }
 let saveTimer = null;
 function writeSave(){
@@ -5134,15 +5137,26 @@ const MUSIC = {
     const s = GAME.save, enabled = !s || s.set.music !== false;
     const play = this.wanted && enabled;
     if (play) { a.play().then(() => this.fade(this.vol)).catch(() => {}); }
-    else this.fade(0, () => { try { a.pause(); } catch(e) {} });
+    else {
+      /* iOS makes .volume read-only, so a volume fade never completes there.
+         Pause outright, and let the fade run only as a nicety. */
+      clearInterval(this._f);
+      try { a.pause(); } catch(e) {}
+      try { a.volume = 0; } catch(e) {}
+      setTimeout(() => { if (!this.wanted) { try { a.pause(); } catch(e) {} } }, 250);
+    }
   },
   fade(to, done){
     const a = this.el; if (!a) return;
     clearInterval(this._f);
+    let steps = 0;
     this._f = setInterval(() => {
       const d = to - a.volume;
-      if (Math.abs(d) < .02) { a.volume = to; clearInterval(this._f); if (done) done(); return; }
-      a.volume = Math.max(0, Math.min(1, a.volume + Math.sign(d)*.02));
+      if (Math.abs(d) < .02 || ++steps > 60) {          /* always terminates */
+        try { a.volume = to; } catch(e) {}
+        clearInterval(this._f); if (done) done(); return;
+      }
+      try { a.volume = Math.max(0, Math.min(1, a.volume + Math.sign(d)*.02)); } catch(e) {}
     }, 40);
   }
 };
@@ -5696,7 +5710,9 @@ function smartAI(G, dt){
     if (o.v < .05) o.v = 0;
   }
 }
-{ const _up = updPeople; updPeople = function(G, dt){ _up(G, dt); try { smartAI(G, dt); } catch(e) {} }; }
+{ const _up = updPeople; updPeople = function(G, dt){ _up(G, dt);
+    try { smartAI(G, dt); } catch(e) {}
+    try { if (GAME.state === 'play' && MUSIC.wanted) MUSIC.want(false); } catch(e) {} }; }
 
 /* ---------- 10: roadside garage / station opens the full-screen page ---------- */
 Object.assign(L, {
@@ -5787,55 +5803,55 @@ const FUNEV = {
 
 
 /* ================= HUD layout =================
-   Corners hold the controls, the middle stays clear, and everything
-   scales with the screen so it works on a phone, a tablet or a desktop. */
+   One line across the top, one line across the bottom, both hard against
+   the screen edges. The middle is left entirely to the game. */
 document.head.insertAdjacentHTML('beforeend', `<style>
-#hud{--pad:max(calc(var(--u)*1),env(safe-area-inset-left));
-     --padr:max(calc(var(--u)*1),env(safe-area-inset-right));
-     --padb:max(calc(var(--u)*.8),env(safe-area-inset-bottom));
-     --padt:max(calc(var(--u)*.8),env(safe-area-inset-top));
-     --pedal:clamp(64px, min(19vh, 13vw), 132px)}
+#hud{--pad:max(calc(var(--u)*.8),env(safe-area-inset-left));
+     --padr:max(calc(var(--u)*.8),env(safe-area-inset-right));
+     --padb:max(calc(var(--u)*.4),env(safe-area-inset-bottom));
+     --padt:max(calc(var(--u)*.5),env(safe-area-inset-top));
+     --pedal:clamp(78px, min(23vh, 15vw), 158px)}
 
-/* --- pedals: compact pads in the bottom corners --- */
+/* ---- bottom line: pedals at the very edges, everything else between ---- */
 #hud .h-bl,#hud .h-br{bottom:var(--padb);width:auto;max-width:none;
-  flex-direction:column;align-items:stretch;gap:calc(var(--u)*.6)}
+  flex-direction:column;align-items:stretch;gap:calc(var(--u)*.5)}
 #hud .h-bl{left:var(--pad);right:auto}
 #hud .h-br{right:var(--padr);left:auto}
-#hud .pedal{margin:0;width:var(--pedal);height:var(--pedal);
+#hud .pedal{margin:0;width:calc(var(--pedal)*.86);height:var(--pedal);
   border-radius:calc(var(--u)*2.2)}
 
-/* --- bottom centre: gauges, engine and gear on one line --- */
 #hud .h-bc{position:absolute;bottom:var(--padb);left:50%;transform:translateX(-50%);z-index:5;
-  pointer-events:auto;display:flex;flex-direction:row;align-items:center;justify-content:center;
-  gap:calc(var(--u)*1);width:auto;
-  max-width:calc(100vw - var(--pedal)*2 - var(--u)*6)}
-#hud .h-bc>*{align-self:center}
+  pointer-events:auto;display:flex;flex-direction:row;align-items:flex-end;justify-content:center;
+  gap:calc(var(--u)*.9);width:auto;
+  max-width:calc(100vw - (var(--pedal)*.86 + var(--u)*2)*2)}
+#hud .h-bc>*{align-self:flex-end}
 #hud .h-bc .gearbox{flex-direction:row;gap:calc(var(--u)*.4);padding:calc(var(--u)*.4);
   background:rgba(10,16,28,.62);backdrop-filter:blur(6px);border-radius:calc(var(--u)*1.2)}
-#hud .h-bc .gearbox button{width:calc(var(--u)*4.2);height:calc(var(--u)*4.2);font-size:calc(var(--u)*1.9)}
-#hud .h-bc .auxrow{display:flex;gap:calc(var(--u)*.5);align-items:center}
-#hud .h-bc .auxrow .ctlcol{flex-direction:row;align-items:center;gap:calc(var(--u)*.5)}
-#hud .h-bc>.clpn{transform:scale(.62);transform-origin:center;margin:0 calc(var(--u)*-4)}
+#hud .h-bc .gearbox button{width:calc(var(--u)*4.4);height:calc(var(--u)*4.4);font-size:calc(var(--u)*2)}
+#hud .h-bc .auxrow{display:flex;gap:calc(var(--u)*.5);align-items:flex-end}
+#hud .h-bc .auxrow .ctlcol{flex-direction:row;align-items:flex-end;gap:calc(var(--u)*.5)}
+/* instrument panel: larger, and sitting right on the bottom edge */
+#hud .h-bc>.clpn{transform:scale(.92);transform-origin:bottom center;margin:0 calc(var(--u)*-1.5)}
 
-/* --- top: three tidy groups --- */
-#hud .h-route{top:var(--padt);width:min(42vw,calc(var(--u)*62))}
-#hud .h-tl,#hud .h-tr{top:calc(var(--padt) + var(--u)*.2)}
-#hud .h-tl{left:var(--pad);max-width:min(30vw,calc(var(--u)*34))}
-#hud .h-tr{right:var(--padr);max-width:min(30vw,calc(var(--u)*34))}
-#hud .h-tl,#hud .h-tr{display:flex;flex-direction:column;gap:calc(var(--u)*.5);align-items:flex-start}
-#hud .h-tr{align-items:flex-end}
+/* ---- top line: cash left, route centred and wide, seats/clock right ---- */
+#hud .h-route{top:var(--padt)!important;left:min(25vw,calc(var(--u)*33))!important;
+  right:min(25vw,calc(var(--u)*33));width:auto!important;max-width:none;transform:none!important}
+#hud .h-tl,#hud .h-tr{top:var(--padt)}
+#hud .h-tl{left:var(--pad);max-width:min(23vw,calc(var(--u)*30));
+  display:flex;flex-direction:column;gap:calc(var(--u)*.4);align-items:flex-start}
+#hud .h-tr{right:var(--padr);max-width:min(23vw,calc(var(--u)*30));
+  display:flex;flex-direction:column;gap:calc(var(--u)*.4);align-items:flex-end}
 
 @media (orientation:portrait){
-  #hud{--pedal:clamp(62px, min(13vh, 26vw), 120px)}
-  #hud .h-route{top:var(--padt);width:min(94vw,calc(var(--u)*86))}
+  #hud{--pedal:clamp(74px, min(15vh, 30vw), 140px)}
+  #hud .h-route{left:var(--pad)!important;right:var(--padr);width:auto!important;transform:none!important}
   #hud .h-tl,#hud .h-tr{top:calc(var(--padt) + var(--u)*8.8);max-width:47vw}
-  #hud .h-bc{flex-wrap:wrap;gap:calc(var(--u)*.6);
-    max-width:calc(100vw - var(--pedal)*2 - var(--u)*4)}
-  #hud .h-bc>.clpn{flex:0 0 100%;display:flex;justify-content:center;
-    transform:scale(.58);margin:0 0 calc(var(--u)*-1.4) 0}
+  #hud .h-bc{flex-wrap:wrap-reverse;align-content:flex-end;gap:calc(var(--u)*.5);
+    max-width:calc(100vw - (var(--pedal)*.86 + var(--u)*1.6)*2)}
+  #hud .h-bc>.clpn{flex:0 0 100%;display:flex;justify-content:center;order:2;
+    transform:scale(.8);transform-origin:bottom center;margin:0}
 }
-/* roomier screens get slightly bigger controls but the same proportions */
-@media (min-width:1100px){ #hud{--pedal:clamp(96px, 11vw, 150px)} }
+@media (min-width:1100px){ #hud{--pedal:clamp(112px, 12vw, 176px)} }
 </style>`);
 /* move everything that is not a pedal into the centre column.
    This must never destroy nodes: the gauge cluster lives here too. */
