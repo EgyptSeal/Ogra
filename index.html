@@ -267,15 +267,15 @@ const TOLL = {car:20, micro:30, minibus:40, bus:55};
 /* ============ VEHICLES (showroom prices are game-scaled) ============ */
 // tq = peak engine torque Nm, fn = suspension natural freq Hz, z = damping ratio
 const VEH = [
- {id:'micro_classic',cat:'micro',n:{en:'Micro Classic 14',ar:'ميكروباص كلاسيك 14'},yr:2006,price:0,lvl:1,seats:14,stand:0,style:'micro',L:4.8,H:2.2,wb:2.85,wr:.33,mass:2150,paint:'#eef0f2',fuel:'diesel',tank:70,lp100:12.5,tq:250,rpmMax:4000,idle:760,cyl:4,gears:[4.31,2.33,1.44,1.0,.84],fd:4.3,rev:4.0,cdA:2.5,fn:1.35,z:.28,grip:.93,brake:5600,d:{en:'The legend of every Egyptian street. Tough, loud, loved.',ar:'أسطورة كل شارع في مصر. جامد ودوشة وكلنا بنحبه.'}},
- {id:'micro_hr',cat:'micro',n:{en:'Micro HighRoof 14',ar:'ميكروباص سقف عالي 14'},yr:2022,price:185000,lvl:3,seats:14,stand:0,style:'microHR',L:5.0,H:2.45,wb:3.0,wr:.34,mass:2300,paint:'#f4f5f6',fuel:'diesel',tank:70,lp100:11.5,tq:300,rpmMax:3900,idle:740,cyl:4,gears:[4.31,2.33,1.44,1.0,.8],fd:4.1,rev:4.0,cdA:2.7,fn:1.4,z:.32,grip:.98,brake:6400,d:{en:'Modern high-roof body, stronger turbo-diesel and better brakes.',ar:'بودي سقف عالي حديث، سولار توربو أقوى وفرامل أحسن.'}},
- {id:'micro_jumbo',cat:'micro',n:{en:'Jumbo Micro 18',ar:'ميكروباص جامبو 18'},yr:2023,price:320000,lvl:6,seats:18,stand:0,style:'jumbo',L:5.6,H:2.5,wb:3.45,wr:.35,mass:2650,paint:'#f2f2f0',fuel:'diesel',tank:75,lp100:12.8,tq:340,rpmMax:3800,idle:740,cyl:4,gears:[4.5,2.5,1.5,1.0,.8],fd:4.1,rev:4.2,cdA:2.9,fn:1.3,z:.32,grip:.98,brake:7200,d:{en:'Long-wheelbase money maker for busy lines.',ar:'شاسيه طويل وعدد كراسي أكتر للخطوط الزحمة.'}},
- {id:'coaster',cat:'minibus',n:{en:'Coaster 26',ar:'كوستر 26'},yr:2021,price:640000,lvl:9,seats:26,stand:6,style:'coaster',L:7.0,H:2.65,wb:3.95,wr:.39,mass:4300,paint:'#e8e6df',fuel:'diesel',tank:95,lp100:17,tq:520,rpmMax:3300,idle:700,cyl:6,gears:[5.1,2.8,1.7,1.0,.78],fd:4.6,rev:5.0,cdA:4.2,fn:1.25,z:.33,grip:1,brake:15000,d:{en:'The intercity minibus. Comfortable, heavy, reliable.',ar:'ميني باص السفر. مريح وتقيل ومضمون.'}},
- {id:'citybus',cat:'bus',n:{en:'City Bus 45',ar:'أتوبيس نقل عام 45'},yr:2020,price:1250000,lvl:12,seats:32,stand:28,style:'citybus',L:11.4,H:3.1,wb:5.9,wr:.5,mass:10800,paint:'#c8202b',fuel:'diesel',tank:220,lp100:32,tq:1150,rpmMax:2600,idle:620,cyl:6,gears:[3.4,2.0,1.4,1.0,.82,.7],fd:5.2,rev:4.0,cdA:7.5,fn:1.1,z:.35,grip:1,brake:42000,d:{en:'Big capacity, slow to stop. Plan every station.',ar:'سعة كبيرة بس الوقوف محتاج حساب. خطط لكل محطة.'}},
- {id:'coach',cat:'bus',n:{en:'Delta Coach 49',ar:'أتوبيس سياحي دلتا 49'},yr:2024,price:2400000,lvl:18,seats:49,stand:0,style:'coach',L:12.2,H:3.5,wb:6.3,wr:.52,mass:12900,paint:'#0d5fa6',fuel:'diesel',tank:300,lp100:30,tq:1800,rpmMax:2400,idle:600,cyl:6,gears:[3.8,2.2,1.5,1.12,.88,.72],fd:4.2,rev:4.0,cdA:7.8,fn:1.05,z:.38,grip:1.02,brake:56000,d:{en:'Air suspension, AC, reclining seats. Built for the desert road.',ar:'مساعدين هواء وتكييف وكراسي بتترجع. معمول للصحراوي.'}},
- {id:'car_old',cat:'car',tier:'eco',n:{en:'Sedan 1.3 (2011)',ar:'سيدان 1.3 (2011)'},yr:2011,price:0,lvl:1,seats:3,stand:0,style:'sedan',L:4.3,H:1.47,wb:2.55,wr:.3,mass:1080,paint:'#b8bcc2',fuel:'b92',tank:45,lp100:7.6,tq:118,rpmMax:6200,idle:850,cyl:4,gears:[3.45,1.94,1.28,.97,.78],fd:4.2,rev:3.5,cdA:.68,fn:1.55,z:.3,grip:.95,brake:3600,d:{en:'Your first ride-hailing car. Cheap to run, easy to fix.',ar:'أول عربية للشغل على التطبيق. بتصرف قليل وتصليحها سهل.'}},
- {id:'hatch',cat:'car',tier:'eco',n:{en:'Hatch 1.4 Turbo',ar:'هاتشباك 1.4 توربو'},yr:2021,price:140000,lvl:4,seats:3,stand:0,style:'hatch',L:4.05,H:1.5,wb:2.5,wr:.31,mass:1150,paint:'#c43b3b',fuel:'b92',tank:45,lp100:6.4,tq:200,rpmMax:6300,idle:820,cyl:4,gears:[3.6,2.1,1.4,1.03,.84,.7],fd:3.9,rev:3.5,cdA:.66,fn:1.6,z:.32,grip:1.02,brake:4200,d:{en:'Punchy turbo, great in Cairo traffic.',ar:'توربو خفيف وسريع، ممتاز في زحمة القاهرة.'}},
- {id:'sedan16',cat:'car',tier:'comfort',n:{en:'Sedan 1.6 Comfort',ar:'سيدان 1.6 كومفورت'},yr:2023,price:260000,lvl:7,seats:4,stand:0,style:'sedan',L:4.55,H:1.46,wb:2.7,wr:.32,mass:1260,paint:'#23303f',fuel:'b92',tank:50,lp100:7.1,tq:160,rpmMax:6300,idle:780,cyl:4,gears:[3.5,1.9,1.3,1.0,.8,.66],fd:4.0,rev:3.4,cdA:.64,fn:1.45,z:.34,grip:1.04,brake:4500,d:{en:'Quiet cabin and soft ride. Unlocks Comfort trips.',ar:'كابينة هادية وركوبة ناعمة. بتفتح رحلات كومفورت.'}},
+ {id:'micro_classic',cat:'micro',n:{en:'Toyota HiAce H200',ar:'تويوتا هايس'},yr:2012,price:0,lvl:1,seats:14,stand:0,style:'micro',L:4.8,H:2.2,wb:2.85,wr:.33,mass:2250,paint:'#eef0f2',fuel:'diesel',tank:70,lp100:9.8,tq:260,rpmMax:3600,idle:760,cyl:4,gears:[4.31,2.33,1.44,1.0,.84],fd:4.3,rev:4.0,cdA:2.5,fn:1.35,z:.28,grip:.93,brake:5600,d:{en:'The legend of every Egyptian street. Tough, loud, loved.',ar:'أسطورة كل شارع في مصر. جامد ودوشة وكلنا بنحبه.'},engN:'2.5 L D-4D i4 diesel',kW:75,topKmh:155},
+ {id:'micro_hr',cat:'micro',n:{en:'King Long Kingo Wide',ar:'كينج لونج كينجو'},yr:2022,price:185000,lvl:3,seats:14,stand:0,style:'microHR',L:5.0,H:2.45,wb:3.0,wr:.34,mass:2600,paint:'#f4f5f6',fuel:'diesel',tank:75,lp100:11.2,tq:330,rpmMax:3600,idle:740,cyl:4,gears:[4.31,2.33,1.44,1.0,.8],fd:4.1,rev:4.0,cdA:2.7,fn:1.4,z:.32,grip:.98,brake:6400,d:{en:'Modern high-roof body, stronger turbo-diesel and better brakes.',ar:'بودي سقف عالي حديث، سولار توربو أقوى وفرامل أحسن.'},engN:'2.8 L i4 diesel',kW:110,topKmh:135},
+ {id:'micro_jumbo',cat:'micro',n:{en:'Golden Dragon 6532',ar:'جولدن دراجون 6532'},yr:2023,price:320000,lvl:6,seats:18,stand:0,style:'jumbo',L:5.6,H:2.5,wb:3.45,wr:.35,mass:2750,paint:'#f2f2f0',fuel:'diesel',tank:75,lp100:11.8,tq:350,rpmMax:3600,idle:740,cyl:4,gears:[4.5,2.5,1.5,1.0,.8],fd:4.1,rev:4.2,cdA:2.9,fn:1.3,z:.32,grip:.98,brake:7200,d:{en:'Long-wheelbase money maker for busy lines.',ar:'شاسيه طويل وعدد كراسي أكتر للخطوط الزحمة.'},engN:'2.8 L i4 diesel',kW:115,topKmh:130},
+ {id:'coaster',cat:'minibus',n:{en:'Toyota Coaster B70',ar:'تويوتا كوستر'},yr:2021,price:640000,lvl:9,seats:26,stand:6,style:'coaster',L:7.0,H:2.65,wb:3.95,wr:.39,mass:4300,paint:'#e8e6df',fuel:'diesel',tank:95,lp100:16.5,tq:285,rpmMax:3200,idle:700,cyl:6,gears:[5.1,2.8,1.7,1.0,.78],fd:4.6,rev:5.0,cdA:4.2,fn:1.25,z:.33,grip:1,brake:15000,d:{en:'The intercity minibus. Comfortable, heavy, reliable.',ar:'ميني باص السفر. مريح وتقيل ومضمون.'},engN:'4.0 L 1HZ i6 diesel',kW:100,topKmh:110},
+ {id:'citybus',cat:'bus',n:{en:'King Long XMQ6127',ar:'كينج لونج XMQ6127'},yr:2020,price:1250000,lvl:12,seats:32,stand:28,style:'citybus',L:11.4,H:3.1,wb:5.9,wr:.5,mass:11000,paint:'#c8202b',fuel:'diesel',tank:220,lp100:31.0,tq:1200,rpmMax:2200,idle:620,cyl:6,gears:[3.4,2.0,1.4,1.0,.82,.7],fd:5.2,rev:4.0,cdA:7.5,fn:1.1,z:.35,grip:1,brake:42000,d:{en:'Big capacity, slow to stop. Plan every station.',ar:'سعة كبيرة بس الوقوف محتاج حساب. خطط لكل محطة.'},engN:'8.9 L Cummins ISL i6',kW:243,topKmh:100},
+ {id:'coach',cat:'bus',n:{en:'Golden Dragon Navigator 6125',ar:'جولدن دراجون 6125'},yr:2024,price:2400000,lvl:18,seats:49,stand:0,style:'coach',L:12.2,H:3.5,wb:6.3,wr:.52,mass:12900,paint:'#0d5fa6',fuel:'diesel',tank:300,lp100:29.5,tq:1700,rpmMax:2100,idle:600,cyl:6,gears:[3.8,2.2,1.5,1.12,.88,.72],fd:4.2,rev:4.0,cdA:7.8,fn:1.05,z:.38,grip:1.02,brake:56000,d:{en:'Air suspension, AC, reclining seats. Built for the desert road.',ar:'مساعدين هواء وتكييف وكراسي بتترجع. معمول للصحراوي.'},engN:'10.5 L Weichai i6 diesel',kW:276,topKmh:110},
+ {id:'car_old',cat:'car',tier:'eco',n:{en:'Fiat 128 Nasr',ar:'فيات 128 نصر'},yr:1985,price:0,lvl:1,seats:3,stand:0,style:'sedan',L:4.3,H:1.47,wb:2.55,wr:.3,mass:1080,paint:'#b8bcc2',fuel:'b92',tank:38,lp100:7.8,tq:96,rpmMax:6000,idle:850,cyl:4,gears:[3.45,1.94,1.28,.97,.78],fd:4.2,rev:3.5,cdA:.68,fn:1.55,z:.3,grip:.95,brake:3600,d:{en:'Your first ride-hailing car. Cheap to run, easy to fix.',ar:'أول عربية للشغل على التطبيق. بتصرف قليل وتصليحها سهل.'},engN:'1.3 L i4',kW:48,topKmh:145},
+ {id:'hatch',cat:'car',tier:'eco',n:{en:'Hyundai Verna',ar:'هيونداي فيرنا'},yr:2021,price:140000,lvl:4,seats:3,stand:0,style:'hatch',L:4.05,H:1.5,wb:2.5,wr:.31,mass:1150,paint:'#c43b3b',fuel:'b92',tank:45,lp100:6.6,tq:155,rpmMax:6300,idle:820,cyl:4,gears:[3.6,2.1,1.4,1.03,.84,.7],fd:3.9,rev:3.5,cdA:.66,fn:1.6,z:.32,grip:1.02,brake:4200,d:{en:'Punchy turbo, great in Cairo traffic.',ar:'توربو خفيف وسريع، ممتاز في زحمة القاهرة.'},engN:'1.6 L Gamma i4',kW:90,topKmh:180},
+ {id:'sedan16',cat:'car',tier:'comfort',n:{en:'Chevrolet Optra',ar:'شيفروليه أوبترا'},yr:2022,price:260000,lvl:7,seats:4,stand:0,style:'sedan',L:4.55,H:1.46,wb:2.7,wr:.32,mass:1260,paint:'#23303f',fuel:'b92',tank:60,lp100:7.6,tq:150,rpmMax:6200,idle:780,cyl:4,gears:[3.5,1.9,1.3,1.0,.8,.66],fd:4.0,rev:3.4,cdA:.64,fn:1.45,z:.34,grip:1.04,brake:4500,d:{en:'Quiet cabin and soft ride. Unlocks Comfort trips.',ar:'كابينة هادية وركوبة ناعمة. بتفتح رحلات كومفورت.'},engN:'1.6 L i4',kW:80,topKmh:175},
  {id:'crossover',cat:'car',tier:'comfort',n:{en:'Crossover 2.0',ar:'كروس أوفر 2.0'},yr:2024,price:480000,lvl:11,seats:4,stand:0,style:'suv',L:4.6,H:1.72,wb:2.72,wr:.35,mass:1560,paint:'#e7e2d7',fuel:'b95',tank:58,lp100:8.6,tq:250,rpmMax:6200,idle:760,cyl:4,gears:[3.9,2.3,1.5,1.1,.86,.7],fd:3.9,rev:3.5,cdA:.86,fn:1.4,z:.36,grip:1.06,brake:5400,d:{en:'High seating, handles potholes like nothing.',ar:'قاعدة عالية، الحفر ولا كأنها موجودة.'}},
  {id:'exec',cat:'car',tier:'premium',n:{en:'Executive V6',ar:'إكزيكيوتيف V6'},yr:2025,price:1100000,lvl:16,seats:4,stand:0,style:'exec',L:5.0,H:1.46,wb:3.0,wr:.34,mass:1780,paint:'#0e0f12',fuel:'b95',tank:70,lp100:10.5,tq:370,rpmMax:6800,idle:700,cyl:6,gears:[4.2,2.5,1.6,1.2,1.0,.82,.67],fd:3.3,rev:3.4,cdA:.62,fn:1.3,z:.4,grip:1.1,brake:6800,d:{en:'Go Black tier. VIP riders, airport runs, big tips.',ar:'فئة جو بلاك. ركاب VIP ومشاوير مطار وبقشيش كبير.'}}
 ];
@@ -1949,11 +1949,7 @@ function startEvent(G, k){
   if (W.len < Infinity && x > W.len - 150) return;
   switch (k) {
     case 'jam': { const n = 7 + Math.floor(R()*9); for (let i = 0; i < n; i++) { const o = mkAI(G, pickW(mixFor(W.themeAt(x)), R), x + i*(6 + R()*4), 0, 0); o.jamV = o.v0; o.v0 = 2 + R()*3; o.v = 0; G.traffic.push(o); } G.jam = 60; G.feedAdd('ev_jam', {s:tn(W.segAt(x).street)}, 'warn'); AU.say('زحمة قدام', 'Traffic jam ahead'); break; }
-    case 'checkpoint': G.props.push({x, t:'stopsign'},
-        {x:x - 7, t:'cone', d:.05}, {x:x - 5, t:'cone', d:.18}, {x:x - 3, t:'cone', d:.3},
-        {x:x + 2, t:'cone', d:.3}, {x:x + 3.5, t:'cone', d:.18}, {x:x + 5, t:'cone', d:.05},
-        {x:x - 4, t:'officer', look:look(), wave:true, d:-.45},
-        {x:x + 1, t:'checkpoint', block:true, gate:0, lane:0, done:false});
+    case 'checkpoint': return makeCheckpoint(G, x);
       { const p = mkAI(G, 'police', x + 12, 0, 0); p.v0 = 0; p.v = 0; p.lightbar = true; p.parked = true; p.lp = -.62; G.traffic.push(p); } G.feedAdd('ev_check', {}, 'warn'); break;
     case 'works': for (let i = 0; i < 6; i++) G.props.push({x:x + i*6, t:'cone', d:.1}); G.props.push({x:x - 2, t:'barrier', d:-.05}, {x:x + 34, t:'barrier', d:-.05}, {x:x + 14, t:'worker', look:look(), d:-.4}, {x:x - 2, t:'block', block:true, lane:0, w:38, L:38, t0:G.clock});
       W.feat.push({x, w:36, h:.03, t:'rough'}); W.sortFeat(); G.feedAdd('ev_works', {}, 'warn'); break;
@@ -2506,7 +2502,7 @@ UI.scr.showroom = function(){ const s = S(), u = UI.sel; const list = VEH.filter
     ${own ? (isCur ? `<span class="btn gh sm">${ic('check')} ${t('selected')}</span>` : `<button class="btn sm" data-a="choose" data-p="${v.id}">${t('select')}</button>`) : lk ? `<span class="btn gh sm">${ic('lock')} ${t('locked', {l:v.lvl})}</span>` : `<button class="btn ok sm" data-a="buy" data-p="${v.id}" ${s.cash < v.price ? 'disabled' : ''}>${t('buy')} · ${money(v.price)}</button>`}</div></div>
     <div class="grid scroll" style="align-content:start">${'<div class="stats">' + stat(t('top_speed'), ts, 'km/h', ts/mx.ts, '', 'chart') + stat(t('torque'), Math.round(E.tq), 'Nm', E.tq/mx.tq, 'bad', 'bolt') + stat(t('tank'), Math.round(E.tank), 'L · ' + tn(FUEL[E.fuelType].n), E.tank/mx.tank, 'ok', 'fuel') + stat(t('seats'), v.seats + (v.stand ? '+' + v.stand : ''), '', (v.seats + v.stand)/mx.seats, 'cy', 'user') + stat(t('grip'), Math.round(E.grip*100) + '%', '', E.grip/mx.grip, 'cy', 'car') + stat(t('weight'), fmt(v.mass), 'kg', v.mass/13000, '', 'wrench') + '</div>'}
      ${own ? `<button class="btn cy" data-a="nav" data-p="workshop" data-q="${v.id}">${ic('wrench')} ${t('upgrade')}</button>` : ''}
-     <div class="pn" style="padding:calc(var(--u)*1.4)"><div class="lbl">${t('fuel_lvl')}: ${tn(FUEL[v.fuel].n)} · <span class="num">${FUEL[v.fuel].price}</span> EGP/L · <span class="num">${v.lp100}</span> L/100km</div></div></div></div></div>`; };
+     <div class="pn" style="padding:calc(var(--u)*1.4)"><div class="lbl">${t('fuel_lvl')}: ${tn(FUEL[v.fuel].n)} · <span class="num">${FUEL[v.fuel].price}</span> ${LANG.cur === 'ar' ? 'ج/لتر' : 'EGP/L'} · <span class="num">${v.lp100}</span> L/100km</div></div></div></div></div>`; };
 UI.after.showroom = function(){ const cv = $('#stage'); if (!cv) return; const list = VEH.filter(v => !v.hidden && (UI.sel.cat === 'all' || catOf(v) === UI.sel.cat)), v = list[UI.sel.si], own = S().owned[v.id];
   const draw = (tm) => { const r = cv.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1); if (cv.width !== Math.round(r.width*dpr)) { cv.width = Math.round(r.width*dpr); cv.height = Math.round(r.height*dpr); }
     const c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, r.width, r.height);
@@ -3124,8 +3120,8 @@ Object.assign(L, {
 });
 /* ---------- more vehicles ---------- */
 VEH.push(
- {id:'van_euro',cat:'micro',cls:'micro',n:{en:'Euro Van 16',ar:'فان أوروبي 16'},yr:2023,price:260000,lvl:5,seats:16,stand:0,style:'van',L:5.6,H:2.5,wb:3.7,wr:.34,mass:2450,paint:'#f2f3f4',fuel:'diesel',tank:80,lp100:10.8,tq:340,rpmMax:3800,idle:760,cyl:4,gears:[4.2,2.4,1.5,1.0,.8,.66],fd:3.9,rev:3.8,cdA:2.6,fn:1.12,z:.3,grip:1,brake:7000,rim:{t:'steel6',c:'#c3c8cc'},d:{en:'Modern long van: quiet cabin, 6 gears, great on the Ring Road.',ar:'فان حديث طويل: كابينة هادية و6 سرعات، ممتاز على الدائري.'}},
- {id:'hatch_city',cat:'car',cls:'car',tier:'eco',n:{en:'City Hatch 1.2',ar:'هاتشباك 1.2'},yr:2019,price:90000,lvl:2,seats:3,stand:0,style:'hatch',L:3.9,H:1.5,wb:2.45,wr:.29,mass:980,paint:'#e9c43a',fuel:'b92',tank:40,lp100:5.8,tq:110,rpmMax:6200,idle:850,cyl:3,gears:[3.55,1.95,1.3,.95,.76],fd:4.3,rev:3.5,cdA:.64,fn:1.4,z:.3,grip:.96,brake:3300,rim:{t:'hubcap',c:'#c9cfd4'},d:{en:'Cheapest to run. Perfect first app car.',ar:'أوفر عربية في البنزين. أحسن أول عربية للتطبيق.'}},
+ {id:'van_euro',cat:'micro',cls:'micro',n:{en:'Foton Toano Long',ar:'فوتون تونو'},yr:2023,price:260000,lvl:5,seats:16,stand:0,style:'van',L:5.6,H:2.5,wb:3.7,wr:.34,mass:2400,paint:'#f2f3f4',fuel:'diesel',tank:70,lp100:10.5,tq:300,rpmMax:3600,idle:760,cyl:4,gears:[4.2,2.4,1.5,1.0,.8,.66],fd:3.9,rev:3.8,cdA:2.6,fn:1.12,z:.3,grip:1,brake:7000,rim:{t:'steel6',c:'#c3c8cc'},d:{en:'Modern long van: quiet cabin, 6 gears, great on the Ring Road.',ar:'فان حديث طويل: كابينة هادية و6 سرعات، ممتاز على الدائري.'},engN:'2.8 L Cummins i4 diesel',kW:100,topKmh:140},
+ {id:'hatch_city',cat:'car',cls:'car',tier:'eco',n:{en:'Lada 2107 Riva',ar:'لادا 2107'},yr:2011,price:90000,lvl:2,seats:3,stand:0,style:'hatch',L:3.9,H:1.5,wb:2.45,wr:.29,mass:1060,paint:'#e9c43a',fuel:'b92',tank:39,lp100:8.6,tq:106,rpmMax:5600,idle:850,cyl:3,gears:[3.55,1.95,1.3,.95,.76],fd:4.3,rev:3.5,cdA:.64,fn:1.4,z:.3,grip:.96,brake:3300,rim:{t:'hubcap',c:'#c9cfd4'},d:{en:'Cheapest to run. Perfect first app car.',ar:'أوفر عربية في البنزين. أحسن أول عربية للتطبيق.'},engN:'1.5 L i4',kW:53,topKmh:150},
  {id:'minibus_ac',cat:'minibus',cls:'minibus',n:{en:'AC Minibus 28',ar:'ميني باص مكيف 28'},yr:2024,price:820000,lvl:11,seats:28,stand:4,style:'coaster',L:7.4,H:2.8,wb:4.2,wr:.4,mass:4700,paint:'#1e6fb0',fuel:'diesel',tank:100,lp100:17.5,tq:560,rpmMax:3200,idle:700,cyl:6,gears:[5.1,2.8,1.7,1.0,.78],fd:4.5,rev:5.0,cdA:4.4,fn:1.05,z:.33,grip:1,brake:16500,rim:{t:'bus',c:'#dfe3e6'},d:{en:'Air-conditioned minibus for the 25-EGP lines.',ar:'ميني باص مكيف لخطوط الـ25 جنيه.'}},
  {id:'citybus2',cat:'bus',cls:'city',n:{en:'AC City Bus 50',ar:'أتوبيس مكيف 50'},yr:2024,price:1650000,lvl:14,seats:36,stand:30,style:'citybus',L:12,H:3.2,wb:6.1,wr:.5,mass:11500,paint:'#1d4f9c',fuel:'diesel',tank:240,lp100:33,tq:1250,rpmMax:2600,idle:620,cyl:6,gears:[3.4,2.0,1.4,1.0,.82,.7],fd:5.1,rev:4.0,cdA:7.7,fn:.95,z:.36,grip:1,brake:45000,rim:{t:'alloyBus',c:'#dfe4e8'},d:{en:'Modern AC bus with more room and smoother ride.',ar:'أتوبيس مكيف حديث أوسع وركوبته أنعم.'}},
  {id:'coach2',cat:'bus',cls:'coach',n:{en:'Sahel Coach 53',ar:'أتوبيس الساحل 53'},yr:2025,price:3200000,lvl:22,seats:53,stand:0,style:'coach',L:13,H:3.7,wb:6.6,wr:.53,mass:14200,paint:'#f4f4f4',fuel:'diesel',tank:350,lp100:31,tq:2000,rpmMax:2400,idle:600,cyl:6,gears:[3.8,2.2,1.5,1.12,.88,.72],fd:4.1,rev:4.0,cdA:8,fn:.9,z:.38,grip:1.03,brake:60000,rim:{t:'alloyBus',c:'#e6eaed'},d:{en:'Flagship long-distance coach. The Cairo–Alex king.',ar:'أحسن أتوبيس سفر. ملك طريق القاهرة إسكندرية.'}},
@@ -3211,13 +3207,13 @@ const RIDE_LIFT = s => s.cat === 'car' ? .035 : s.cat === 'bus' ? .06 : .055;
 const cp = (id, o) => Object.assign({}, vehById(id), o);
 VEH.push(
  cp('coaster', {id:'coaster_old', n:{en:'Coaster Classic 22',ar:'كوستر قديم 22'}, yr:2006, price:380000, lvl:7, seats:22, stand:6, paint:'#e8e3d3', tq:420, tank:90, lp100:18.5, rim:{t:'bus', c:'#cfd3d6'}, d:{en:'Old but gold. The workhorse of Egyptian intercity lines.',ar:'قديم بس جامد. حصان خطوط السفر المصرية.'}}),
- cp('coaster', {id:'mini_rosa', style:'mini2', n:{en:'Rosa-style Minibus 25',ar:'ميني باص روزا 25'}, yr:2023, price:700000, lvl:10, seats:25, stand:4, L:7.0, H:2.7, paint:'#f2f2ee', tq:500, rim:{t:'bus', c:'#dfe3e6'}, d:{en:'Rounded modern minibus, smooth and quiet.',ar:'ميني باص حديث مدوّر، ناعم وهادي.'}}),
+ cp('coaster', {id:'mini_rosa', style:'mini2', n:{en:'Mitsubishi Fuso Rosa',ar:'ميتسوبيشي روزا'}, yr:2023, price:700000, lvl:10, seats:25, stand:4, L:7.0, H:2.7, paint:'#f2f2ee', tq:491, rim:{t:'bus', c:'#dfe3e6'}, d:{en:'Rounded modern minibus, smooth and quiet.',ar:'ميني باص حديث مدوّر، ناعم وهادي.'},engN:'4.9 L 4M50 i4 diesel',kW:132,topKmh:110}),
  cp('coaster', {id:'mini_county', style:'mini3', n:{en:'County-style Minibus 29',ar:'ميني باص كاونتي 29'}, yr:2022, price:760000, lvl:10, seats:29, stand:4, L:7.1, H:2.78, wb:4.0, paint:'#d8dde2', tq:530, rim:{t:'bus', c:'#d5d9dc'}, d:{en:'Flat-front minibus with big capacity.',ar:'ميني باص وش مفلطح وسعة كبيرة.'}}),
- cp('van_euro', {id:'van_xl', cat:'minibus', cls:'minibus', n:{en:'Long Van 20',ar:'فان طويل 20'}, yr:2024, price:450000, lvl:8, seats:20, stand:0, L:6.9, H:2.65, wb:4.3, mass:3200, tq:380, tank:90, lp100:12.5, paint:'#eceef0', d:{en:'Extra-long van with 20 seats. Great on minibus lines.',ar:'فان طويل 20 كرسي. ممتاز على خطوط الميني باص.'}}),
+ cp('van_euro', {id:'van_xl', cat:'minibus', cls:'minibus', n:{en:'King Long Kingo 6600',ar:'كينج لونج 6600'}, yr:2024, price:450000, lvl:8, seats:20, stand:0, L:6.9, H:2.65, wb:4.3, mass:3500, tq:380, tank:85, lp100:13.4, paint:'#eceef0', d:{en:'Extra-long van with 20 seats. Great on minibus lines.',ar:'فان طويل 20 كرسي. ممتاز على خطوط الميني باص.'},engN:'3.0 L i4 diesel',kW:120,topKmh:120}),
  cp('citybus', {id:'bus_cta_old', n:{en:'Classic City Bus 40',ar:'أتوبيس نقل عام قديم 40'}, yr:2008, price:900000, lvl:11, seats:30, stand:25, L:11, H:3.0, paint:'#c9342b', tq:980, tank:200, lp100:35, rim:{t:'bus', c:'#c9cdd0'}, d:{en:'The famous red-and-white city bus. Loud, slow, loved.',ar:'الأتوبيس الأحمر في أبيض المشهور. دوشة وبطيء بس محبوب.'}}),
  cp('coach', {id:'coach_dd', style:'dd', n:{en:'Double-Deck Coach 70',ar:'أتوبيس دورين 70'}, yr:2025, price:4200000, lvl:25, seats:70, stand:0, L:12.8, H:4.1, wb:6.5, mass:16500, tq:2300, tank:400, lp100:36, paint:'#f4f4f4', rim:{t:'alloyBus', c:'#e6eaed'}, d:{en:'Two decks, 70 seats, panoramic windows. The premium long-haul giant.',ar:'دورين، 70 كرسي، شبابيك بانوراما. عملاق السفر الفاخر.'}}),
- cp('sedan16', {id:'sedan_compact', n:{en:'Compact Sedan 1.5',ar:'سيدان صغيرة 1.5'}, tier:'eco', yr:2022, price:170000, lvl:3, L:4.35, wb:2.6, mass:1120, tq:140, lp100:6.3, paint:'#9aa3ab', rim:{t:'alloy5', c:'#c9cfd4'}, d:{en:'Reliable compact sedan. Cheap to run on Ogra Go.',ar:'سيدان صغيرة مضمونة. اقتصادية في أجرة جو.'}}),
- cp('sedan16', {id:'sedan_mid', n:{en:'Mid Sedan 2.0',ar:'سيدان متوسطة 2.0'}, tier:'comfort', yr:2024, price:380000, lvl:9, L:4.8, H:1.45, wb:2.82, mass:1420, tq:240, lp100:7.6, paint:'#8b1e24', rim:{t:'multi', c:'#c9cfd4'}, d:{en:'Spacious family sedan. Comfort riders love it.',ar:'سيدان عائلية واسعة. زباين الكومفورت بيحبوها.'}}),
+ cp('sedan16', {id:'sedan_compact', n:{en:'Daewoo Lanos (Nasr)',ar:'دايو لانوس'}, tier:'eco', yr:2019, price:170000, lvl:3, L:4.35, wb:2.6, mass:1120, tq:130, lp100:7.2, paint:'#9aa3ab', rim:{t:'alloy5', c:'#c9cfd4'}, d:{en:'Reliable compact sedan. Cheap to run on Ogra Go.',ar:'سيدان صغيرة مضمونة. اقتصادية في أجرة جو.'},engN:'1.5 L i4',kW:64,topKmh:165}),
+ cp('sedan16', {id:'sedan_mid', n:{en:'Toyota Corolla 1.8',ar:'تويوتا كورولا'}, tier:'comfort', yr:2024, price:380000, lvl:9, L:4.8, H:1.45, wb:2.82, mass:1420, tq:173, lp100:7.1, paint:'#8b1e24', rim:{t:'multi', c:'#c9cfd4'}, d:{en:'Spacious family sedan. Comfort riders love it.',ar:'سيدان عائلية واسعة. زباين الكومفورت بيحبوها.'},engN:'1.8 L 2ZR-FE i4',kW:103,topKmh:185}),
  cp('exec', {id:'sedan_lux', n:{en:'Luxury Sedan V8',ar:'سيدان فاخرة V8'}, yr:2025, price:2200000, lvl:24, L:5.2, H:1.48, wb:3.15, mass:2050, tq:560, cyl:8, rpmMax:6600, lp100:12.8, paint:'#15171b', rim:{t:'multi', c:'#2a2d31'}, d:{en:'The ultimate VIP car. Biggest tips in the city.',ar:'عربية الـVIP. أكبر بقشيش في البلد.'}})
 );
 Object.assign(EPROF, {coaster_old:Object.assign({}, EPROF.coaster, {cl:.02, lp:560}), mini_rosa:Object.assign({}, EPROF.coaster, {lp:680, rb:.2}), mini_county:Object.assign({}, EPROF.coaster, {lp:640}), van_xl:Object.assign({}, EPROF.micro_hr, {lp:800}), van_euro:Object.assign({}, EPROF.micro_hr, {lp:900, cl:.01}),
@@ -3304,7 +3300,8 @@ function drawSprite(o, s, sx, sy, sc){
   if (s.rev) RD.lights.push(['glow', tlp[0], tlp[1] + .12*P, .6*P, '#ffffff', .8]);
   if (s.lightbar) { const on = Math.floor(performance.now()/150) % 2, lb = tr(x0 + Lm*.5, y0 - .08); c.fillStyle = on ? '#ff3030' : '#3060ff'; c.fillRect(lb[0] - .35*P, lb[1] - .06*P, .7*P, .12*P); RD.lights.push(['glow', lb[0], lb[1], 1.6*P, on ? '#ff3030' : '#3060ff', .9]); }
   return {hlp, tlp}; }
-{ const _veh = RD.vehicle; RD.vehicle = function(o, s, sx, sy, sc){ if (o.spr && SPR[o.spr] && !(o.skinKey && GAME.skins[o.skinKey])) { const r = drawSprite(o, s, sx, sy, sc); if (r) return r; }
+{ const _veh = RD.vehicle; RD.vehicle = function(o, s, sx, sy, sc){ if (!o) return;
+    if (o.spr && SPR[o.spr] && !(o.skinKey && GAME.skins[o.skinKey])) { const r = drawSprite(o, s, sx, sy, sc); if (r) return r; }
     if (o.aiOnly) return null;   /* AI never falls back to the vector stand-in */
     return _veh.call(this, o, s, sx, sy, sc); }; }
 // sprite debris pieces
@@ -3320,16 +3317,15 @@ const SPRMAP = {micro_classic:['hiace',{en:'HighRoof 14',ar:'هاي روف 14'}]
   van_xl:['sprinter',{en:'Long Van 20',ar:'فان طويل 20'}], mini_rosa:['rosa',{en:'Mini Coach 25',ar:'ميني كوتش 25'}], citybus:['horus',{en:'Midi City Bus 33',ar:'ميدي باص 33'}], coach:['mcv',{en:'Intercity Coach 45',ar:'أتوبيس سفر 45'}],
   car_old:['fiat128',{en:'Classic 128',ar:'كلاسيك 128'}], hatch_city:['lada',{en:'Classic 2107',ar:'كلاسيك 2107'}], sedan_compact:['lanos',{en:'Compact 1.5',ar:'كومباكت 1.5'}], hatch:['verna',{en:'City Sedan 1.6',ar:'سيتي سيدان 1.6'}], sedan16:['optra',{en:'Sedan 1.6',ar:'سيدان 1.6'}], sedan_mid:['corolla',{en:'Sedan 1.8',ar:'سيدان 1.8'}]};
 VEH.push(
-  Object.assign({}, vehById('micro_hr'), {id:'v_foton', spr:'foton', n:{en:'Crown Van 14',ar:'كراون فان 14'}, price:210000, lvl:4, seats:14, paint:'#f2f3f4', d:{en:'Comfortable high-roof van with a strong diesel.',ar:'فان سقف عالي مريح وموتور سولار قوي.'}}),
-  Object.assign({}, vehById('micro_classic'), {id:'v_suzuki', spr:'suzuki', n:{en:'Mini Van 7',ar:'ميني فان 7'}, price:95000, lvl:2, seats:7, mass:1250, tq:115, rpmMax:6000, fuel:'b92', tank:40, lp100:8, cyl:4, gears:[3.8,2.2,1.5,1.0,.82], fd:4.6, cdA:1.6, brake:3800, d:{en:'Small, cheap and nimble. The short-line hustler.',ar:'صغير ورخيص وخفيف. ملك الخطوط القصيرة.'}}),
-  Object.assign({}, vehById('micro_classic'), {id:'v_n300', spr:'n300', n:{en:'Box Van 7',ar:'بوكس فان 7'}, price:110000, lvl:2, seats:7, mass:1200, tq:120, rpmMax:6000, fuel:'b92', tank:42, lp100:8.2, cyl:4, gears:[3.8,2.2,1.5,1.0,.82], fd:4.5, cdA:1.6, brake:3900, d:{en:'Boxy people-carrier, easy to park anywhere.',ar:'فان صندوق، تركنه في أي حتة.'}}),
-  Object.assign({}, vehById('micro_classic'), {id:'v_shineray', spr:'shineray', n:{en:'City Van 8',ar:'سيتي فان 8'}, price:120000, lvl:3, seats:8, mass:1300, tq:130, rpmMax:6000, fuel:'b92', tank:45, lp100:8.4, cyl:4, gears:[3.8,2.2,1.5,1.0,.82], fd:4.4, cdA:1.7, brake:4000, d:{en:'Modern small van with a smooth ride.',ar:'فان صغير حديث وركوبته ناعمة.'}})
+  Object.assign({}, vehById('micro_hr'), {id:'v_foton', spr:'foton', n:{en:'Foton Gratour Mini',ar:'فوتون جراتور'}, price:210000, lvl:4, seats:14, paint:'#f2f3f4', d:{en:'Comfortable high-roof van with a strong diesel.',ar:'فان سقف عالي مريح وموتور سولار قوي.'},engN:'1.5 L i4',kW:78,topKmh:130}),
+  Object.assign({}, vehById('micro_classic'), {id:'v_suzuki', spr:'suzuki', n:{en:'Suzuki Every Minivan',ar:'سوزوكي إيفري'}, price:95000, lvl:2, seats:7, mass:1150, tq:95, rpmMax:6500, fuel:'b92', tank:40, lp100:7.4, cyl:4, gears:[3.8,2.2,1.5,1.0,.82], fd:4.6, cdA:1.6, brake:3800, d:{en:'Small, cheap and nimble. The short-line hustler.',ar:'صغير ورخيص وخفيف. ملك الخطوط القصيرة.'},engN:'0.66 L i3 turbo',kW:47,topKmh:120}),
+  Object.assign({}, vehById('micro_classic'), {id:'v_n300', spr:'n300', n:{en:'Chevrolet N300 Van',ar:'شيفروليه N300'}, price:110000, lvl:2, seats:7, mass:1250, tq:108, rpmMax:6000, fuel:'b92', tank:45, lp100:7.8, cyl:4, gears:[3.8,2.2,1.5,1.0,.82], fd:4.5, cdA:1.6, brake:3900, d:{en:'Boxy people-carrier, easy to park anywhere.',ar:'فان صندوق، تركنه في أي حتة.'},engN:'1.2 L i4',kW:60,topKmh:135}),
+  Object.assign({}, vehById('micro_classic'), {id:'v_shineray', spr:'shineray', n:{en:'Foton View CS2',ar:'فوتون فيو'}, price:120000, lvl:3, seats:8, mass:3300, tq:360, rpmMax:3600, fuel:'b92', tank:80, lp100:12.8, cyl:4, gears:[3.8,2.2,1.5,1.0,.82], fd:4.4, cdA:1.7, brake:4000, d:{en:'Modern small van with a smooth ride.',ar:'فان صغير حديث وركوبته ناعمة.'},engN:'2.8 L Cummins ISF diesel',kW:115,topKmh:125})
 );
 VEH.forEach(v => { const mp = SPRMAP[v.id]; if (mp) { v.spr = mp[0]; v.n = mp[1]; } if (v.spr && SPR[v.spr]) { const m = SPR[v.spr].m; v.L = m.L; v.H = m.H; if (m.wb) { v.wb = m.wb; v.wr = m.wr; } if (v.cat === 'car') v.paint = v.paint || '#f4f5f6'; }
-  if (['coaster','coaster_old','mini_county','minibus_ac','citybus2','bus_cta_old','coach2','coach_dd','mini2'].includes(v.id)) v.hidden = true; v.fn = (v.fn || 1.2)*1.1; });
-{ const _dress = dressOwn; dressOwn = function(o, sp, own){ _dress(o, sp, own); if (sp.spr) { o.spr = sp.spr; o.isCar = sp.cat === 'car'; if (!own || !own.rimT) o.rim = {t:sp.cat === 'car' ? 'hubcap' : sp.cls === 'coach' || sp.cls === 'city' || sp.cls === 'minibus' && sp.spr === 'rosa' ? 'bus' : 'steel6', c:(own && own.rimC) || '#cdd2d6'}; } return o; }; }
-/* ---------- traffic uses the sprites too ---------- */
-const AISPR = {micro:['hiace','kinglong','goldendragon','foton','joylong','hiace'], van:['sprinter','suzuki','n300','shineray'], coaster:['rosa'], mini2:['rosa'], mini3:['rosa'], citybus:['horus'], citybus2:['horus'], coach:['mcv'], dd:['mcv'],
+  if (['coaster_old','mini_county','bus_cta_old','coach2','coach_dd','mini2'].includes(v.id)) v.hidden = true; v.fn = (v.fn || 1.2)*1.1; });
+{ const _dress = dressOwn; dressOwn = function(o, sp, own){ const _r = _dress(o, sp, own); o = _r || o; if (sp && sp.spr) { o.spr = sp.spr; o.isCar = sp.cat === 'car'; if (!own || !own.rimT) o.rim = {t:sp.cat === 'car' ? 'hubcap' : sp.cls === 'coach' || sp.cls === 'city' || sp.cls === 'minibus' && sp.spr === 'rosa' ? 'bus' : 'steel6'}; } return o; }; }
+const AISPR = {micro:['hiace','kinglong','goldendragon','foton','joylong'], van:['sprinter','suzuki','n300','shineray'], coaster:['rosa'], mini2:['rosa'], mini3:['rosa'], citybus:['horus'], citybus2:['horus'], coach:['mcv'], dd:['mcv'],
   sedan:['fiat128','lada','peugeot504','shahin','verna','lanos','optra','corolla','sunny','accent','mg5','logan','aveo','octavia','tucson','sportage','suv_blue','suv_red'], taxi:['fiat128','lada','verna','lanos','shahin','sunny','logan','aveo'], alexTaxi:['fiat128','lada','shahin','peugeot504','logan','aveo'], hatch:['lanos','verna','aveo','sunny'], police:['polsedan','poltraffic'], suv:['suv_blue','suv_red','tucson','sportage'], tuktuk:['tuk_blue','tuk_red'], moto:['boxer','hlx','haojue','cbr','moto_cg','moto_red','moto_sport','moto_delivery','polbiket','polbikeb']};
 const AICOL = ['#f4f5f6','#1d1f24','#9aa3ab','#c4c9ce','#8b1e24','#23476e','#5c6f82','#b5a88a','#2d5a3d','#e9e2d0'];
 { const _ma = mkAI; mkAI = function(G, type, x, lane, v){ const o = _ma(G, type, x, lane, v), list = AISPR[type], R = Math.random; if (!list) return o; const k = list[Math.floor(R()*list.length)]; if (!SPR[k]) return o; const m = SPR[k].m;
@@ -3338,13 +3334,15 @@ const AICOL = ['#f4f5f6','#1d1f24','#9aa3ab','#c4c9ce','#8b1e24','#23476e','#5c6
   if (/^pol/.test(k)) { o.paint = null; o.paint2 = null; o.variant = null; o.lightbar = true; }
   o.lp = o.lp === 1 ? 1.34 : .166;
   o.paint = type === 'sedan' || type === 'hatch' ? AICOL[Math.floor(R()*AICOL.length)] : type === 'police' || type === 'taxi' ? '#f4f5f6' : type === 'micro' && R() < .25 ? ['#e9e2d0','#c9d6df','#d8dde2'][Math.floor(R()*3)] : null;
-  o.paint2 = type === 'micro' && R() < .2 ? '#b8b0a0' : null; o.rim = o.isCar ? {t:R() < .6 ? 'hubcap' : 'steel6', c:'#c9cfd4'} : ['citybus','citybus2','coach','dd','coaster','mini2','mini3'].includes(type) ? {t:'bus', c:'#d5d9dc'} : {t:'steel6', c:'#c3c8cc'};
+  o.paint2 = type === 'micro' && R() < .2 ? '#b8b0a0' : null; o.rim = o.isCar ? {t:R() < .6 ? 'hubcap' : 'steel6', c:'#c9cfd4'} : ['citybus','citybus2','coach','King Long XMQ6127','كينج لونج XMQ6127','mini2','mini3'].includes(type) ? {t:'bus', c:'#d5d9dc'} : {t:'steel6', c:'#c3c8cc'};
   if (type === 'moto') { o.wr = .3; o.noDriver = true; } return o; }; }
 /* ---------- pedestrians from the user's walk sheets ---------- */
 const PEDCH = {m:[0,2,6,7,8,10,11,12,14,15,18,20,22,23], f:[1,3,5,9,16,17,19], g:[4,13,21]};
 { const _pers = RD.person; RD.person = function(Lk, x, fy, sc, ph, walking, wave, face){ if (!PEDIMG || !PEDIMG.complete || !PEDIMG.naturalWidth || !Lk || Lk.type === 'sheep') return _pers.apply(this, arguments);
   if (Lk.ci == null) { const a = PEDCH[Lk.type] || PEDCH.m; Lk.ci = a[Math.floor(Math.random()*a.length)]; }
-  const A = ASSETS.peds, ch = A.chars[Lk.ci], c = this.ctx, fr = walking ? Math.floor(((ph % 6.2832) + 6.2832) % 6.2832/6.2832*8) % 8 : 2;   /* frame 2 = standing */
+  const A = ASSETS.peds;
+  if (!A.chars[Lk.ci]) Lk.ci = (PEDCH[Lk.type] || PEDCH.m)[0] || 0;   /* never draw a missing character */
+  const ch = A.chars[Lk.ci], c = this.ctx, fr = walking ? Math.floor(((ph % 6.2832) + 6.2832) % 6.2832/6.2832*8) % 8 : 2;   /* frame 2 = standing */
   const hpx = this.PPM*sc*ch.hm*1.06, wpx = hpx*A.cw/A.fh, N = this.night;
   c.save(); c.translate(x, fy); if ((face || 1) < 0) c.scale(-1, 1);
   c.fillStyle = 'rgba(0,0,0,.22)'; c.beginPath(); c.ellipse(0, 0, wpx*.28, hpx*.025, 0, 0, 6.28); c.fill();
@@ -3511,25 +3509,25 @@ Object.assign(L, {
 });
 /* ---------- the 19-vehicle roster from the user's sheet ---------- */
 const V6R = [
- ['v_suzuki','suzuki','micro','Mini Van 7','ميني فان 7',7,0,95000,2,1150,110,6000,'b92',40,8,4,[3.8,2.2,1.5,1.0,.82],4.6,1.5,3800],
- ['v_foton','fotonc2','micro','Compact Van 8','فان صغير 8',8,0,120000,3,1350,135,6000,'b92',45,8.5,4,[3.8,2.2,1.5,1.0,.82],4.4,1.7,4300],
- ['v_n300','joya4','micro','Standard Van 11','فان عادي 11',11,0,150000,3,1750,200,4200,'diesel',60,9.5,4,[4.3,2.4,1.5,1.0,.82],4.1,2.1,5400],
- ['van_euro','joya5','micro','Long Van 14','فان طويل 14',14,0,190000,4,2100,250,4000,'diesel',70,10.5,4,[4.3,2.4,1.5,1.0,.8],4.1,2.4,6200],
- ['micro_classic','hiace','micro','HighRoof 14','هاي روف 14',14,0,0,1,2250,280,3900,'diesel',70,11.5,4,[4.31,2.33,1.44,1.0,.8],4.1,2.6,6600],
- ['micro_hr','kingwb','micro','Wide Body 15','وايد بودي 15',15,0,230000,5,2450,300,3800,'diesel',75,11.8,4,[4.3,2.4,1.5,1.0,.8],4.1,2.8,7000],
- ['micro_jumbo','gd6532','micro','Long Body 16','بودي طويل 16',16,0,280000,6,2600,320,3800,'diesel',75,12.2,4,[4.3,2.4,1.5,1.0,.8],4.2,2.9,7200],
- ['v_shineray','fotonview','minibus','View Minibus 18','ميني باص فيو 18',18,2,420000,8,3300,360,3600,'diesel',80,13.5,4,[4.6,2.5,1.5,1.0,.8],4.3,3.3,9500],
- ['van_xl','kl6600','minibus','Midi Van 19','ميدي فان 19',19,2,450000,8,3500,380,3600,'diesel',85,14,4,[4.6,2.5,1.5,1.0,.8],4.3,3.4,10000],
- ['v_joya6','joya6','minibus','Coach Van 19','كوتش فان 19',19,2,480000,9,3600,390,3600,'diesel',90,14,4,[4.6,2.5,1.5,1.0,.8],4.3,3.4,10000],
+ ['v_suzuki','suzuki','micro','Suzuki Every Minivan','سوزوكي إيفري',7,0,95000,2,1150,95,6500,'b92',40,7.4,4,[3.8,2.2,1.5,1.0,.82],4.6,1.5,3800],
+ ['v_foton','fotonc2','micro','Foton Gratour Mini','فوتون جراتور',8,0,120000,3,1350,135,6000,'b92',45,8.2,4,[3.8,2.2,1.5,1.0,.82],4.4,1.7,4300],
+ ['v_n300','joya4','micro','Chevrolet N300 Van','شيفروليه N300',11,0,150000,3,1250,108,6000,'diesel',45,7.8,4,[4.3,2.4,1.5,1.0,.82],4.1,2.1,5400],
+ ['van_euro','joya5','micro','Foton Toano Long','فوتون تونو',14,0,190000,4,2400,300,3600,'diesel',70,10.5,4,[4.3,2.4,1.5,1.0,.8],4.1,2.4,6200],
+ ['micro_classic','hiace','micro','Toyota HiAce H200','تويوتا هايس',14,0,0,1,2250,260,3600,'diesel',70,9.8,4,[4.31,2.33,1.44,1.0,.8],4.1,2.6,6600],
+ ['micro_hr','kingwb','micro','King Long Kingo Wide','كينج لونج كينجو',15,0,230000,5,2600,330,3600,'diesel',75,11.2,4,[4.3,2.4,1.5,1.0,.8],4.1,2.8,7000],
+ ['micro_jumbo','gd6532','micro','Golden Dragon 6532','جولدن دراجون 6532',16,0,280000,6,2750,350,3600,'diesel',75,11.8,4,[4.3,2.4,1.5,1.0,.8],4.2,2.9,7200],
+ ['v_shineray','fotonview','minibus','Foton View CS2','فوتون فيو',18,2,420000,8,3300,360,3600,'diesel',80,12.8,4,[4.6,2.5,1.5,1.0,.8],4.3,3.3,9500],
+ ['van_xl','kl6600','minibus','King Long Kingo 6600','كينج لونج 6600',19,2,450000,8,3500,380,3400,'diesel',85,13.4,4,[4.6,2.5,1.5,1.0,.8],4.3,3.4,10000],
+ ['v_joya6','joya6','minibus','Joylong Joya 6','جوي لونج جويا 6',19,2,480000,9,3600,385,3400,'diesel',90,13.6,4,[4.6,2.5,1.5,1.0,.8],4.3,3.4,10000],
  ['coaster','coaster','minibus','Mini Coach 26','ميني كوتش 26',26,6,640000,9,4300,520,3300,'diesel',95,17,6,[5.1,2.8,1.7,1.0,.78],4.6,4.2,15500],
- ['mini_rosa','rosa','minibus','Comfort Minibus 25','ميني باص كومفورت 25',25,4,700000,10,4200,510,3300,'diesel',95,16.5,6,[5.1,2.8,1.7,1.0,.78],4.6,4.1,15500],
- ['v_isuzu','isuzu','minibus','Truck-chassis Bus 28','أتوبيس شاسيه 28',28,6,720000,10,5200,560,3000,'diesel',110,18,4,[5.4,3.0,1.8,1.2,1.0],5.1,4.8,18000],
- ['v_higer','higer','minibus','Midi Bus 29','ميدي باص 29',29,6,780000,11,5600,600,3000,'diesel',115,18.5,4,[5.4,3.0,1.8,1.2,1.0],4.9,5.0,19000],
- ['v_yutong77','yutong77','minibus','Midi Coach 30','ميدي كوتش 30',30,4,850000,12,6200,650,2800,'diesel',130,19,6,[5.2,2.9,1.8,1.2,1.0],4.8,5.3,21000],
+ ['mini_rosa','rosa','minibus','Mitsubishi Fuso Rosa','ميتسوبيشي روزا',25,4,700000,10,4200,491,3200,'diesel',95,16.0,6,[5.1,2.8,1.7,1.0,.78],4.6,4.1,15500],
+ ['v_isuzu','isuzu','minibus','Isuzu NPR Bus','إيزوزو NPR',28,6,720000,10,5200,513,2600,'diesel',110,17.5,4,[5.4,3.0,1.8,1.2,1.0],5.1,4.8,18000],
+ ['v_higer','higer','minibus','Higer KLQ6728','هايجر KLQ6728',29,6,780000,11,5600,600,2600,'diesel',115,18.0,4,[5.4,3.0,1.8,1.2,1.0],4.9,5.0,19000],
+ ['v_yutong77','yutong77','minibus','Yutong ZK6770','يوتونج ZK6770',30,4,850000,12,6200,650,2500,'diesel',130,18.8,6,[5.2,2.9,1.8,1.2,1.0],4.8,5.3,21000],
  ['citybus','kl6127','city','City Bus 45','أتوبيس مدينة 45',35,30,1250000,12,11000,1150,2600,'diesel',220,32,6,[3.4,2.0,1.4,1.0,.82,.7],5.2,7.5,44000],
- ['v_zk6128','zk6128','city','Metro Bus 47','أتوبيس مترو 47',38,30,1600000,14,11500,1250,2600,'diesel',240,33,6,[3.4,2.0,1.4,1.0,.82,.7],5.1,7.6,46000],
- ['coach','gd6125','coach','Intercity Coach 49','أتوبيس سفر 49',49,0,2400000,18,12900,1800,2400,'diesel',300,30,6,[3.8,2.2,1.5,1.12,.88,.72],4.2,7.8,58000],
- ['v_tourismo','tourismo','coach','Luxury Coach 51','أتوبيس فاخر 51',51,0,3400000,22,13500,2000,2300,'diesel',350,31,6,[3.8,2.2,1.5,1.12,.88,.72],4.1,7.6,60000]
+ ['v_zk6128','zk6128','city','Yutong ZK6128HG','يوتونج ZK6128',38,30,1600000,14,11500,1250,2200,'diesel',240,32.5,6,[3.4,2.0,1.4,1.0,.82,.7],5.1,7.6,46000],
+ ['coach','gd6125','coach','Golden Dragon Navigator 6125','جولدن دراجون 6125',49,0,2400000,18,12900,1700,2100,'diesel',300,29.5,6,[3.8,2.2,1.5,1.12,.88,.72],4.2,7.8,58000],
+ ['v_tourismo','tourismo','coach','Mercedes-Benz Tourismo RHD','مرسيدس تورزمو',51,0,3400000,22,13500,1900,2000,'diesel',350,30.5,6,[3.8,2.2,1.5,1.12,.88,.72],4.1,7.6,60000]
 ];
 { const keep = new Set(V6R.map(r => r[0]));
   for (const r of V6R) { let v = vehById(r[0]); if (!v) { v = Object.assign({}, vehById(r[2] === 'micro' ? 'micro_classic' : r[2] === 'minibus' ? 'coaster' : r[2] === 'city' ? 'citybus' : 'coach'), {id:r[0]}); VEH.push(v); }
@@ -4115,7 +4113,7 @@ EVENTS.licStop = {w:t => THEMES[t].city ? .55 : .35};
 Object.assign(L, {
   pv_try:['Preview — not paid yet','معاينة — لسه مدفعتش'],
   pv_ok:['Buy','اشتري'], pv_no:['Undo','رجّع'], pv_free:['Apply','طبّق'],
-  pv_conf:['Confirm purchase','تأكيد الشراء'], pv_yes:['Buy','اشتري'], pv_cancel:['إلغاء','إلغاء']
+  pv_conf:['Confirm purchase','تأكيد الشراء'], pv_yes:['Buy','اشتري'], pv_cancel:['Cancel','إلغاء']
 });
 const PV = {items:{}, snap:null, n:0, skip:false,
   uniq:['cStkAdd','cStkWrite','fixPart','repair'],
@@ -4197,7 +4195,7 @@ function avImg(s, px){ return `<img src="${ASSETS.avatars[avKey(s)]}" alt="" sty
 /* ================= Egyptian driving licence card ================= */
 function licNo(s){ let h = 0; const k = (s.name || 'driver') + (s.lic && s.lic.issued || 0);
   for (let i = 0; i < k.length; i++) h = (h*31 + k.charCodeAt(i)) >>> 0;
-  return String(10000000000000 + h % 80000000000000); }
+  return String(10000000 + h % 89999999); }   /* 8 digits, as on a real card */
 function dstr(d){ const x = new Date(d); const p = n => String(n).padStart(2, '0');
   return p(x.getDate()) + '/' + p(x.getMonth() + 1) + '/' + x.getFullYear(); }
 function licCard(){
@@ -4214,12 +4212,15 @@ function licCard(){
                 [71.0, dstr(issued)],
                 [78.0, dstr(expiry)],
                 [85.0, cls]];
-  const side = 'left:35%;right:43%;text-align:center';
-  const cells = rows.map(([y, v]) =>
-    `<div style="position:absolute;top:${y}%;${side};transform:translateY(-50%);
-      font-size:clamp(13px,4.2cqw,30px);font-weight:800;color:#0b1926;white-space:nowrap;letter-spacing:0;
+  const side = 'left:33%;right:44.5%;text-align:right';
+  /* the Date of Birth row has a wide English label running into the middle,
+     so that one value sits to the left of it instead */
+  const dobSide = 'left:16%;right:63%;text-align:right';
+  const cells = rows.map(([y, v], ri) =>
+    `<div class="licv" style="position:absolute;top:${y}%;${ri === 2 ? dobSide : side};transform:translateY(-50%);
+      font-size:clamp(9px,3.4cqw,26px);font-weight:800;color:#0b1926;white-space:nowrap;letter-spacing:0;
       overflow:hidden;text-overflow:ellipsis">${v}</div>`).join('');
-  return `<div style="position:relative;container-type:inline-size;width:min(60%,calc(var(--u)*52));margin:.9em auto 0;aspect-ratio:668/454;
+  return `<div id="licCard" style="position:relative;container-type:inline-size;width:min(88%,calc(var(--u)*76));margin:.9em auto 0;aspect-ratio:668/454;
       border-radius:calc(var(--u)*1.4);overflow:hidden;box-shadow:0 12px 32px rgba(0,0,0,.6)">
     <img src="${ASSETS.ui[ar ? 'lic_ar' : 'lic_en']}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:fill">
     <div style="position:absolute;inset:0;direction:${ar ? 'rtl' : 'ltr'}">${cells}</div>
@@ -4554,6 +4555,46 @@ function licWarn(){
   // the old free starters are now ordinary purchases
   const PRICE = {micro_classic:165000, car_old:55000};
   for (const v of VEH) if (v.id !== STARTER && !v.price && PRICE[v.id]) v.price = PRICE[v.id];
+
+/* ---- real models and figures, applied after every other table has built ---- */
+const VSPEC = {
+  v_suzuki:['Suzuki Every Minivan','سوزوكي إيفري','0.66 L i3 turbo',47,95,6500,120,7.4,40,1150,2019],
+  v_foton:['Foton Gratour Mini','فوتون جراتور','1.5 L i4',78,135,6000,130,8.2,45,1350,2022],
+  v_n300:['Chevrolet N300 Van','شيفروليه N300','1.2 L i4',60,108,6000,135,7.8,45,1250,2021],
+  micro_classic:['Toyota HiAce H200','تويوتا هايس','2.5 L D-4D i4 diesel',75,260,3600,155,9.8,70,2250,2012],
+  van_euro:['Foton Toano Long','فوتون تونو','2.8 L Cummins i4 diesel',100,300,3600,140,10.5,70,2400,2023],
+  micro_hr:['King Long Kingo Wide','كينج لونج كينجو','2.8 L i4 diesel',110,330,3600,135,11.2,75,2600,2022],
+  micro_jumbo:['Golden Dragon 6532','جولدن دراجون 6532','2.8 L i4 diesel',115,350,3600,130,11.8,75,2750,2023],
+  v_shineray:['Foton View CS2','فوتون فيو','2.8 L Cummins ISF diesel',115,360,3600,125,12.8,80,3300,2021],
+  van_xl:['King Long Kingo 6600','كينج لونج 6600','3.0 L i4 diesel',120,380,3400,120,13.4,85,3500,2024],
+  v_joya6:['Joylong Joya 6','جوي لونج جويا 6','2.8 L i4 diesel',120,385,3400,120,13.6,90,3600,2021],
+  mini_rosa:['Mitsubishi Fuso Rosa','ميتسوبيشي روزا','4.9 L 4M50 i4 diesel',132,491,3200,110,16.0,95,4200,2023],
+  coaster:['Toyota Coaster B70','تويوتا كوستر','4.0 L 1HZ i6 diesel',100,285,3200,110,16.5,95,4300,2021],
+  v_isuzu:['Isuzu NPR Bus','إيزوزو NPR','5.2 L 4HK1 i4 diesel',140,513,2600,105,17.5,110,5200,2021],
+  v_higer:['Higer KLQ6728','هايجر KLQ6728','3.8 L Cummins ISF diesel',125,600,2600,100,18.0,115,5600,2021],
+  v_yutong77:['Yutong ZK6770','يوتونج ZK6770','4.8 L Yuchai i4 diesel',147,650,2500,100,18.8,130,6200,2021],
+  citybus:['King Long XMQ6127','كينج لونج XMQ6127','8.9 L Cummins ISL i6',243,1200,2200,100,31.0,220,11000,2020],
+  v_zk6128:['Yutong ZK6128HG','يوتونج ZK6128','8.9 L Yuchai i6 diesel',250,1250,2200,100,32.5,240,11500,2020],
+  coach:['Golden Dragon Navigator 6125','جولدن دراجون 6125','10.5 L Weichai i6 diesel',276,1700,2100,110,29.5,300,12900,2024],
+  v_tourismo:['Mercedes-Benz Tourismo RHD','مرسيدس تورزمو','10.7 L OM470 i6 diesel',290,1900,2000,120,30.5,350,13500,2024],
+  car_old:['Fiat 128 Nasr','فيات 128 نصر','1.3 L i4',48,96,6000,145,7.8,38,1080,1985],
+  hatch_city:['Lada 2107 Riva','لادا 2107','1.5 L i4',53,106,5600,150,8.6,39,1060,2011],
+  hatch:['Hyundai Verna','هيونداي فيرنا','1.6 L Gamma i4',90,155,6300,180,6.6,45,1150,2021],
+  sedan_compact:['Daewoo Lanos (Nasr)','دايو لانوس','1.5 L i4',64,130,6000,165,7.2,48,1120,2019],
+  sedan16:['Chevrolet Optra','شيفروليه أوبترا','1.6 L i4',80,150,6200,175,7.6,60,1260,2022],
+  sedan_mid:['Toyota Corolla 1.8','تويوتا كورولا','1.8 L 2ZR-FE i4',103,173,6200,185,7.1,50,1420,2024],
+};
+(function(){
+  for (const id in VSPEC) {
+    const v = vehById(id); if (!v) continue;
+    const [en, ar, engN, kW, tq, rpmMax, topKmh, lp100, tank, mass, yr] = VSPEC[id];
+    v.n = {en, ar};
+    Object.assign(v, {engN, kW, tq, rpmMax, topKmh, lp100, tank, mass, yr});
+    v.power = kW;                       /* kW, as quoted by the manufacturer */
+    v.hp = Math.round(kW*1.341);
+  }
+})();
+
   // the free starter must never be gated
   const st = vehById(STARTER); if (st) { st.lvl = 1; st.price = 0; }
 })();
@@ -5178,6 +5219,12 @@ const MUSIC = {
 };
 /* menus play it, driving does not */
 { const MENU_SCREENS = ['hub','routes','modes','showroom','workshop','dmv','gas','profile','missions','rewards','settings','free'];
+  /* the pause screen counts as a menu: bring the music back while paused */
+  setInterval(() => { try {
+    if (GAME.state !== 'play') return;
+    const want = !!GAME.paused;
+    if (want !== !!MUSIC.wanted) MUSIC.want(want);
+  } catch(e) {} }, 400);
   const _s = UI.show;
   UI.show = function(n, p){ const r = _s.apply(this, arguments);
     try { MUSIC.init(); MUSIC.want(MENU_SCREENS.indexOf(n) >= 0); } catch(e) {}
@@ -5608,44 +5655,42 @@ function smartAI(G, dt){
   if (!G || GAME.state !== 'play' || !G.traffic) return;
   const car = G.car, W = G.world;
   for (const o of G.traffic) {
-    if (o.parked || o.rider === undefined && false) continue;
     if (o.parked) continue;
-    const seg = W.segAt ? W.segAt(o.x) : null;
-    const lim = (seg && seg.lim) || 60;
-    let target = (o.v0 != null ? o.v0 : lim/3.6);
+    const cruise = (o.v0 != null ? o.v0 : 12);
+    let cap = cruise;                       /* a ceiling, not a target */
 
-    /* obey the lights */
+    /* stop for a red, ease for an amber - only close to the line */
     if (W.tl) for (const l of W.tl) {
-      const d = l.x - o.x;
-      if (d > 0 && d < 42 && Math.abs(o.lp - (l.lane || 0)) < .6) {
-        if (l.st === 'r') target = Math.min(target, d < 9 ? 0 : d*0.22);
-        else if (l.st === 'y') target = Math.min(target, d*0.35);
+      const d = (o.lp > .5 ? (o.x - l.x) : (l.x - o.x));
+      if (d > 0 && d < 26) {
+        if (l.st === 'r') cap = Math.min(cap, d < 7 ? 0 : d*0.45);
+        else if (l.st === 'y' && d < 14) cap = Math.min(cap, d*0.7);
       }
     }
-    /* keep a gap from whoever is ahead in the same lane */
-    let lead = null, gap = 1e9;
+    /* keep a gap from the vehicle directly ahead in the same lane */
+    let gap = 1e9;
     for (const q of G.traffic) {
-      if (q === o || Math.abs(q.lp - o.lp) > .45) continue;
+      if (q === o || q.parked || Math.abs(q.lp - o.lp) > .4) continue;
       const d = (o.lp > .5 ? (o.x - q.x) : (q.x - o.x));
-      if (d > 0 && d < gap) { gap = d; lead = q; }
+      if (d > 0 && d < gap) gap = d;
     }
     const pd = (o.lp > .5 ? (o.x - car.x) : (car.x - o.x));
-    if (pd > 0 && pd < gap) { gap = pd; lead = car; }
-    if (lead) {
-      const safe = 6 + Math.abs(o.v || 0)*0.9;
-      if (gap < safe) target = Math.min(target, Math.max(0, (lead.v ?? lead.vx ?? 0) * (gap/safe)));
-    }
-    /* ease off through bends and over crests */
-    const slope = Math.abs((W.h(o.x + 6) - W.h(o.x - 6))/12);
-    if (slope > .05) target *= Math.max(.6, 1 - slope*1.6);
-    /* smooth approach to the target */
-    o.v = o.v == null ? target : o.v + Math.max(-9*dt, Math.min(5*dt, target - o.v));
-    if (o.v < .05) o.v = 0;
+    if (pd > 0 && pd < gap && Math.abs(o.lp - laneLp(car.lane)) < .4) gap = pd;
+    const safe = o.L * 1.6 + Math.abs(o.v || 0) * 0.55;
+    if (gap < safe) cap = Math.min(cap, cruise * Math.max(0, gap / safe));
+
+    /* never park a car in the road: if the way is clear, get moving again */
+    if (gap > safe * 2.2) cap = cruise;
+
+    const v = o.v == null ? cruise : o.v;
+    const accel = 4.5 * dt, brake = 9 * dt;
+    o.v = v > cap ? Math.max(cap, v - brake) : Math.min(cap, v + accel);
+    if (o.v < .12 && cap > .5) o.v = .12;   /* no permanent standstill */
   }
 }
 { const _up = updPeople; updPeople = function(G, dt){ _up(G, dt);
     try { smartAI(G, dt); } catch(e) {}
-    try { if (GAME.state === 'play' && MUSIC.wanted) MUSIC.want(false); } catch(e) {} }; }
+    try { if (GAME.state === 'play' && !GAME.paused && MUSIC.wanted) MUSIC.want(false); } catch(e) {} }; }
 
 /* ---------- 10: roadside garage / station opens the full-screen page ---------- */
 Object.assign(L, {
@@ -5861,6 +5906,7 @@ const AC = {
     clearInterval(this._t); this._t = setInterval(tick, 1000); tick();
   },
   /* the watchdog: cash must only ever change through the game's own accounting */
+  expect(n){ this.allow = Math.max(this.allow || 0, n*1.1 + 5000); },
   start(){
     const b = this.banned();
     if (b) { this.screen(b); return; }
@@ -5873,7 +5919,8 @@ const AC = {
         const jump = s.cash - last;
         /* the largest honest gain is a long-route payout plus tips; anything
            far beyond that appearing at once did not come from playing */
-        const ceiling = 40000 + dt*3000;
+        let ceiling = 40000 + dt*3000;
+        if (this.allow > 0) { ceiling = Math.max(ceiling, this.allow); this.allow = 0; }
         if (jump > ceiling) return this.ban('cash+' + Math.round(jump));
         if (s.lvl > 60 || s.xp < 0 || s.cash < 0) return this.ban('stats');
         last = s.cash;
@@ -5980,10 +6027,11 @@ function drawCameras(G){
       const gp = grade(G.car.x);
       G.car.slopeA = -gp*9.81*0.82;                 /* along-road component of gravity */
       G.car.vx += G.car.slopeA*dt;
+      /* AI speed is governed by smartAI; the gradient only shapes its cruise */
       for (const o of G.traffic) {
-        if (o.parked) continue;
-        const g2 = grade(o.x);
-        o.v = Math.max(0, (o.v || 0) - g2*9.81*0.5*dt*(o.lp > .5 ? -1 : 1));
+        if (o.parked || o.v0 == null) continue;
+        const g2 = grade(o.x) * (o.lp > .5 ? -1 : 1);
+        o.v0 = Math.max(3, (o.v0Base != null ? o.v0Base : (o.v0Base = o.v0)) * (1 - g2*1.1));
       }
     } catch(e) {}
   };
@@ -5998,44 +6046,116 @@ Object.assign(L, {
 });
 /* Egyptian FM streams, with the dial frequency where the station has one. */
 const RADIO_ST = [
-  {n:{en:'Nogoum FM',ar:'نجوم إف إم'},        f:'100.6', u:'https://streaming.radiostreamlive.com/radionogoum_devices'},
-  {n:{en:'Nile FM',ar:'نايل إف إم'},          f:'104.2', u:'https://streaming.radiostreamlive.com/radionilefm_devices'},
-  {n:{en:'Radio Hits',ar:'راديو هيتس'},       f:'88.2',  u:'https://streaming.radiostreamlive.com/radiohits_devices'},
-  {n:{en:'Nagham FM',ar:'نغم إف إم'},         f:'105.3', u:'https://streaming.radiostreamlive.com/radionagham_devices'},
-  {n:{en:'Mega FM',ar:'ميجا إف إم'},          f:'92.7',  u:'https://streaming.radiostreamlive.com/radiomega_devices'},
-  {n:{en:'Energy FM',ar:'إنرچي إف إم'},       f:'93.7',  u:'https://streaming.radiostreamlive.com/radioenergy_devices'},
-  {n:{en:'Shaabi FM',ar:'شعبي إف إم'},        f:'',      u:'https://streaming.radiostreamlive.com/radioshaabi_devices'},
-  {n:{en:'Radio Masr',ar:'راديو مصر'},        f:'88.7',  u:'https://n10.radiojar.com/8s5u5tpdtwzuv'},
-  {n:{en:'Quran Kareem',ar:'إذاعة القرآن'},   f:'98.2',  u:'https://stream.radiojar.com/8s5u5tpdtwzuv'},
-  {n:{en:'General Programme',ar:'البرنامج العام'}, f:'95.4', u:'https://streaming.radiostreamlive.com/radiomasr_devices'},
-  {n:{en:'Middle East Radio',ar:'إذاعة الشرق الأوسط'}, f:'95.2', u:'https://audiostreaming.itworkscdn.com:9066/stream'},
-  {n:{en:'Greater Cairo',ar:'إذاعة القاهرة الكبرى'}, f:'95.7', u:'https://audiostreaming.itworkscdn.com:9068/stream'},
-  {n:{en:'Al-Shabab wal Riyada',ar:'الشباب والرياضة'}, f:'104.2', u:'https://audiostreaming.itworkscdn.com:9060/stream'},
-  {n:{en:'Radio Sawa',ar:'راديو سوا'},        f:'91.7',  u:'https://audiostreaming.itworkscdn.com:9074/stream'},
-  {n:{en:'Al-Aghany',ar:'إذاعة الأغاني'},     f:'97.2',  u:'https://audiostreaming.itworkscdn.com:9078/stream'},
-  {n:{en:'Alexandria Radio',ar:'إذاعة إسكندرية'}, f:'99.0', u:'https://streaming.radiostreamlive.com/radioalex_devices'}
+  {n:{en:'Nogoum FM',ar:'نجوم إف إم'}, f:'100.6', u:[
+    'https://stream.radiojar.com/2qkr4dvcfm0uv',
+    'https://streaming.radiostreamlive.com/radionogoum_devices',
+    'http://streaming.radiostreamlive.com/radionogoum_devices']},
+  {n:{en:'Nile FM',ar:'نايل إف إم'}, f:'104.2', u:[
+    'https://stream.radiojar.com/8s5u5tpdtwzuv',
+    'https://streaming.radiostreamlive.com/radionilefm_devices',
+    'http://streaming.radiostreamlive.com/radionilefm_devices']},
+  {n:{en:'Nagham FM',ar:'نغم إف إم'}, f:'105.3', u:[
+    'https://streaming.radiostreamlive.com/radionagham_devices',
+    'http://streaming.radiostreamlive.com/radionagham_devices']},
+  {n:{en:'Mega FM',ar:'ميجا إف إم'}, f:'92.7', u:[
+    'https://audiostreaming.itworkscdn.com:9074/stream',
+    'http://audiostreaming.itworkscdn.com:9074/stream']},
+  {n:{en:'Radio Hits',ar:'راديو هيتس'}, f:'88.2', u:[
+    'https://audiostreaming.itworkscdn.com:9060/stream',
+    'http://audiostreaming.itworkscdn.com:9060/stream']},
+  {n:{en:'Energy FM',ar:'إنرچي إف إم'}, f:'93.7', u:[
+    'https://audiostreaming.itworkscdn.com:9066/stream',
+    'http://audiostreaming.itworkscdn.com:9066/stream']},
+  {n:{en:'Shaabi FM',ar:'شعبي إف إم'}, f:'', u:[
+    'https://streaming.radiostreamlive.com/radioshaabi_devices',
+    'http://streaming.radiostreamlive.com/radioshaabi_devices']},
+  {n:{en:'Radio Masr',ar:'راديو مصر'}, f:'88.7', u:[
+    'https://audiostreaming.itworkscdn.com:9068/stream',
+    'http://audiostreaming.itworkscdn.com:9068/stream']},
+  {n:{en:'Quran Kareem',ar:'إذاعة القرآن الكريم'}, f:'98.2', u:[
+    'https://n0d.radiojar.com/0tpy1h0kxtzuv',
+    'https://stream.radiojar.com/0tpy1h0kxtzuv']},
+  {n:{en:'General Programme',ar:'البرنامج العام'}, f:'95.4', u:[
+    'https://audiostreaming.itworkscdn.com:9078/stream',
+    'http://audiostreaming.itworkscdn.com:9078/stream']},
+  {n:{en:'Middle East Radio',ar:'إذاعة الشرق الأوسط'}, f:'95.2', u:[
+    'https://audiostreaming.itworkscdn.com:9070/stream',
+    'http://audiostreaming.itworkscdn.com:9070/stream']},
+  {n:{en:'Greater Cairo',ar:'إذاعة القاهرة الكبرى'}, f:'95.7', u:[
+    'https://audiostreaming.itworkscdn.com:9072/stream',
+    'http://audiostreaming.itworkscdn.com:9072/stream']},
+  {n:{en:'Youth & Sport',ar:'الشباب والرياضة'}, f:'104.2', u:[
+    'https://audiostreaming.itworkscdn.com:9076/stream',
+    'http://audiostreaming.itworkscdn.com:9076/stream']},
+  {n:{en:'Alexandria Radio',ar:'إذاعة إسكندرية'}, f:'99.0', u:[
+    'https://audiostreaming.itworkscdn.com:9080/stream',
+    'http://audiostreaming.itworkscdn.com:9080/stream']},
+  {n:{en:'Radio Sawa',ar:'راديو سوا'}, f:'91.7', u:[
+    'https://stream.radiosawa.com/sawa.mp3',
+    'http://stream.radiosawa.com/sawa.mp3']},
+  {n:{en:'Al-Aghany',ar:'إذاعة الأغاني'}, f:'97.2', u:[
+    'https://audiostreaming.itworkscdn.com:9082/stream',
+    'http://audiostreaming.itworkscdn.com:9082/stream']},
+  {n:{en:'My station',ar:'محطتي'}, f:'', custom:1, u:['']}
 ];
+/* Station URLs can come from three places, in order of priority:
+     1. anything you typed in-game with the ✎ button (saved on the device)
+     2. assets/radio.json, if you drop one in
+     3. the built-in list above
+   radio.json format:  [{"name":"Nogoum FM","ar":"نجوم إف إم","fm":"100.6",
+                         "url":"https://.../stream"}, ...]                        */
+try { const m = JSON.parse(localStorage.getItem('ogra_radio') || '{}');
+  RADIO_ST.forEach(st => { const u = m[st.n.en]; if (u) st.u = [u]; }); } catch(e) {}
+function applyRadioList(list){
+  if (!Array.isArray(list) || !list.length) return;
+  const saved = (() => { try { return JSON.parse(localStorage.getItem('ogra_radio') || '{}'); } catch(e) { return {}; } })();
+  RADIO_ST.length = 0;
+  list.forEach(e => {
+    if (!e || !e.name) return;
+    const url = saved[e.name] || e.url;
+    RADIO_ST.push({n:{en:e.name, ar:e.ar || e.name}, f:e.fm || '', u:Array.isArray(url) ? url : [url || '']});
+  });
+  RADIO_ST.push({n:{en:'My station', ar:'محطتي'}, f:'', custom:1, u:[saved['My station'] || '']});
+  try { RADIO.i = 0; RADIO.paint(); } catch(e) {}
+  console.log('radio: loaded ' + RADIO_ST.length + ' stations from assets/radio.js');
+}
+{ const sc = document.createElement('script');
+  sc.src = 'assets/radio.js';
+  sc.onload = () => { try { applyRadioList(window.OGRA_RADIO); } catch(e) {} };
+  sc.onerror = () => {};                       /* no file, keep the built-in list */
+  document.head.appendChild(sc); }
 const RADIO = {
   el:null, on:false, i:0, vol:.6, tries:0,
   init(){ if (this.el) return;
-    const a = document.createElement('audio'); a.preload = 'none'; a.crossOrigin = 'anonymous';
+    const a = document.createElement('audio'); a.preload = 'none';
+    /* no crossOrigin: it forces a CORS request and radio streams do not send
+       Access-Control-Allow-Origin, so the browser rejects almost all of them */
     document.body.appendChild(a); this.el = a; this.apply();
-    a.addEventListener('error', () => {
-      if (this.on && this.tries < RADIO_ST.length - 1) { this.tries++; this.tune(this.i + 1); }
-      else { this.tries = 0; try { UI.toast(t('radio_none')); } catch(e) {} }
-    });
-    a.addEventListener('playing', () => { this.tries = 0; });
+    a.addEventListener('error', () => { if (this.on) setTimeout(() => this.nextCandidate(), 450); });
+    a.addEventListener('stalled', () => { if (this.on && this.status !== 'dead') this.status = 'try', this.paint(); });
+    a.addEventListener('waiting', () => { if (this.on) { this.status = 'try'; this.paint(); } });
+    a.addEventListener('playing', () => { this.tries = 0; this.status = 'live'; this.paint(); });
   },
   get gain(){ try { const V = GAME.save.set.vol; return (V.music ?? .75)*(V.master ?? 1); } catch(e) { return .6; } },
   apply(){ if (this.el) { try { this.el.volume = Math.max(0, Math.min(1, this.vol*this.gain)); } catch(e) {} } },
   power(on){ this.init(); this.tries = 0; this.on = on == null ? !this.on : !!on;
     if (this.on) this.tune(this.i); else { try { this.el.pause(); } catch(e) {} }
     this.paint(); },
-  tune(i){ this.init(); this.i = (i + RADIO_ST.length) % RADIO_ST.length;
-    const a = this.el;
-    try { a.src = RADIO_ST[this.i].u; this.apply();
-      if (this.on) { a.play().catch(() => {}); } } catch(e) {}
+  tune(i, alt){ this.init(); this.i = (i + RADIO_ST.length) % RADIO_ST.length;
+    this.alt = alt || 0; if (!alt) this.status = 'try';
+    const a = this.el, st = RADIO_ST[this.i];
+    const list = Array.isArray(st.u) ? st.u : [st.u];
+    const url = list[Math.min(this.alt, list.length - 1)];
+    try { a.src = url; this.apply();
+      if (this.on) { a.play().catch(() => this.nextCandidate()); } } catch(e) { this.nextCandidate(); }
     this.paint(); },
+  nextCandidate(){
+    /* try this station's own mirrors, then stop. Never skip to another
+       station on its own - that made the dial race past everything. */
+    const st = RADIO_ST[this.i], list = Array.isArray(st.u) ? st.u : [st.u];
+    if (this.alt + 1 < list.length) { this.status = 'try'; return this.tune(this.i, this.alt + 1); }
+    this.status = 'dead'; this.paint();
+  },
   next(d){ this.tune(this.i + d); },
   setVol(v){ this.vol = Math.max(0, Math.min(1, v)); this.init(); this.apply(); this.paint(); },
   paint(){
@@ -6044,13 +6164,18 @@ const RADIO = {
     el.classList.toggle('off', !this.on);
     const nm = el.querySelector('.rst'), fr = el.querySelector('.rfr'), vb = el.querySelector('.rvb i'), vn = el.querySelector('.rvn');
     if (nm) nm.textContent = this.on ? tn(st.n) : t('radio_off');
-    if (fr) fr.textContent = this.on && st.f ? st.f + ' FM' : '';
+    if (fr) { const tag = !this.on ? '' :
+        this.status === 'live' ? (LANG.cur === 'ar' ? ' • مباشر' : ' • LIVE') :
+        this.status === 'dead' ? (LANG.cur === 'ar' ? ' • مش متاحة' : ' • OFF AIR') :
+        (LANG.cur === 'ar' ? ' • بيدوّر…' : ' • tuning…');
+      fr.textContent = this.on ? ((st.f ? st.f + ' FM' : '') + tag) : ''; }
     if (vb) vb.style.width = Math.round(this.vol*100) + '%';
     if (vn) vn.textContent = Math.round(this.vol*100);
   }
 };
 document.head.insertAdjacentHTML('beforeend', `<style>
-#radioBtn{position:absolute;z-index:7;pointer-events:auto;width:calc(var(--u)*5.2);height:calc(var(--u)*5.2);
+#radioBtn{position:relative;z-index:7;pointer-events:auto;flex:0 0 auto;margin-top:calc(var(--u)*.4);
+  width:calc(var(--u)*5.2);height:calc(var(--u)*5.2);
   border-radius:50%;border:1px solid rgba(255,255,255,.14);cursor:pointer;
   background:radial-gradient(circle at 34% 28%, #4a5568 0%, #2a3240 46%, #151b26 100%);
   box-shadow:0 5px 12px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.22), inset 0 -3px 6px rgba(0,0,0,.5);
@@ -6065,18 +6190,21 @@ document.head.insertAdjacentHTML('beforeend', `<style>
   background:url('assets/ui_radio.webp') center/100% 100% no-repeat;
   filter:drop-shadow(0 14px 34px rgba(0,0,0,.7))}
 #radioCard .z{position:absolute;background:transparent;border:0;padding:0;cursor:pointer}
-#radioCard .scr{position:absolute;left:22.3%;right:20.3%;top:10%;bottom:20%;
+#radioCard .scr{position:absolute;left:21.5%;right:19.5%;top:8%;bottom:14%;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2%;
   color:#7ce0b0;text-shadow:0 0 7px rgba(124,224,176,.5);pointer-events:none;overflow:hidden;
   font-family:Cairo,Rajdhani,sans-serif}
-#radioCard .rst{font-weight:800;font-size:clamp(10px,4.6cqw,24px);white-space:nowrap;max-width:96%;
-  overflow:hidden;text-overflow:ellipsis}
+#radioCard .rst{font-weight:800;font-size:clamp(10px,4.2cqw,22px);white-space:nowrap;max-width:98%;
+  overflow:hidden;text-overflow:ellipsis;line-height:1.15;text-align:center;width:100%}
 #radioCard .rfr{font-weight:600;font-size:clamp(8px,3cqw,15px);opacity:.85;font-family:Rajdhani,sans-serif}
 #radioCard .lo{display:flex;align-items:center;gap:.5em;font-size:clamp(8px,2.8cqw,13px)}
 #radioCard .rvb{width:26cqw;height:3.2cqw;min-height:4px;border-radius:99px;background:rgba(124,224,176,.22);overflow:hidden}
 #radioCard .rvb i{display:block;height:100%;background:#7ce0b0}
 #radioCard.off .scr{color:#4a5560;text-shadow:none}
 #radioCard.off .rvb i{background:#4a5560}
+#radioCard .radSet{position:absolute;right:22.6%;bottom:6%;z-index:3;background:rgba(0,0,0,.35);
+  border:1px solid rgba(124,224,176,.35);color:#7ce0b0;border-radius:6px;cursor:pointer;
+  font-size:clamp(8px,2.4cqw,13px);padding:0 .45em;line-height:1.5}
 #radioClose{position:absolute;top:calc(var(--u)*2);right:calc(var(--u)*2);z-index:2;
   background:rgba(10,16,28,.8);color:#dfe6f1;border:1px solid rgba(255,255,255,.14);
   border-radius:999px;padding:.5em 1.1em;font:inherit;font-weight:800;cursor:pointer}
@@ -6091,11 +6219,22 @@ function radioOverlay(){
         ${zone('radPow',  3.2, 10, 9.2, 38)}${zone('radMute', 3.2, 54, 9.2, 38)}
         ${zone('radUp',  12.6, 10, 9.2, 38)}${zone('radDown',12.6, 54, 9.2, 38)}
         ${zone('radNext',82.0, 10, 9.6, 38)}${zone('radPrev',82.0, 54, 9.6, 38)}
+        <button class="radSet" data-a="radSet" title="Stream URL">✎</button>
         <div class="scr"><div class="rst">--</div><div class="rfr"></div>
           <div class="lo"><span class="rvn">60</span><span class="rvb"><i style="width:60%"></i></span></div></div>
       </div>`;
     document.body.appendChild(ov);
-    ov.addEventListener('click', e => { if (e.target === ov) UI.hudAct('radClose'); });
+    /* the game delegates clicks from #screens/#modal/#hud only, and this sits
+       on <body>, so wire it up directly */
+    ov.addEventListener('click', e => {
+      const btn = e.target.closest('[data-a]');
+      if (btn) { e.preventDefault(); e.stopPropagation(); UI.hudAct(btn.dataset.a); return; }
+      if (e.target === ov) UI.hudAct('radClose');
+    });
+    ov.addEventListener('touchend', e => {
+      const btn = e.target.closest('[data-a]');
+      if (btn) { e.preventDefault(); UI.hudAct(btn.dataset.a); }
+    }, {passive:false});
   }
   ov.classList.add('show'); RADIO.init(); RADIO.paint();
 }
@@ -6121,10 +6260,661 @@ function radioOverlay(){
     if (a === 'radDown') return RADIO.setVol(RADIO.vol - .1);
     if (a === 'radMute') { RADIO.pre = RADIO.vol > 0 ? RADIO.vol : (RADIO.pre || .6);
       return RADIO.setVol(RADIO.vol > 0 ? 0 : RADIO.pre); }
+    if (a === 'radSet') {                    /* paste a stream URL for THIS station */
+      const st = RADIO_ST[RADIO.i];
+      const cur = Array.isArray(st.u) ? st.u[0] : st.u;
+      const v = prompt((LANG.cur === 'ar' ? 'رابط البث لـ ' : 'Stream URL for ') + tn(st.n) + ':', cur || '');
+      if (v !== null) { const url = v.trim();
+        st.u = url ? [url] : st.u;
+        try { const m = JSON.parse(localStorage.getItem('ogra_radio') || '{}');
+          m[st.n.en] = url; localStorage.setItem('ogra_radio', JSON.stringify(m)); } catch(e) {}
+        RADIO.tune(RADIO.i, 0); }
+      return; }
     return _ha.apply(this, arguments); }; }
 { const _a = UI.act;
   UI.act = function(a, p, el){ if (a && a.indexOf('rad') === 0) return UI.hudAct(a, p);
     return _a.apply(this, arguments); }; }
+
+
+/* The gap between the card's printed English and Arabic label columns is only
+   ~22% of its width. Rather than clip, shrink each line until it fits. */
+function fitLicence(){
+  const card = document.getElementById('licCard'); if (!card) return;
+  const rows = card.querySelectorAll('.licv');
+  rows.forEach(n => {
+    n.style.fontSize = '';
+    let px = parseFloat(getComputedStyle(n).fontSize);
+    let guard = 0;
+    while (n.scrollWidth > n.clientWidth + 1 && px > 7 && guard++ < 40) {
+      px -= 0.5; n.style.fontSize = px + 'px';
+    }
+  });
+}
+{ const _r = UI.refresh; UI.refresh = function(){ const r = _r.apply(this, arguments);
+    requestAnimationFrame(() => { try { fitLicence(); } catch(e) {} }); return r; }; }
+{ const _s = UI.show; UI.show = function(n, p){ const r = _s.apply(this, arguments);
+    requestAnimationFrame(() => { try { fitLicence(); } catch(e) {} }); return r; }; }
+addEventListener('resize', () => { try { fitLicence(); } catch(e) {} });
+
+
+/* ================= menu shell: nav rail, top bar, panel language ================= */
+Object.assign(L, {
+  nav_home:['Home','الرئيسية'], nav_routes:['Routes','المسارات'], nav_garage:['Garage','المرآب'],
+  nav_show:['Showroom','المعرض'], nav_miss:['Missions','المهام'], nav_gift:['Rewards','الجوائز'],
+  nav_traffic:['Traffic Unit','المرور'], nav_set:['Settings','الإعدادات'], nav_prof:['Driver','ملف السائق'],
+  hub_tag:['Egypt\u2019s roads — and you are the driver','شوارع مصر.. وإنت الأسطى'],
+  hub_go:['Start the trip','ابدأ الرحلة']
+});
+document.head.insertAdjacentHTML('beforeend', `<style>
+:root{--ink:#0b1220;--ink2:#0f1a2c;--panel:rgba(16,25,42,.86);--panel2:rgba(12,19,33,.92);
+  --line:rgba(255,255,255,.09);--gold:#ffb627;--gold2:#ffd98a;--goldd:#c9761a}
+
+/* ---- left navigation rail ---- */
+#navRail{position:fixed;top:0;bottom:0;left:0;z-index:30;width:var(--rail);
+  display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*.5);
+  padding:calc(var(--u)*9) calc(var(--u)*.6) calc(var(--u)*1.4);
+  background:linear-gradient(180deg,rgba(10,16,28,.96),rgba(8,12,22,.99));
+  border-right:1px solid var(--line);backdrop-filter:blur(10px);overflow-y:auto}
+#navRail.rtl{left:auto;right:0;border-right:0;border-left:1px solid var(--line)}
+#navRail button{width:100%;background:none;border:0;color:#8e9bb0;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*.25);
+  padding:calc(var(--u)*.9) 0;border-radius:calc(var(--u)*1.2);font:inherit;
+  font-size:calc(var(--u)*1.35);font-weight:700;transition:background .16s,color .16s}
+#navRail button .ni{font-size:calc(var(--u)*2.5);line-height:1}
+#navRail button:hover{color:#cfd8e6;background:rgba(255,255,255,.04)}
+#navRail button.on{color:#0e1420;background:linear-gradient(180deg,var(--gold2),var(--gold));
+  box-shadow:0 4px 14px rgba(255,182,39,.32)}
+/* inset the whole screen container so nothing can slide under the rail */
+body.menuUI #screens{left:var(--rail)!important;right:0!important}
+body.menuUI.rtlRail #screens{left:0!important;right:var(--rail)!important}
+body.menuUI #modal{left:var(--rail)}
+body.menuUI.rtlRail #modal{left:0;right:var(--rail)}
+#navRail{--rail:calc(var(--u)*8.6)}
+body.menuUI{--rail:calc(var(--u)*8.6)}
+
+/* ---- top bar ---- */
+#topBar{position:fixed;top:0;left:0;right:0;z-index:31;height:calc(var(--u)*7.4);
+  display:flex;align-items:center;gap:calc(var(--u)*.8);
+  padding:0 calc(var(--u)*1.4);pointer-events:none;
+  /* solid, so nothing behind it can read as overlapping text */
+  background:rgba(8,13,24,.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);box-shadow:0 6px 18px rgba(0,0,0,.45)}
+#topBar .tbChip,#topBar .tbProf{min-width:0}
+#topBar .tbProf .nm,#topBar .tbProf .xp{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  display:block;max-width:calc(var(--u)*18)}
+#topBar>*{pointer-events:auto}
+#topBar .tbSpacer{flex:1}
+#topBar .tbChip{display:flex;align-items:center;gap:.5em;height:calc(var(--u)*4.6);
+  padding:0 calc(var(--u)*1.2);border-radius:calc(var(--u)*1.4);
+  background:var(--panel);border:1px solid var(--line);color:#dbe3ef;
+  font-weight:800;font-size:calc(var(--u)*1.8);cursor:pointer;backdrop-filter:blur(8px)}
+#topBar .tbChip.gold{color:var(--gold2);border-color:rgba(255,182,39,.4)}
+#topBar .tbProf{display:flex;align-items:center;gap:calc(var(--u)*.9);height:calc(var(--u)*5.6);
+  padding:0 calc(var(--u)*1.4) 0 calc(var(--u)*.6);
+  border-radius:calc(var(--u)*2.8);background:var(--panel);border:1px solid var(--line);
+  cursor:pointer;backdrop-filter:blur(8px);white-space:nowrap}
+#topBar .tbProf .av{flex:0 0 auto;width:calc(var(--u)*4.2);height:calc(var(--u)*4.2);
+  border-radius:50%;overflow:hidden;background:#141a26;display:block;order:2}
+#topBar .tbProf .av img{width:100%;height:100%;object-fit:cover;display:block}
+#topBar .tbProf .who{display:flex;flex-direction:column;justify-content:center;
+  line-height:1.15;gap:calc(var(--u)*.15);order:3;min-width:0}
+#topBar .tbProf .nm{font-weight:800;font-size:calc(var(--u)*1.9);color:#eaf0f8;
+  overflow:hidden;text-overflow:ellipsis;max-width:calc(var(--u)*20)}
+#topBar .tbProf .xp{font-size:calc(var(--u)*1.35);color:#8e9bb0;font-weight:700}
+#topBar .tbProf .lvl{flex:0 0 auto;order:1;
+  width:calc(var(--u)*3.8);height:calc(var(--u)*3.8);border-radius:50%;
+  display:grid;place-items:center;font-weight:900;color:#0e1420;
+  background:linear-gradient(180deg,var(--gold2),var(--gold));font-size:calc(var(--u)*1.9);
+  box-shadow:0 2px 8px rgba(255,182,39,.35)}
+#topBar .tbCash{font-variant-numeric:tabular-nums;color:var(--gold2);font-weight:900;
+  font-size:calc(var(--u)*2.1)}
+#topBar .tbChip .num{font-variant-numeric:tabular-nums;border:0!important;background:none!important;
+  box-shadow:none!important;padding:0!important;color:var(--gold2)}
+#topBar .tbChip.gold{gap:.45em;padding:0 calc(var(--u)*1.5)}
+#topBar .tbChip .coin{width:1.15em;height:1.15em;margin:0}
+
+/* ---- shared panel language ---- */
+body.menuUI .pn{background:var(--panel)!important;border:1px solid var(--line)!important;
+  border-radius:calc(var(--u)*1.8)!important;backdrop-filter:blur(9px)}
+body.menuUI .btn{background:linear-gradient(180deg,var(--gold2),var(--gold))!important;
+  color:#161208!important;font-weight:900!important;border:0!important;
+  border-radius:calc(var(--u)*1.6)!important;box-shadow:0 6px 18px rgba(255,182,39,.28)!important}
+body.menuUI .btn.ok{background:linear-gradient(180deg,#8ef0b0,#3fbf78)!important;color:#06210f!important;
+  box-shadow:0 6px 18px rgba(63,191,120,.3)!important}
+body.menuUI .chip{border-radius:calc(var(--u)*1.3)!important;border:1px solid var(--line)!important;
+  background:rgba(255,255,255,.05)!important;font-weight:800!important}
+body.menuUI .chip.on{background:linear-gradient(180deg,var(--gold2),var(--gold))!important;
+  color:#161208!important;border-color:transparent!important}
+body.menuUI .scr>.hdr h2, body.menuUI .scrTitle{font-weight:900;letter-spacing:.01em}
+/* the checkered rule under a title, as in the mockups */
+body.menuUI .hub2 .today,body.menuUI .hub2 .daily,body.menuUI .hub2 .mission{
+  position:absolute!important;left:calc(var(--rail) + var(--u)*1.6)!important;right:auto!important;
+  bottom:calc(var(--u)*1.6)!important;top:auto!important;max-width:min(30vw,calc(var(--u)*38))}
+body.menuUI.rtlRail .hub2 .today,body.menuUI.rtlRail .hub2 .daily,body.menuUI.rtlRail .hub2 .mission{
+  left:calc(var(--u)*1.6)!important;right:auto!important}
+
+/* on a narrow screen the rail becomes a bottom bar so the content keeps its width */
+@media (max-width:760px){
+  body.menuUI #screens,body.menuUI.rtlRail #screens{left:0!important;right:0!important;
+    bottom:calc(var(--u)*8.6 + env(safe-area-inset-bottom))!important}
+  #navRail,#navRail.rtl{left:0;right:0;top:auto;bottom:0;width:auto;height:calc(var(--u)*8.6);
+    flex-direction:row;justify-content:space-around;padding:calc(var(--u)*.5) calc(var(--u)*.4);
+    border:0;border-top:1px solid var(--line);overflow:hidden;
+    padding-bottom:max(calc(var(--u)*.5),env(safe-area-inset-bottom))}
+  #navRail button{flex:1 1 0;min-width:0;padding:calc(var(--u)*.5) 0;
+    font-size:calc(var(--u)*1.05);white-space:nowrap}
+  #navRail button .ni{font-size:calc(var(--u)*2.2)}
+  body.menuUI #modal,body.menuUI.rtlRail #modal{left:0;right:0}
+  #topBar{height:calc(var(--u)*6.4);padding:0 calc(var(--u)*.8);gap:calc(var(--u)*.5)}
+  #topBar .tbProf .nm{max-width:calc(var(--u)*12)}
+  #topBar .tbProf .xp{display:none}
+  body.menuUI #screens{top:calc(var(--u)*6.4)!important}
+  body.menuUI #screens .scr{padding-top:calc(var(--u)*1)!important}
+}
+.chkRule{height:calc(var(--u)*.7);margin:calc(var(--u)*.5) auto calc(var(--u)*1);
+  width:min(42%,calc(var(--u)*40));
+  background:repeating-linear-gradient(90deg,var(--gold) 0 calc(var(--u)*.7),transparent 0 calc(var(--u)*1.4));
+  opacity:.75;border-radius:2px}
+body.menuUI .scr>.hdr{background:none!important;backdrop-filter:none!important}
+/* the old in-screen header row is replaced by the fixed top bar */
+body.menuUI .scr>.top{display:none!important}
+body.menuUI .scr>.hdr>h2{display:none!important}
+body.menuUI .scr>.hdr .prof,body.menuUI .scr>.hdr .cash,
+body.menuUI .scr>.hdr [data-a="lang"]{display:none!important}
+body.menuUI #screens{top:calc(var(--u)*7.4)!important}
+body.menuUI #screens .scr{padding-top:calc(var(--u)*1.2)!important}
+/* screen title block, centred with the checkered rule beneath */
+.scrHead{text-align:center;margin:calc(var(--u)*.6) 0 calc(var(--u)*1.4)}
+.scrHead h1{margin:0;font-weight:900;font-size:calc(var(--u)*4.6);letter-spacing:.01em;
+  background:linear-gradient(180deg,#fff 8%,var(--gold2) 55%,var(--gold) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.scrHead .sub{color:#93a1b6;font-weight:700;font-size:calc(var(--u)*1.8);margin-top:calc(var(--u)*.2)}
+/* hub hero */
+body.menuUI .hub2 .logo{margin-top:calc(var(--u)*1)}
+body.menuUI .hub2 .dock{gap:calc(var(--u)*1)}
+body.menuUI .tile{background:var(--panel)!important;border:1px solid var(--line)!important;
+  border-radius:calc(var(--u)*1.6)!important;font-weight:800!important;
+  padding:calc(var(--u)*1.3) calc(var(--u)*1)!important;transition:border-color .15s,transform .12s}
+body.menuUI .tile:hover{border-color:rgba(255,182,39,.45)!important;transform:translateY(-2px)}
+body.menuUI .tile.play,body.menuUI .hub2 .dock .btn{min-height:calc(var(--u)*11)}
+
+</style>`);
+
+const NAV = [
+  ['hub','nav_home','🏠'], ['routes','nav_routes','🛣️'], ['workshop','nav_garage','🔧'],
+  ['showroom','nav_show','🚐'], ['missions','nav_miss','🏆'], ['rewards','nav_gift','🎁'],
+  ['dmv','nav_traffic','🪪'], ['settings','nav_set','⚙️']
+];
+const MENU_UI = ['hub','routes','showroom','workshop','missions','rewards','profile','settings','modes','free','dmv','gas'];
+function buildShell(){
+  if (!document.getElementById('navRail')) {
+    const r = document.createElement('div'); r.id = 'navRail';
+    r.innerHTML = NAV.map(([scr, key, ic]) =>
+      `<button data-a="nav" data-p="${scr}" data-scr="${scr}"><span class="ni">${ic}</span>${t(key)}</button>`).join('');
+    document.body.appendChild(r);
+    r.addEventListener('click', e => { const b = e.target.closest('[data-p]'); if (b) UI.show(b.dataset.p); });
+  }
+  if (!document.getElementById('topBar')) {
+    const b = document.createElement('div'); b.id = 'topBar';
+    b.innerHTML = `<button class="tbChip" data-a="nav" data-p="settings">⚙️</button>
+      <button class="tbChip" data-a="lang">🌐 <span class="lg"></span></button>
+      <span class="tbSpacer"></span>
+      <span class="tbChip gold"><i class="coin"></i><span class="tbCash"></span></span>
+      <button class="tbProf" data-a="nav" data-p="profile">
+        <span class="lvl"></span><span class="av"></span>
+        <span class="who"><span class="nm"></span><span class="xp"></span></span></button>`;
+    document.body.appendChild(b);
+    b.addEventListener('click', e => {
+      const n = e.target.closest('[data-a]'); if (!n) return;
+      if (n.dataset.a === 'lang') UI.act('lang'); else UI.show(n.dataset.p);
+    });
+  }
+  paintShell();
+}
+function paintShell(){
+  const s = S(); if (!s) return;
+  const bar = document.getElementById('topBar'); if (!bar) return;
+  bar.querySelector('.lg').textContent = LANG.cur === 'ar' ? 'العربية' : 'English';
+  bar.querySelector('.tbCash').textContent = fmt(s.cash);
+  bar.querySelector('.nm').textContent = s.name || (LANG.cur === 'ar' ? 'الأسطى' : 'Driver');
+  bar.querySelector('.xp').textContent = `XP ${fmt(s.xp)}/${fmt(xpFor(s.lvl))}`;
+  bar.querySelector('.lvl').textContent = s.lvl;
+  const av = bar.querySelector('.av');
+  try { av.innerHTML = `<img src="${ASSETS.avatars[avKey(s)]}" alt="">`; } catch(e) {}
+  const cur = UI.cur && UI.cur.name;
+  /* relabel the rail every paint so a language switch takes effect immediately */
+  document.querySelectorAll('#navRail button').forEach(n => {
+    const item = NAV.find(q => q[0] === n.dataset.scr);
+    if (item) n.innerHTML = `<span class="ni">${item[2]}</span>${t(item[1])}`;
+    n.classList.toggle('on', n.dataset.scr === cur);
+  });
+  const rtl = LANG.cur === 'ar';
+  document.getElementById('navRail').classList.toggle('rtl', rtl);
+  document.body.classList.toggle('rtlRail', rtl);
+}
+{ const _s = UI.show;
+  UI.show = function(n, p){
+    const r = _s.apply(this, arguments);
+    try {
+      const on = MENU_UI.indexOf(n) >= 0 && GAME.state !== 'play';
+      document.body.classList.toggle('menuUI', on);
+      const rail = document.getElementById('navRail'), bar = document.getElementById('topBar');
+      if (on) { buildShell(); paintShell(); }
+      if (rail) rail.style.display = on ? '' : 'none';
+      if (bar) bar.style.display = on ? '' : 'none';
+    } catch(e) { console.warn('shell', e); }
+    return r; }; }
+{ const _r = UI.refresh; UI.refresh = function(){ const r = _r.apply(this, arguments);
+    try { if (document.body.classList.contains('menuUI')) paintShell(); } catch(e) {}
+    return r; }; }
+
+
+/* put a consistent title block at the top of each menu screen */
+const SCR_TITLE = {
+  routes:   [['Routes','المسارات'], ['Choose where you are heading','اختر وجهتك في مصر']],
+  workshop: [['Garage','المرآب'], ['Upgrade your vehicle for the long road','طوّر مركبتك لطريق أطول']],
+  showroom: [['Showroom','المعرض'], ['Your next vehicle is waiting','مركبتك القادمة بتنتظرك']],
+  missions: [['Missions','المهام'], ['New job, longer road','مهمة جديدة.. طريق أطول']],
+  rewards:  [['Rewards','الجوائز'], ['Every day, a new prize','كل يوم.. جائزة جديدة']],
+  profile:  [['Driver profile','ملف السائق'], ['Your trips, your rating, your licence','رحلاتك.. تقييمك.. رخصتك']],
+  dmv:      [['Traffic Unit','المرور'], ['Serving the driver — for a safer road','خدمة السائق.. من أجل طريق آمن']],
+  gas:      [['Petrol station','البنزينة'], ['Fill up before the long haul','فوّل قبل الطريق الطويل']],
+  settings: [['Settings','الإعدادات'], ['Tune your experience','خصّص تجربتك على الطريق']]
+};
+function paintTitles(){
+  const name = UI.cur && UI.cur.name, spec = SCR_TITLE[name];
+  const scr = document.querySelector('#screens .scr');
+  if (!scr || !spec || !document.body.classList.contains('menuUI')) return;
+  if (scr.querySelector('.scrHead')) return;
+  const h = document.createElement('div'); h.className = 'scrHead';
+  h.innerHTML = `<h1>${tn({en:spec[0][0], ar:spec[0][1]})}</h1>
+    <div class="chkRule"></div>
+    <div class="sub">${tn({en:spec[1][0], ar:spec[1][1]})}</div>`;
+  const hdr = scr.querySelector('.hdr');
+  if (hdr && hdr.nextSibling) scr.insertBefore(h, hdr.nextSibling); else scr.insertBefore(h, scr.firstChild);
+}
+{ const _s = UI.show; UI.show = function(n, p){ const r = _s.apply(this, arguments);
+    try { paintTitles(); } catch(e) {} return r; }; }
+{ const _r = UI.refresh; UI.refresh = function(){ const r = _r.apply(this, arguments);
+    try { paintTitles(); } catch(e) {} return r; }; }
+
+
+/* ================= hub, rebuilt to the blueprint ================= */
+Object.assign(L, {
+  hb_tonight:['Tonight\u2019s trip','رحلة الليلة'],
+  hb_go:['Start the trip','ابدأ الرحلة'],
+  hb_short:['Short','قصير'], hb_mid:['Medium','متوسط'], hb_long:['Long','طويل'],
+  hb_custom:['Customise vehicle','تخصيص المركبة'],
+  hb_info:['Vehicle info','معلومات المركبة'],
+  hb_today:['Today\u2019s mission','مهمة اليوم'],
+  hb_km:['km','كم'], hb_fare:['Fare','الأجرة'],
+  hb_weather:['Clear','صافي'], hb_traffic:['Traffic','الزحمة'],
+  hb_mid_t:['Moderate','متوسط'],
+  hb_fuel:['Fuel','الوقود'], hb_cond:['Condition','حالة المركبة'],
+  hb_cash:['Balance','نقودك'], hb_rep:['Reputation','مستوى السمعة']
+});
+UI.scr.hub = function(){
+  const s = S(), u = UI.sel;
+  const len = u.hlen || 'mid';
+  /* pick a route matching the chosen length that the player can actually run */
+  const pool = ROUTES.filter(r => {
+    if (r.lvl > s.lvl) return false;
+    const isLong = r.len === 'long';
+    const km = r.realKm || Math.round((r.gameM || 3000)/1000*8);
+    if (len === 'long') return isLong;
+    if (len === 'short') return !isLong && km <= 12;
+    return !isLong && km > 12;
+  });
+  const r = pool.find(q => q.id === u.route) || pool[0] || ROUTES[0];
+  if (r) u.route = r.id;
+  const v = vehById(u.vid || s.cur.line) || vehById(s.cur.line);
+  const own = v && s.owned[v.id];
+  const E = v && own ? effSpec(v, own) : null;
+  const km = r ? (r.realKm || Math.round((r.gameM || 3000)/1000*8)) : 0;
+  const cond = own && own.cond ? Math.round(Object.values(own.cond).reduce((a, b) => a + b, 0)/Object.keys(own.cond).length) : 100;
+  const m = (s.missions && s.missions.list && s.missions.list[0]) || null;
+
+  const lenChip = (k, lb) => `<button class="chip ${len === k ? 'on' : ''}" data-a="hlen" data-p="${k}">📍 ${t(lb)}</button>`;
+  const stat = (ic, lb, val, bar, col) => `<div class="hbStat"><span class="hi">${ic}</span>
+      <div><div class="lbl">${lb}</div><b>${val}</b></div>
+      ${bar != null ? `<span class="hbBar"><i style="width:${Math.max(0, Math.min(100, bar))}%;background:${col || 'var(--gold)'}"></i></span>` : ''}</div>`;
+
+  return `<div class="scr hubX">
+    <div class="hbLeft">
+      <div class="hbLogo"><div class="en">OGRA</div><div class="ar">أجرة</div>
+        <div class="chkRule"></div><div class="tag">${t('hub_tag')}</div></div>
+      <div class="hbActions">
+        <button class="chip" data-a="nav" data-p="workshop">🔧 ${t('hb_custom')}</button>
+        <button class="chip" data-a="nav" data-p="showroom">🚐 ${t('hb_info')}</button>
+      </div>
+      <button class="btn hbGo" data-a="hubGo">▶ ${t('hb_go')}</button>
+      <div class="hbLens">${lenChip('short','hb_short')}${lenChip('mid','hb_mid')}${lenChip('long','hb_long')}</div>
+    </div>
+
+    <div class="hbRight">
+      <div class="pn hbTrip">
+        <div class="hbTripHd"><span>🛣️</span><b>${t('hb_tonight')}</b></div>
+        ${r ? `<div class="hbRoute">${tn(r.n)}</div>
+        <div class="hbGrid">
+          <div><span class="hi">🛣️</span><b>${km} ${t('hb_km')}</b></div>
+          <div><span class="hi">🪙</span><b class="gold">${fmt(r.fare || 0)}</b></div>
+          <div><span class="hi">☁️</span><b>${t('hb_weather')}</b></div>
+          <div><span class="hi">🚗</span><b>${t('hb_mid_t')}</b></div>
+        </div>` : ''}
+      </div>
+      ${m ? `<div class="pn hbToday">
+        <div class="hbTripHd"><span>🏆</span><b>${t('hb_today')}</b><span style="flex:1"></span>
+          <span class="lbl">${m.p || 0}/${m.goal || 1}</span></div>
+        <div class="lbl">${(() => { try { const d = MISSION_POOL.find(q => q.id === m.id); return d ? t(d.k, {g:m.goal}) : ''; } catch(e) { return ''; } })()}</div>
+        <span class="hbBar big"><i style="width:${Math.min(100, (m.p || 0)/(m.goal || 1)*100)}%"></i></span>
+      </div>` : ''}
+      <div class="hbStats">
+        ${stat('⛽', t('hb_fuel'), own ? `${Math.round(own.fuel)}/${E ? E.tank : 0} L` : '—', own && E ? own.fuel/E.tank*100 : 0, '#57c8ff')}
+        ${stat('🔧', t('hb_cond'), cond + '%', cond, cond < 35 ? '#ff5c5c' : cond < 70 ? '#ffc046' : '#57e08d')}
+        ${stat('🪙', t('hb_cash'), fmt(s.cash), null)}
+        ${stat('⭐', t('hb_rep'), String(s.lvl), null)}
+      </div>
+    </div>
+  </div>`;
+};
+document.head.insertAdjacentHTML('beforeend', `<style>
+.hubX{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:calc(var(--u)*2);
+  align-items:center;padding:calc(var(--u)*1.6) calc(var(--u)*2.4) calc(var(--u)*2.4)!important}
+/* a scrim so the type reads over whatever the attract camera is showing */
+.hubX:before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(6,9,15,.88) 0%,rgba(6,9,15,.55) 34%,rgba(6,9,15,.80) 100%)}
+.hbLeft,.hbRight{position:relative;z-index:1}
+.hbLeft{text-shadow:0 2px 14px rgba(0,0,0,.75)}
+.hbLeft{display:flex;flex-direction:column;gap:calc(var(--u)*1.4);align-items:flex-start}
+.hbLogo .en{font-weight:900;font-style:italic;font-size:calc(var(--u)*9);line-height:.95;letter-spacing:.02em;
+  background:linear-gradient(180deg,#fff 10%,var(--gold2) 55%,var(--gold) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 6px 18px rgba(255,182,39,.28))}
+.hbLogo .ar{font-weight:900;font-size:calc(var(--u)*4.4);color:#fff;margin-top:calc(var(--u)*-.4);
+  text-shadow:0 3px 16px rgba(0,0,0,.85)}
+.hbLogo .chkRule{margin-inline:0}
+.hbLogo .tag{color:var(--gold2);font-weight:800;font-size:calc(var(--u)*2)}
+.hbActions{display:flex;gap:calc(var(--u)*.8);flex-wrap:wrap}
+.hbGo{width:min(100%,calc(var(--u)*46));min-height:calc(var(--u)*8.4);
+  font-size:calc(var(--u)*3.2);letter-spacing:.02em}
+.hbLens{display:flex;gap:calc(var(--u)*.7);flex-wrap:wrap}
+.hbRight{display:flex;flex-direction:column;gap:calc(var(--u)*1.2)}
+.hbTrip,.hbToday{padding:calc(var(--u)*1.6)}
+.hbTripHd{display:flex;align-items:center;gap:.5em;font-size:calc(var(--u)*2.2);color:#e8eef8;margin-bottom:.5em}
+.hbRoute{font-weight:900;font-size:calc(var(--u)*2.6);color:#fff;margin-bottom:.5em}
+.hbGrid{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--u)*.8) calc(var(--u)*1.4);
+  font-size:calc(var(--u)*1.9);color:#cfd8e6}
+.hbGrid b.gold{color:var(--gold2)}
+.hbGrid .hi,.hbStat .hi{margin-inline-end:.4em}
+.hbStats{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--u)*.9)}
+.hbStat{display:flex;align-items:center;gap:.6em;padding:calc(var(--u)*1.1) calc(var(--u)*1.3);
+  background:var(--panel);border:1px solid var(--line);border-radius:calc(var(--u)*1.4);
+  font-size:calc(var(--u)*1.8);color:#e6ecf6}
+.hbStat .lbl{font-size:calc(var(--u)*1.4)}
+.hbBar{flex:1;height:calc(var(--u)*.8);min-width:calc(var(--u)*6);border-radius:99px;
+  background:rgba(255,255,255,.12);overflow:hidden}
+.hbBar.big{display:block;width:100%;margin-top:.6em;height:calc(var(--u)*1)}
+.hbBar i{display:block;height:100%;background:var(--gold)}
+@media (max-width:900px),(orientation:portrait){
+  .hubX{grid-template-columns:1fr;align-items:start;gap:calc(var(--u)*1.4);
+    overflow-y:auto;padding:calc(var(--u)*1.2) calc(var(--u)*1.4) calc(var(--u)*2)!important}
+  .hbLogo .en{font-size:calc(var(--u)*7)}
+  .hbGo{width:100%}
+}
+</style>`);
+{ const _a = UI.act;
+  UI.act = function(a, p, el){
+    if (a === 'lang' || a === 'setlang') { const r = _a.apply(this, arguments);
+      try { paintShell(); UI.refresh(); } catch(e) {} return r; }
+    /* selling or claiming can legitimately land a large sum at once */
+    try { if (/sell|claim|reward|gift|payout/i.test(a || '')) {
+      const top = VEH.reduce((m, v) => Math.max(m, v.price || 0), 0);
+      AC.expect(top); } } catch(e) {}
+    if (a === 'hlen') { UI.sel.hlen = p; UI.sel.route = null; UI.refresh(); return; }
+    if (a === 'hubGo') { const u = UI.sel;
+      if (!u.route) return UI.show('routes');
+      try { startGame(); } catch(e) { UI.show('routes'); }
+      return; }
+    return _a.apply(this, arguments); }; }
+
+
+/* ================= police checkpoint, rebuilt =================
+   One lane only. A patrol car sits on the shoulder, waves each vehicle in,
+   holds it about two seconds, then lets it go. The player gets a real stop. */
+Object.assign(L, {
+  cp_ahead:['Checkpoint ahead — slow down','كمين قدامك — هدّي السرعة'],
+  cp_wait:['Wait your turn','استنى دورك'],
+  cp_your:['Your turn — pull up','دورك — قرّب'],
+  cp_pass:['Cleared — off you go','عدّي — يلا'],
+  cp_stopped:['Officer is checking the vehicle in front','الظابط بيفحص اللي قدامك'],
+  cp_lic:['Licence, please','الرخصة لو سمحت'],
+  cp_ok:['All in order. Drive safe.','تمام. خد بالك من نفسك.'],
+  cp_title:['Traffic checkpoint','كمين مرور']
+});
+/* what the officer says, and what the driver can answer */
+const CP_TALK = {
+  open:[
+    ["Evening. Licence and registration.","مساء الخير. الرخصة والرخصة المرورية."],
+    ["Pull over to the side. Papers.","على جنب. الورق."],
+    ["Where are you heading, ya rayyes?","رايح فين يا ريس؟"],
+    ["Routine check. Won't take a minute.","تفتيش عادي. مش هياخد دقيقة."]
+  ],
+  reply:[
+    {k:'papers', en:'Here you go, officer.',   ar:'اتفضل يا باشا.',            mood:+1},
+    {k:'where',  en:'Maadi, then back on the line.', ar:'المعادي، وراجع على الخط.', mood:0},
+    {k:'rush',   en:'I have passengers waiting.', ar:'معايا ركاب مستنيين.',    mood:-1},
+    {k:'joke',   en:'All clean, ya basha, I swear.', ar:'كله سليم يا باشا، والله.', mood:0}
+  ],
+  back:{
+    papers:[["Good. One moment.","تمام. لحظة واحدة."],["A driver who keeps his papers. Rare.","سواق بيحافظ على ورقه. نادر."]],
+    where:[["Watch the speed on the corniche.","خد بالك من السرعة على الكورنيش."],["Fine. Stay right.","ماشي. خليك يمين."]],
+    rush:[["Everyone has passengers waiting.","كله معاه ركاب مستنيين."],["Two minutes won't kill you.","دقيقتين مش هيموتوك."]],
+    joke:[["We'll be the judge of that.","إحنا اللي هنحكم على كده."],["Everyone says that.","كله بيقول كده."]]
+  },
+  clear:[["Off you go. Drive safe.","عدّي. خد بالك من نفسك."],["All in order. Go on.","كله تمام. يلا."]],
+  nolic:[["No licence? That's a fine.","مفيش رخصة؟ دي مخالفة."],["Driving with no licence, ya rayyes?","بتسوق من غير رخصة يا ريس؟"]],
+  expired:[["This expired months ago.","دي منتهية من شهور."],["Expired. You'll pay for that.","منتهية. هتدفع عليها."]],
+  wrongcls:[["This licence doesn't cover a microbus.","الرخصة دي مش بتغطي ميكروباص."],["Wrong class for this vehicle.","درجة الرخصة غلط للعربية دي."]],
+  over:[["Over capacity. Count them again.","زيادة عن العدد. عدّهم تاني."]],
+  state:[["Look at the state of this thing.","بص على حالة العربية دي."]]
+};
+function cpLine(set){ const a = CP_TALK[set]; if (!a) return '';
+  const p = a[Math.floor(Math.random()*a.length)];
+  return LANG.cur === 'ar' ? p[1] : p[0]; }
+
+function makeCheckpoint(G, x){
+  const lane = 0;                                   /* the near lane only */
+  G.props.push({x, t:'stopsign'});
+  /* cones taper traffic into a single file on this lane */
+  for (let i = 0; i < 5; i++) G.props.push({x:x - 16 + i*3, t:'cone', d:.06 + i*.05});
+  for (let i = 0; i < 4; i++) G.props.push({x:x + 4 + i*3,  t:'cone', d:.26 - i*.06});
+  G.props.push({x:x - 3.5, t:'officer', look:mkLook(Math.random), wave:true, d:-.42});
+  /* the patrol car parked on the shoulder, lights on */
+  try { const p = mkSpr(G, 'poltraffic', x + 7, 0, 0);
+    p.v = 0; p.v0 = 0; p.parked = true; p.lp = -.55; p.lightbar = true; G.traffic.push(p); } catch(e) {}
+  G.cp = {x, lane, queue:[], busy:null, t:0, playerDone:false, warned:false};
+  G.feedAdd('cp_ahead', {}, 'warn');
+}
+
+/* ---- traffic behaviour: queue on the checkpoint lane, two seconds each ---- */
+function cpTraffic(G, dt){
+  const cp = G.cp; if (!cp) return;
+  const stopX = cp.x - 2;
+  for (const o of G.traffic) {
+    if (o.parked || o.lp > .5) continue;            /* other lane carries on */
+    const d = stopX - o.x;
+    if (d < -6 || d > 60) { o.cpHold = 0; continue; }
+    if (o.cpDone) continue;
+    if (cp.busy == null && d < 2.2) {               /* its turn */
+      cp.busy = o; o.cpHold = 0;
+    }
+    if (cp.busy === o) {
+      o.cpCap = 0;                                  /* held at the line */
+      o.cpHold = (o.cpHold || 0) + dt;
+      if (o.cpHold > 2) { o.cpDone = true; cp.busy = null; o.cpCap = null; }
+    } else if (d > 0) {
+      /* queue politely behind whoever is being checked, never cross over */
+      o.cpCap = Math.max(0, (d - 5)*0.5);
+    }
+  }
+  if (cp.busy && (cp.busy.cpDone || Math.abs(cp.busy.x - stopX) > 14)) cp.busy = null;
+}
+{ const _sa = smartAI;
+  smartAI = function(G, dt){
+    _sa(G, dt);
+    try {
+      cpTraffic(G, dt);
+      for (const o of G.traffic) if (o.cpCap != null) o.v = Math.min(o.v, o.cpCap);
+    } catch(e) {}
+  }; }
+
+/* ---- the player's stop ---- */
+function cpPlayer(G, dt){
+  const cp = G.cp; if (!cp || cp.playerDone) return;
+  const car = G.car, d = cp.x - car.x;
+  if (d < -12) { cp.playerDone = true; return; }
+  if (d < 26 && d > 0 && !cp.warned) { cp.warned = true; G.feedAdd('cp_wait', {}, 'info'); }
+  if (d < 3.2 && d > -3 && Math.abs(car.vx) < .5 && !cp.open) {
+    cp.open = true;
+    GAME.paused = true;
+    cpDialog(G, 0);
+  }
+}
+{ const _up = updPeople; updPeople = function(G, dt){ _up(G, dt); try { cpPlayer(G, dt); } catch(e) {} }; }
+
+function cpVerdict(G){
+  const s = S(), L2 = licState(s), car = G.car, need = licNeeded(car.spec), own = G.own;
+  if (L2.cls === 'none')                  return {bad:'nolic',   fine:1500, pts:3};
+  if (L2.expired)                         return {bad:'expired', fine:800,  pts:2};
+  if (need === 'pro' && L2.cls !== 'pro') return {bad:'wrongcls',fine:1200, pts:3};
+  if (G.onboard.length > car.spec.seats)  return {bad:'over',    fine:500,  pts:1};
+  if (own && own.cond && own.cond.body < 35) return {bad:'state',fine:400,  pts:0};
+  return null;
+}
+function cpDialog(G, step, chosen){
+  const ar = LANG.cur === 'ar';
+  const head = `<div class="mtitle">👮 ${t('cp_title')}</div>`;
+  if (step === 0) {
+    const line = cpLine('open');
+    UI.modalShow(`${head}
+      <div class="cpSay">${esc(line)}</div>
+      <div class="mrow" style="flex-wrap:wrap;gap:.5em">
+        ${CP_TALK.reply.map((r, i) => `<button class="chip" data-a="cpSay" data-p="${i}">${esc(ar ? r.ar : r.en)}</button>`).join('')}
+      </div>`);
+    return;
+  }
+  if (step === 1) {
+    const r = CP_TALK.reply[chosen] || CP_TALK.reply[0];
+    const back = CP_TALK.back[r.k] || CP_TALK.back.papers;
+    const line = (b => LANG.cur === 'ar' ? b[1] : b[0])(back[Math.floor(Math.random()*back.length)]);
+    G.cpMood = (G.cpMood || 0) + (r.mood || 0);
+    UI.modalShow(`${head}
+      <div class="cpSay">${esc(line)}</div>
+      <div class="lbl" style="margin:.6em 0">${t('cp_lic')}</div>
+      <div class="mrow"><span style="flex:1"></span>
+        <button class="btn" data-a="cpHand">🪪 ${ar ? 'سلّم الرخصة' : 'Hand over licence'}</button></div>`);
+    return;
+  }
+  /* verdict */
+  const v = cpVerdict(G);
+  if (!v) {
+    const line = cpLine('clear');
+    UI.modalShow(`${head}<div class="cpSay">${esc(line)}</div>
+      <div class="mrow"><span style="flex:1"></span>
+        <button class="btn ok" data-a="cpGo">${t('cp_pass')} ›</button></div>`);
+    G.feedAdd('check_ok', {}, 'ok'); try { AU.ding(); } catch(e) {}
+  } else {
+    const line = cpLine(v.bad);
+    const fine = Math.round(v.fine*(G.cpMood < 0 ? 1.25 : 1));   /* rudeness costs */
+    UI.modalShow(`${head}<div class="cpSay bad">${esc(line)}</div>
+      <div class="val led" style="font-size:calc(var(--u)*3.2);margin:.5em 0;color:#ff8f8f">−${fmt(fine)}</div>
+      <div class="mrow"><span style="flex:1"></span>
+        <button class="btn" data-a="cpGo">${LANG.cur === 'ar' ? 'خلاص' : 'Fine'} ›</button></div>`);
+    try { G.fine('fine_papers', fine, {}); licPoints(S(), v.pts); AU.camera(); } catch(e) {}
+  }
+}
+document.head.insertAdjacentHTML('beforeend', `<style>
+.cpSay{background:rgba(252,248,240,.95);color:#1a1410;border-radius:calc(var(--u)*1.4);
+  padding:calc(var(--u)*1.1) calc(var(--u)*1.4);font-weight:700;line-height:1.55;
+  font-size:calc(var(--u)*2);margin:.4em 0}
+.cpSay.bad{background:rgba(255,222,222,.96);color:#4a1010}
+</style>`);
+{ const _a = UI.act;
+  UI.act = function(a, p, el){
+    if (a === 'cpSay')  { cpDialog(GAME.G, 1, +p); return; }
+    if (a === 'cpHand') { cpDialog(GAME.G, 2); return; }
+    if (a === 'cpGo')   { UI.modalHide(); GAME.paused = false;
+      if (GAME.G && GAME.G.cp) { GAME.G.cp.playerDone = true; GAME.G.cp.open = false; }
+      return; }
+    return _a.apply(this, arguments); }; }
+
+
+/* ---- the menu shell must never sit on top of a run ---- */
+function hideMenuShell(){
+  try {
+    document.body.classList.remove('menuUI');
+    const r = document.getElementById('navRail'), b = document.getElementById('topBar');
+    if (r) r.style.display = 'none';
+    if (b) b.style.display = 'none';
+    const sc = document.getElementById('screens');
+    if (sc) { sc.style.left = ''; sc.style.right = ''; sc.style.bottom = ''; }
+  } catch(e) {}
+}
+{ const _sg = startGame;
+  startGame = function(){ const r = _sg.apply(this, arguments);
+    if (GAME.state === 'play') hideMenuShell();
+    return r; }; }
+function showMenuShell(){
+  try {
+    buildShell();
+    document.body.classList.add('menuUI');
+    const r = document.getElementById('navRail'), b = document.getElementById('topBar');
+    if (r) r.style.display = '';
+    if (b) b.style.display = '';
+    paintShell();
+  } catch(e) {}
+}
+/* safety net both ways: hidden during a run, back as soon as you leave it */
+setInterval(() => {
+  try {
+    const playing = GAME.state === 'play' && !GAME.paused;
+    const onMenu = UI.cur && MENU_UI.indexOf(UI.cur.name) >= 0;
+    if (playing && document.body.classList.contains('menuUI')) hideMenuShell();
+    else if (!playing && onMenu && !document.body.classList.contains('menuUI')) showMenuShell();
+  } catch(e) {}
+}, 300);
+
+/* ---- lane discipline: no drifting into your lane, and no stacking ---- */
+{ const _sa = smartAI;
+  smartAI = function(G, dt){
+    _sa(G, dt);
+    try {
+      if (GAME.state !== 'play') return;
+      const car = G.car, myLane = laneLp(car.lane);
+      for (const o of G.traffic) {
+        if (o.parked) continue;
+        /* never pull out into the lane the player is using */
+        if (o.over && Math.abs(o.lp - myLane) < .6) { o.over = false; o.blink = 0; }
+        /* and never overtake at all on the player's side while he is close */
+        if (Math.abs(o.lp - myLane) < .6 && Math.abs(o.x - car.x) < 45) { o.over = false; o.blink = 0; }
+      }
+      /* separate any two vehicles that have ended up inside each other */
+      for (let i = 0; i < G.traffic.length; i++) {
+        const a = G.traffic[i]; if (a.parked) continue;
+        for (let j = i + 1; j < G.traffic.length; j++) {
+          const b = G.traffic[j]; if (b.parked) continue;
+          if (Math.abs(a.lp - b.lp) > .35) continue;
+          const min = (a.L + b.L)/2 + .6, d = b.x - a.x;
+          if (Math.abs(d) < min) {
+            const push = (min - Math.abs(d))/2 * (d >= 0 ? 1 : -1);
+            a.x -= push; b.x += push;
+            const slow = Math.min(a.v || 0, b.v || 0);
+            if (d >= 0) b.v = Math.max(slow, (b.v || 0)); else a.v = Math.max(slow, (a.v || 0));
+          }
+        }
+      }
+    } catch(e) {}
+  }; }
 
 try{window.__ogStage='2b (game code parsed, starting)'}catch(e){}
 (async function boot(){
