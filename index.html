@@ -3972,7 +3972,7 @@ function bindUI(){ const del = (root) => root.addEventListener('click', e => { c
 /* =================== RENDER =================== */
 let DPR = 1;
 function resize(){ const q = GAME.save && GAME.save.set.q === 'low'; DPR = q ? 1 : Math.min(2, devicePixelRatio || 1); const cv = RD.cv; RD.Ws = innerWidth; RD.Hs = innerHeight; cv.width = Math.round(RD.Ws*DPR); cv.height = Math.round(RD.Hs*DPR); RD.DPR = DPR;
-  RD.portrait = RD.Hs > RD.Ws; RD.coarse = matchMedia('(pointer:coarse)').matches; RD.PPM = RD.portrait ? clamp(RD.Ws/(RD.coarse ? 13 : 15), 17, 42) : clamp(RD.Hs/720*(RD.coarse ? 52 : 44), 17, 64); RD.RYs = Math.round(RD.Hs*(RD.portrait ? .42 : .6)); RD.W = RD.Ws; RD.H = RD.Hs; RD.ROADY = RD.RYs; if (UI.sizeCl) setTimeout(() => UI.sizeCl(), 50); }
+  RD.portrait = RD.Hs > RD.Ws; RD.coarse = matchMedia('(pointer:coarse)').matches; RD.PPM = RD.portrait ? clamp(RD.Ws/(RD.coarse ? 17 : 19), 14, 42) : clamp(RD.Hs/720*(RD.coarse ? 52 : 44), 17, 64); RD.RYs = Math.round(RD.Hs*(RD.portrait ? .42 : .6)); RD.W = RD.Ws; RD.H = RD.Hs; RD.ROADY = RD.RYs; if (UI.sizeCl) setTimeout(() => UI.sizeCl(), 50); }
 function pedDepth(l){ return l < -.5 ? DEP.walk + (l + 1)*.35 : l*DEP.lane1; }
 function drawPeople(G, onRoad){ const W = G.world, car = G.car, vl = RD.camL - 5, vr = RD.camL + RD.W/RD.PPM + 5;
   if (!onRoad) { for (const s of W.stations) { if (s.x < vl - 10 || s.x > vr + 10) continue; const near = s.x - car.x < 90 && s.x - car.x > -5 && G.mode !== 'attract';
@@ -3993,10 +3993,11 @@ function renderScene(G, dt){ const c = RD.ctx, W = G.world, car = G.car, set = G
   // zoom: steady in town, eases out on open road; long vehicles and a car behind widen the view
   let zt = 1.08 - clamp(spd/90, 0, 1)*(RD.coarse ? .24 : .32) - clamp((L - 5)/8, 0, 1)*.1 - (behind ? .04 : 0);
   if (!set.dynZoom || G.mode === 'attract') zt = 1 - clamp((L - 5)/8, 0, 1)*.1;
-  zt *= (set.zoom || 1); RD.zoom = RD.zoom || zt; RD.zoom = lerp(RD.zoom, zt, 1 - Math.exp(-dt*(zt < RD.zoom ? .9 : .6)));
+  zt *= (set.zoom || 1)*0.80;   /* pull the camera back for a longer view */
+  RD.zoom = RD.zoom || zt; RD.zoom = lerp(RD.zoom, zt, 1 - Math.exp(-dt*(zt < RD.zoom ? .9 : .6)));
   const z = RD.zoom; RD.W = RD.Ws/z; RD.H = RD.Hs/z; RD.ROADY = RD.RYs/z;
   const vw = RD.W/RD.PPM, minF = (L/2 + 1.2)/vw; let frac;
-  if (G.mode === 'attract') frac = .34; else if (car.vx < -.5 || car.gear < 0) frac = Math.max(.55, 1 - minF - .05); else if (behind) frac = clamp((car.x - behind.x)/vw, minF + .02, .36); else frac = Math.max(.15, minF);
+  if (G.mode === 'attract') frac = .34; else if (car.vx < -.5 || car.gear < 0) frac = Math.max(.55, 1 - minF - .05); else if (behind) frac = clamp((car.x - behind.x)/vw, minF + .02, .36); else frac = Math.max(0.12, minF*0.9);   /* vehicle rides nearer the left edge */
   G.camFrac = G.camFrac ?? frac; G.camFrac = lerp(G.camFrac, frac, 1 - Math.exp(-dt*(frac > G.camFrac ? 1.6 : .7)));
   RD.camL = G.mode === 'attract' ? lerp(RD.camL, car.x - vw*G.camFrac, 1 - Math.exp(-dt*3.2)) : car.x - vw*G.camFrac; RD.camY = lerp(RD.camY, W.h(car.x), 1 - Math.exp(-dt*2.5));
   const sh = set.shake ? (Math.random() - .5)*RD.shake*7 : 0; RD.shake *= Math.exp(-dt*5);
@@ -6978,7 +6979,7 @@ document.head.insertAdjacentHTML('beforeend', `<style>
  100%{opacity:0;transform:translate(-50%,-180%)}}
 </style>`);
 
-try{window.__ogStage='2b (game code parsed, starting)'}catch(e){}
+
 (async function boot(){
   RD.cv = $('#cv'); RD.ctx = RD.cv.getContext('2d'); RD.initStatics();
   await loadGame(); setLang(GAME.save.lang || 'ar'); Object.assign(AU.vol, GAME.save.set.vol);
