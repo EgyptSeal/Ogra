@@ -393,6 +393,15 @@ const routeById = id => ROUTES.find(r => r.id === id);
 
 /* ============ OGRA GO (ride-hailing) REGIONS & POIs ============ */
 const REGIONS = [
+ {id:'gouna',n:{en:'El Gouna & Hurghada',ar:'الجونة والغردقة'},lvl:8,themes:['resort','coast','openDesert'],
+  streets:[['Abu Tig Marina Rd.','طريق مارينا أبو تيج'],['Downtown El Gouna','داون تاون الجونة'],['El Gouna Rd.','طريق الجونة'],['Hurghada Corniche','كورنيش الغردقة'],['Sheraton Rd.','شارع شيراتون'],['Airport Rd.','طريق المطار']],
+  poi:[['Abu Tig Marina','مارينا أبو تيج'],['El Gouna Downtown','داون تاون الجونة'],['Mangroovy Beach','شاطئ مانجروفي'],['Hurghada Marina','مارينا الغردقة'],['El Dahar','الدهار'],['Sakkala','السقالة'],['Hurghada Airport','مطار الغردقة'],['Makadi Bay','خليج مكادي'],['Red Sea Coastal Rd.','الطريق الساحلي']]},
+ {id:'sharm',n:{en:'Sharm El Sheikh',ar:'شرم الشيخ'},lvl:10,themes:['resort','coast','sinai'],
+  streets:[['Peace Rd.','طريق السلام'],['Naama Bay Rd.','طريق خليج نعمة'],['El Salam Rd.','شارع السلام'],['Hadaba Rd.','طريق الهضبة'],['Nabq Rd.','طريق نبق'],['Airport Rd.','طريق المطار']],
+  poi:[['Naama Bay','خليج نعمة'],['Soho Square','سوهو سكوير'],['Old Market','السوق القديم'],['Sharm Marina','مارينا شرم'],['Ras Um Sid','رأس أم السيد'],['Nabq Bay','خليج نبق'],['Sharm Airport','مطار شرم الشيخ'],['El Fanar','الفنار'],['Shark Bay','خليج القرش']]},
+ {id:'northcoast',n:{en:'North Coast (Sahel)',ar:'الساحل الشمالي'},lvl:9,themes:['coast','resort','openDesert'],
+  streets:[['Alex–Matrouh Rd.','طريق إسكندرية مطروح'],['Dabaa Rd.','طريق الضبعة'],['Sidi Abdel Rahman Rd.','طريق سيدي عبد الرحمن'],['Fouka Rd.','طريق فوكة'],['Marina Gate Rd.','طريق بوابة مارينا'],['Alamein Rd.','طريق العلمين']],
+  poi:[['Marina El Alamein','مارينا العلمين'],['New Alamein City','مدينة العلمين الجديدة'],['Sidi Abdel Rahman','سيدي عبد الرحمن'],['Hacienda Bay','هاسيندا باي'],['Marassi','مراسي'],['Fouka Bay','فوكة باي'],['Ras El Hekma','رأس الحكمة'],['El Dabaa','الضبعة'],['Alamein Airport','مطار العلمين']]},
  {id:'cairo_c',n:{en:'Central Cairo',ar:'وسط القاهرة'},lvl:1,themes:['downtown','corniche','popular','islamic'],
   streets:[['Talaat Harb St.','شارع طلعت حرب'],['Qasr El Nil St.','شارع قصر النيل'],['26th of July St.','شارع 26 يوليو'],['Corniche El Nil','كورنيش النيل'],['Port Said St.','شارع بورسعيد'],['El Moez St.','شارع المعز']],
   poi:[['Egyptian Museum','المتحف المصري'],['Cairo Tower','برج القاهرة'],['Cairo Opera House','دار الأوبرا المصرية'],['Khan El Khalili','خان الخليلي'],['Al-Azhar Park','حديقة الأزهر'],['Ramses Station','محطة رمسيس'],['Zamalek (Abu El Feda)','الزمالك (أبو الفدا)'],['Garden City','جاردن سيتي'],['Maspero','ماسبيرو'],['Salah El Din Citadel','قلعة صلاح الدين'],['Cairo University','جامعة القاهرة'],['Tahrir Square','ميدان التحرير']]},
@@ -804,7 +813,7 @@ function shade(hex, f){ return f < 0 ? mixHex(hex, '#000000', -f) : mixHex(hex, 
 
 // depth offsets (metres on screen, + = towards camera)
 const DEP = {bld:-1.55, walk:-.78, lane0:0, lane1:.95, near:1.8};
-function laneLp(l){ return l >= .5 ? 1.26 : .166; }   /* centre of each lane, not the lane's edge */
+function laneLp(l){ return l >= .5 ? 1.34 : .166; }   /* centre of each lane, not the lane's edge */
 
 class World {
   constructor(o){
@@ -1865,7 +1874,7 @@ function updTraffic(G, dt){
     if (o.wait > 0) { o.wait -= dt; o.v = Math.max(0, o.v - 6*dt); o.brake = true; if (o.wait <= 0 && o.atSt) { o.atSt.aiTook = true; o.atSt = null; } continue; }
     const dir = o.lane ? -1 : 1;
     // lane position smoothing (overtakers)
-    { const tg = (o.over ? 1 : o.lane) + ((o.over || o.lane) ? .26 : .166); o.lp += (tg - o.lp)*Math.min(1, dt*2.2); }
+    { const tg = (o.over ? 1 : o.lane) + ((o.over || o.lane) ? .34 : .166); o.lp += (tg - o.lp)*Math.min(1, dt*2.2); }
     const myLane = o.lp > .5 ? 1 : 0;
     // find leader
     let gap = 999, lv = 0, ld = null;
@@ -2870,7 +2879,7 @@ UI.scr.routes = function(p){ const s = S(), u = UI.sel; if (p) u.tab = p; const 
     <button class="btn" data-a="start" ${owned.length ? '' : 'disabled'}>${t('go_btn')} ›</button></div></div>`; };
 
 /* ---------- garage / workshop ---------- */
-UI.scr.workshop = function(vq){ const s = S(), u = UI.sel; if (vq) u.wvid = vq; const ids = Object.keys(s.owned); if (!ids.includes(u.wvid)) u.wvid = s.cur.line; const v = vehById(u.wvid), own = s.owned[v.id], cat = v.cat; u.wtab = ['repair','up','paint','wheels','stk','horn','skin'].includes(u.wtab) ? u.wtab : 'repair';
+UI.scr.workshop = function(vq){ const s = S(), u = UI.sel; if (vq) u.wvid = vq; const ids = Object.keys(s.owned); if (!ids.includes(u.wvid)) u.wvid = s.cur.line; const v = vehById(u.wvid), own = s.owned[v.id], cat = v.cat; u.wtab = ['repair','up','paint','wheels','stk','horn'].includes(u.wtab) ? u.wtab : 'repair';
   const repCost = k => Math.round((100 - own.cond[k])*REPAIR_PER[k]*(CATMUL[cat] || 1)), br = FEAT.brokenList(own), all = COND.reduce((a, k) => a + repCost(k), 0) + br.reduce((a, k) => a + Math.round(PART_COST[k]*(CATMUL[cat] || 1)), 0);
   const worst = COND.slice().sort((a, b) => own.cond[a] - own.cond[b])[0], line = UI.mechLine || (br.length ? t('mech_bad', {p:t('pt_' + br[0])}) : own.cond[worst] < 60 ? t('mech_bad', {p:t('c_' + worst)}) : t('mech_hi')); UI.mechLine = null;
   const sw = (a, c, on, sm) => `<div class="sw ${sm ? 'sm' : ''} ${on ? 'on' : ''}" style="background:${c}" data-a="${a}" data-p="${c}"></div>`;
@@ -2892,7 +2901,7 @@ UI.scr.workshop = function(vq){ const s = S(), u = UI.sel; if (vq) u.wvid = vq; 
   else body = `<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(calc(var(--u)*24),1fr))">${HORNS.map(h => { const has = (own.horns || ['std']).includes(h.id), on = (own.horn || 'std') === h.id; return `<div class="card ${on ? 'sel' : ''}" style="cursor:default"><b>${tn(h.n)}</b><div class="row" style="margin-top:.5em;gap:.4em"><button class="chip" data-a="hornTest" data-p="${h.id}">${ic('horn')} ${t('test')}</button>${on ? '' : has ? `<button class="btn sm" data-a="horn" data-p="${h.id}">${t('select')}</button>` : `<button class="btn sm" data-a="horn" data-p="${h.id}" ${s.cash < h.price ? 'disabled' : ''}>${money(h.price)}</button>`}</div></div>`; }).join('')}</div>`;
   return `<div class="scr dim"><div class="hdr"><button class="back" data-a="nav" data-p="hub">${ic('back')}</button><h2>${t('garage')}</h2><span class="sp"></span>${ids.map(id => `<button class="chip ${u.wvid === id ? 'on' : ''}" data-a="wveh" data-p="${id}">${tn(vehById(id).n)}</button>`).join('')}<div class="cash pn led">${money(s.cash)}</div></div>
    <div class="shop"><div class="pn mech glow"><div class="stage" style="height:calc(var(--u)*20);border-radius:14px"><canvas id="stage"></canvas></div><b class="t1" style="color:var(--amb2)">${t('mech_name')}</b><div class="say" id="say" data-full="${esc(line)}"></div></div>
-    <div style="display:flex;flex-direction:column;min-height:0"><div class="tabs">${[['repair','t_repair'],['up','t_up'],['paint','t_paint'],['wheels','t_wheels'],['stk','t_stk'],['horn','t_horn'],['skin','t_skin']].map(([k, lb]) => `<button class="chip ${u.wtab === k ? 'on' : ''}" data-a="wtab" data-p="${k}">${t(lb)}</button>`).join('')}</div>
+    <div style="display:flex;flex-direction:column;min-height:0"><div class="tabs">${[['repair','t_repair'],['up','t_up'],['paint','t_paint'],['wheels','t_wheels'],['stk','t_stk'],['horn','t_horn']].map(([k, lb]) => `<button class="chip ${u.wtab === k ? 'on' : ''}" data-a="wtab" data-p="${k}">${t(lb)}</button>`).join('')}</div>
     <div class="grid scroll" style="align-content:start;padding:2px;flex:1;min-height:0">${body}</div></div></div></div>`; };
 UI.stageDraw = function(vid){ const cv = $('#stage'); if (!cv) return; const v = vehById(vid), own = S().owned[vid];
   const draw = (tm) => { if (!document.body.contains(cv)) return; const r = cv.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1); if (cv.width !== Math.round(r.width*dpr)) { cv.width = Math.round(r.width*dpr); cv.height = Math.round(r.height*dpr); }
@@ -3327,7 +3336,7 @@ const AICOL = ['#f4f5f6','#1d1f24','#9aa3ab','#c4c9ce','#8b1e24','#23476e','#5c6
   o.spr = k; o.L = m.L; o.H = m.H; if (m.wb) { o.wb = m.wb; o.wr = m.wr; } o.isCar = ['sedan','taxi','alexTaxi','hatch','police'].includes(type);
   o.variant = type === 'taxi' ? 'taxi' : type === 'alexTaxi' ? 'alex' : type === 'citybus' && R() < .5 ? 'cta' : null;
   if (/^pol/.test(k)) { o.paint = null; o.paint2 = null; o.variant = null; o.lightbar = true; }
-  o.lp = o.lp === 1 ? 1.26 : .166;
+  o.lp = o.lp === 1 ? 1.34 : .166;
   o.paint = type === 'sedan' || type === 'hatch' ? AICOL[Math.floor(R()*AICOL.length)] : type === 'police' || type === 'taxi' ? '#f4f5f6' : type === 'micro' && R() < .25 ? ['#e9e2d0','#c9d6df','#d8dde2'][Math.floor(R()*3)] : null;
   o.paint2 = type === 'micro' && R() < .2 ? '#b8b0a0' : null; o.rim = o.isCar ? {t:R() < .6 ? 'hubcap' : 'steel6', c:'#c9cfd4'} : ['citybus','citybus2','coach','dd','coaster','mini2','mini3'].includes(type) ? {t:'bus', c:'#d5d9dc'} : {t:'steel6', c:'#c3c8cc'};
   if (type === 'moto') { o.wr = .3; o.noDriver = true; } return o; }; }
@@ -4198,9 +4207,9 @@ function licCard(){
   const cls = L.cls === 'pro' ? (ar ? 'أولى مهنية' : 'Prof.') : (ar ? 'خاصة' : 'Private');
   const dob = new Date(issued - 31*365.25*86400000);
   /* vertical positions match the printed rows on the card artwork */
-  const rows = [[36.5, esc(s.name || (ar ? 'الأسطى' : 'Driver'))],
-                [46.5, ar ? 'القاهرة' : 'Cairo'],
-                [56.5, dstr(dob)],
+  const rows = [[40.0, esc(s.name || (ar ? 'الأسطى' : 'Driver'))],
+                [48.5, ar ? 'القاهرة' : 'Cairo'],
+                [57.0, dstr(dob)],
                 [64.0, licNo(s)],
                 [71.0, dstr(issued)],
                 [78.0, dstr(expiry)],
@@ -4208,9 +4217,9 @@ function licCard(){
   const side = 'left:35%;right:43%;text-align:center';
   const cells = rows.map(([y, v]) =>
     `<div style="position:absolute;top:${y}%;${side};transform:translateY(-50%);
-      font-size:clamp(10px,2.35cqw,19px);font-weight:800;color:#0b1926;white-space:nowrap;letter-spacing:0;
+      font-size:clamp(13px,4.2cqw,30px);font-weight:800;color:#0b1926;white-space:nowrap;letter-spacing:0;
       overflow:hidden;text-overflow:ellipsis">${v}</div>`).join('');
-  return `<div style="position:relative;container-type:inline-size;width:min(98%,calc(var(--u)*86));margin:.9em auto 0;aspect-ratio:668/454;
+  return `<div style="position:relative;container-type:inline-size;width:min(60%,calc(var(--u)*52));margin:.9em auto 0;aspect-ratio:668/454;
       border-radius:calc(var(--u)*1.4);overflow:hidden;box-shadow:0 12px 32px rgba(0,0,0,.6)">
     <img src="${ASSETS.ui[ar ? 'lic_ar' : 'lic_en']}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:fill">
     <div style="position:absolute;inset:0;direction:${ar ? 'rtl' : 'ltr'}">${cells}</div>
@@ -5121,14 +5130,21 @@ Object.assign(L, {
 const MUSIC = {
   el:null, ready:false, wanted:true,
   get vol(){ try { return (GAME.save.set.vol.music ?? .5)*(GAME.save.set.vol.master ?? .85); } catch(e) { return .45; } },
-  sources:['assets/menu_music.mp3','assets/menu_music.m4a','assets/menu_music.ogg'],
+  tracks:['assets/menu_music_2.mp3','assets/menu_music.mp3'],
+  pick(){ /* shuffle between the tracks, never the same one twice running */
+    if (this.tracks.length < 2) return this.tracks[0];
+    let i; do { i = Math.floor(Math.random()*this.tracks.length); } while (i === this.last && this.tracks.length > 1);
+    this.last = i; return this.tracks[i]; },
   init(){
     if (this.el) return;
     const a = document.createElement('audio');
-    a.loop = true; a.preload = 'auto'; a.volume = 0;
-    this.sources.forEach(src => { const s2 = document.createElement('source'); s2.src = src; a.appendChild(s2); });
+    a.loop = false; a.preload = 'auto'; a.volume = 0;
+    a.addEventListener('ended', () => { if (this.wanted) { a.src = this.pick(); a.play().catch(() => {}); } });
+    a.src = this.pick();
     a.addEventListener('canplay', () => { this.ready = true; });
-    a.addEventListener('error', () => { this.ready = false; }, true);
+    a.addEventListener('error', () => { this.ready = false;
+      const n = this.tracks.indexOf(a.src.split('/').slice(-1)[0] ? 'assets/' + a.src.split('/').slice(-1)[0] : '');
+      if (this.wanted && this.tracks.length > 1) { a.src = this.pick(); a.play().catch(() => {}); } }, true);
     document.body.appendChild(a); this.el = a;
   },
   want(on){ this.wanted = !!on; this.apply(); },
@@ -5161,7 +5177,7 @@ const MUSIC = {
   }
 };
 /* menus play it, driving does not */
-{ const MENU_SCREENS = ['hub'];   /* the main menu only - anywhere else is silent */
+{ const MENU_SCREENS = ['hub','routes','modes','showroom','workshop','dmv','gas','profile','missions','rewards','settings','free'];
   const _s = UI.show;
   UI.show = function(n, p){ const r = _s.apply(this, arguments);
     try { MUSIC.init(); MUSIC.want(MENU_SCREENS.indexOf(n) >= 0); } catch(e) {}
@@ -5280,90 +5296,7 @@ Object.assign(L, {
   radio_none:['Station unavailable','المحطة مش متاحة'],
   radio_tune:['Tuning…','بيدوّر…']
 });
-/* Public ICY streams. Edit or extend this list freely — the game just plays a URL. */
-const RADIO_ST = [
-  {n:{en:'Nogoum FM 100.6',ar:'نجوم إف إم ١٠٠.٦'}, u:'https://streaming.radiostreamlive.com/radionogoum_devices'},
-  {n:{en:'Nile FM 104.2',ar:'نايل إف إم ١٠٤.٢'},   u:'https://streaming.radiostreamlive.com/radionilefm_devices'},
-  {n:{en:'Radio Hits 88.2',ar:'راديو هيتس ٨٨.٢'},  u:'https://streaming.radiostreamlive.com/radiohits_devices'},
-  {n:{en:'Nagham FM 105.3',ar:'نغم إف إم ١٠٥.٣'},  u:'https://streaming.radiostreamlive.com/radionagham_devices'},
-  {n:{en:'Mega FM 92.7',ar:'ميجا إف إم ٩٢.٧'},     u:'https://streaming.radiostreamlive.com/radiomega_devices'},
-  {n:{en:'Shaabi FM',ar:'شعبي إف إم'},             u:'https://streaming.radiostreamlive.com/radioshaabi_devices'},
-  {n:{en:'Energy 93.7',ar:'إنرچي ٩٣.٧'},           u:'https://streaming.radiostreamlive.com/radioenergy_devices'},
-  {n:{en:'Radio Masr 88.7',ar:'راديو مصر ٨٨.٧'},   u:'https://n10.radiojar.com/8s5u5tpdtwzuv'},
-  {n:{en:'Quran Kareem',ar:'إذاعة القرآن الكريم'}, u:'https://stream.radiojar.com/8s5u5tpdtwzuv'},
-  {n:{en:'Egyptian Radio 95.2',ar:'الإذاعة المصرية ٩٥.٢'}, u:'https://streaming.radiostreamlive.com/radiomasr_devices'}
-];
-const RADIO = {
-  el:null, on:false, i:0, vol:.6,
-  init(){ if (this.el) return;
-    const a = document.createElement('audio'); a.preload = 'none'; a.crossOrigin = 'anonymous';
-    document.body.appendChild(a); this.el = a; this.apply();
-    a.addEventListener('error', () => { this.fail = true;
-      if (this.on && this.tries < RADIO_ST.length - 1) {
-        this.tries++;
-        this.tune((this.i + 1) % RADIO_ST.length);
-      } else { this.tries = 0; try { UI.toast(t('radio_none')); } catch(e) {} } });
-    a.addEventListener('playing', () => { this.fail = false; });
-  },
-  power(on){ this.init(); this.tries = 0; this.on = on == null ? !this.on : !!on;
-    if (this.on) this.tune(this.i); else { try { this.el.pause(); } catch(e) {} }
-    this.paint(); },
-  tune(i){ this.init(); this.i = (i + RADIO_ST.length) % RADIO_ST.length;
 
-    const a = this.el; this.fail = false;
-    try { a.src = RADIO_ST[this.i].u; this.apply();
-      if (this.on) { UI.toast(t('radio_tune')); a.play().catch(() => { this.fail = true; try { UI.toast(t('radio_none')); } catch(e) {} }); }
-    } catch(e) { this.fail = true; }
-    this.paint(); },
-  next(d){ this.tune(this.i + d); },
-  get gain(){ try { const V = GAME.save.set.vol; return (V.music ?? .5)*(V.master ?? .85); } catch(e) { return .5; } },
-  setVol(v){ this.vol = Math.max(0, Math.min(1, v)); this.init(); this.apply(); this.paint(); },
-  apply(){ if (this.el) this.el.volume = Math.max(0, Math.min(1, this.vol*this.gain)); },
-  paint(){ const el = document.getElementById('hRadio'); if (!el) return;
-    const st = RADIO_ST[this.i];
-    el.classList.toggle('off', !this.on);
-    const stn = el.querySelector('.st'); if (stn) stn.textContent = this.on ? tn(st.n) : (LANG.cur === 'ar' ? 'مقفول' : 'OFF');
-    const vn = el.querySelector('.vn'); if (vn) vn.textContent = Math.round(this.vol*100);
-    const vb = el.querySelector('.vb i'); if (vb) vb.style.width = Math.round(this.vol*100) + '%';
-  }
-};
-document.head.insertAdjacentHTML('beforeend', `<style>
-#hRadio{display:none!important;position:absolute;bottom:calc(var(--u)*3.2);left:calc(50% + min(21vw,calc(var(--u)*30)));
-  z-index:7;pointer-events:auto;width:min(30vw,calc(var(--u)*28));aspect-ratio:512/120;
-  background:url('assets/ui_radio.webp') center/100% 100% no-repeat;
-  filter:drop-shadow(0 8px 18px rgba(0,0,0,.6))}
-#hRadio .z{position:absolute;background:transparent;border:0;padding:0;cursor:pointer}
-#hRadio .scr{position:absolute;left:22.3%;right:20.3%;top:10%;bottom:20%;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2%;
-  font-family:Rajdhani,sans-serif;color:#7ce0b0;text-shadow:0 0 6px rgba(124,224,176,.55);
-  pointer-events:none;overflow:hidden}
-#hRadio .st{font-weight:700;font-size:clamp(9px,4.4cqw,20px);line-height:1.1;white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis;max-width:94%;font-family:Cairo,Rajdhani,sans-serif}
-#hRadio .lo{display:flex;align-items:center;gap:.5em;font-size:clamp(8px,3.2cqw,14px);opacity:.9}
-#hRadio .vb{width:calc(var(--u)*9);height:calc(var(--u)*.55);border-radius:99px;background:rgba(124,224,176,.22);overflow:hidden}
-#hRadio .vb i{display:block;height:100%;background:#7ce0b0}
-#hRadio.off .scr{color:#4a5560;text-shadow:none}
-#hRadio.off .vb i{background:#4a5560}
-#hud.lh #hRadio{left:auto;right:calc(50% + min(21vw,calc(var(--u)*30)))}
-@media (orientation:portrait){#hRadio{left:50%;transform:translateX(-50%);width:min(72vw,calc(var(--u)*40));bottom:calc(var(--u)*22)}}
-</style>`);
-/* radio removed */
-{ const _ha = UI.hudAct;
-  UI.hudAct = function(a, p){
-    if (a === 'radPow') return RADIO.power();
-    if (a === 'radNext') return RADIO.next(1);
-    if (a === 'radPrev') return RADIO.next(-1);
-    if (a === 'radUp') return RADIO.setVol(RADIO.vol + .1);
-    if (a === 'radDown') return RADIO.setVol(RADIO.vol - .1);
-    if (a === 'radMute') { RADIO.pre = RADIO.vol > 0 ? RADIO.vol : (RADIO.pre || .6);
-      return RADIO.setVol(RADIO.vol > 0 ? 0 : RADIO.pre); }
-    return _ha.apply(this, arguments); }; }
-{ const _a = UI.act;
-  UI.act = function(a, p, el){
-    if (a && a.startsWith('rad')) return UI.hudAct(a, p);
-    const r = _a.apply(this, arguments);
-    if (a === 'vol' || a === 'setv') { try { RADIO.apply(); MUSIC.apply(); } catch(e) {} }
-    return r; }; }
 
 
 /* ---------- 18: litter and dust lifted by passing traffic ---------- */
@@ -5887,6 +5820,311 @@ document.head.insertAdjacentHTML('beforeend', `<style>
     return r;
   };
 }
+
+
+/* ================= 2. anti-cheat ================= */
+Object.assign(L, {
+  cheat_t:['Cheating detected','تم رصد غش'],
+  cheat_b:['Your balance has been reset and the game is locked for one hour.',
+           'رصيدك اترجّع لصفر واللعبة اتقفلت لمدة ساعة.'],
+  cheat_left:['{m} minutes left','فاضل {m} دقيقة'],
+  cheat_ok:['I understand','فهمت']
+});
+const AC = {
+  KEY:'ogra_ac',
+  read(){ try { return JSON.parse(localStorage.getItem(this.KEY) || '{}'); } catch(e) { return {}; } },
+  write(o){ try { localStorage.setItem(this.KEY, JSON.stringify(o)); } catch(e) {} },
+  banned(){ const o = this.read(); return o.until && Date.now() < o.until ? o.until : 0; },
+  ban(reason){
+    const until = Date.now() + 3600000;
+    this.write({until, reason});
+    try { const s = S(); s.cash = 0; s.xp = 0; s.lvl = 1; saveGame(); } catch(e) {}
+    this.screen(until);
+  },
+  screen(until){
+    const tick = () => {
+      const left = Math.max(0, Math.ceil((until - Date.now())/60000));
+      const el = document.getElementById('acWrap');
+      if (!el) return;
+      if (left <= 0) { el.remove(); clearInterval(this._t); location.reload(); return; }
+      el.querySelector('.acL').textContent = t('cheat_left').replace('{m}', left);
+    };
+    if (document.getElementById('acWrap')) { clearInterval(this._t); this._t = setInterval(tick, 1000); return tick(); }
+    const d = document.createElement('div'); d.id = 'acWrap';
+    d.setAttribute('style','position:fixed;inset:0;z-index:2147483000;background:rgba(6,9,15,.97);'
+      +'display:grid;place-items:center;text-align:center;padding:8vw;color:#ffd3d3;'
+      +'font-family:Cairo,system-ui,sans-serif');
+    d.innerHTML = `<div><div style="font-size:calc(var(--u)*5);font-weight:900;color:#ff6b6b">⛔ ${t('cheat_t')}</div>
+      <div style="margin:1em 0;font-size:calc(var(--u)*2.2);line-height:1.7">${t('cheat_b')}</div>
+      <div class="acL" style="font-size:calc(var(--u)*2.6);font-weight:800;color:#ffd98a"></div></div>`;
+    document.body.appendChild(d);
+    clearInterval(this._t); this._t = setInterval(tick, 1000); tick();
+  },
+  /* the watchdog: cash must only ever change through the game's own accounting */
+  start(){
+    const b = this.banned();
+    if (b) { this.screen(b); return; }
+    let last = null, lastT = performance.now();
+    setInterval(() => {
+      try {
+        const s = S(); if (!s) return;
+        const now = performance.now(), dt = (now - lastT)/1000; lastT = now;
+        if (last == null) { last = s.cash; return; }
+        const jump = s.cash - last;
+        /* the largest honest gain is a long-route payout plus tips; anything
+           far beyond that appearing at once did not come from playing */
+        const ceiling = 40000 + dt*3000;
+        if (jump > ceiling) return this.ban('cash+' + Math.round(jump));
+        if (s.lvl > 60 || s.xp < 0 || s.cash < 0) return this.ban('stats');
+        last = s.cash;
+      } catch(e) {}
+    }, 1500);
+    /* obvious console tampering */
+    ['cash','lvl','xp'].forEach(() => {});
+    const self = this;
+    window.__ograCheat = function(){ self.ban('api'); };
+  }
+};
+setTimeout(() => { try { AC.start(); } catch(e) {} }, 2500);
+
+/* ================= 10. speed cameras ================= */
+Object.assign(L, {
+  cam_flash:['Speed camera — EGP {c}','رادار — {c} ج'],
+  cam_ok:['Speed camera passed','عدّيت الرادار']
+});
+function seedCameras(G){
+  if (!G || !G.world || G._cams) return;
+  const W = G.world, len = W.len || 4000, out = [];
+  const step = 550 + Math.random()*450;
+  for (let x = step; x < len - 150; x += step + Math.random()*550) {
+    const seg = W.segAt ? W.segAt(x) : null;
+    out.push({x, lim:(seg && seg.lim) || 60, done:false, flash:0});
+  }
+  G._cams = out;
+}
+function camTick(G, dt){
+  if (!G || GAME.state !== 'play') return;
+  seedCameras(G);
+  const car = G.car, kmh = Math.abs(car.vx)*3.6;
+  for (const c of G._cams) {
+    if (c.flash > 0) c.flash = Math.max(0, c.flash - dt*2.2);
+    if (c.done || Math.abs(car.x - c.x) > 2.2) continue;
+    c.done = true; c.flash = 1;
+    if (kmh > c.lim + 10) {
+      const fine = 150 + Math.round((kmh - c.lim)*14);
+      G.fine('cam_flash', fine, {});
+      try { licPoints(S(), 1); AU.camera(); } catch(e) {}
+      RD.flashT = .35;
+    } else G.feedAdd('cam_ok', {}, 'ok');
+  }
+}
+function drawCameras(G){
+  const c = RD.ctx, W = G.world, P = RD.PPM;
+  if (!G._cams) return;
+  for (const cm of G._cams) {
+    const dx = cm.x - RD.camL;
+    if (dx < -6 || dx > RD.W/P + 8) continue;
+    const x = RD.sx(cm.x), gy = RD.sy(W.h(cm.x), -.35);
+    const h = 3.4*P;
+    c.save();
+    c.fillStyle = '#5b6472'; c.fillRect(x - .07*P, gy - h, .14*P, h);          // pole
+    c.fillStyle = '#6c7683'; c.fillRect(x - .09*P, gy - h, 1.0*P, .12*P);      // arm
+    c.fillStyle = '#2b3340'; RD.rr ? 0 : 0;
+    c.fillRect(x + .62*P, gy - h - .42*P, .62*P, .52*P);                        // housing
+    c.fillStyle = '#11161f'; c.fillRect(x + .70*P, gy - h - .30*P, .30*P, .26*P); // lens
+    c.fillStyle = '#c9ced6'; c.font = `700 ${Math.max(7, .3*P)}px Rajdhani, sans-serif`;
+    c.textAlign = 'center'; c.fillText(String(cm.lim), x + .93*P, gy - h + .42*P);
+    if (cm.flash > 0) {                                                         // the flash
+      c.globalAlpha = cm.flash;
+      const g = c.createRadialGradient(x + .9*P, gy - h - .05*P, 0, x + .9*P, gy - h - .05*P, 3.2*P);
+      g.addColorStop(0, 'rgba(255,255,255,.95)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+      c.fillStyle = g; c.beginPath(); c.arc(x + .9*P, gy - h - .05*P, 3.2*P, 0, 6.28); c.fill();
+      c.globalAlpha = 1;
+    }
+    c.restore();
+  }
+}
+{ const _up = updPeople; updPeople = function(G, dt){ _up(G, dt); try { camTick(G, dt); } catch(e) {} }; }
+{ const _pr = RD.props ? RD.props.bind(RD) : null;
+  if (_pr) RD.props = function(G){ const r = _pr(G); try { drawCameras(G); } catch(e) {} return r; }; }
+
+/* ================= 11 + 12. the road leans with the hill ================= */
+{ /* lane markings follow the gradient instead of staying level */
+  const _road = RD.road ? RD.road.bind(RD) : null;
+  if (_road) RD.road = function(G){
+    const W = G.world, P = this.PPM, c = this.ctx;
+    const r = _road(G);
+    try {
+      c.save();
+      const x0 = Math.floor(this.camL), x1 = this.camL + this.W/P + 4;
+      c.strokeStyle = 'rgba(255,255,255,.85)'; c.lineWidth = Math.max(2, .09*P);
+      c.setLineDash([2.4*P, 2.6*P]);
+      c.beginPath();
+      for (let x = x0; x < x1; x += .6) {
+        const y = this.sy(W.h(x), DEP.lane1*.5 + .12);
+        if (x === x0) c.moveTo(this.sx(x), y); else c.lineTo(this.sx(x), y);
+      }
+      c.stroke(); c.setLineDash([]);
+      c.restore();
+    } catch(e) {}
+    return r; };
+}
+{ /* gravity along the slope: uphill slows you, downhill pulls you on */
+  const _up = updPeople;
+  updPeople = function(G, dt){
+    _up(G, dt);
+    try {
+      if (GAME.state !== 'play') return;
+      const W = G.world;
+      const grade = x => (W.h(x + 4) - W.h(x - 4))/8;
+      const gp = grade(G.car.x);
+      G.car.slopeA = -gp*9.81*0.82;                 /* along-road component of gravity */
+      G.car.vx += G.car.slopeA*dt;
+      for (const o of G.traffic) {
+        if (o.parked) continue;
+        const g2 = grade(o.x);
+        o.v = Math.max(0, (o.v || 0) - g2*9.81*0.5*dt*(o.lp > .5 ? -1 : 1));
+      }
+    } catch(e) {}
+  };
+}
+
+
+/* ================= 14. the radio, as an overlay ================= */
+Object.assign(L, {
+  radio:['Radio','الراديو'], radio_off:['OFF','مقفول'],
+  radio_none:['Station unavailable','المحطة مش متاحة'], radio_tune:['Tuning…','بيدوّر…'],
+  radio_close:['Close','إغلاق']
+});
+/* Egyptian FM streams, with the dial frequency where the station has one. */
+const RADIO_ST = [
+  {n:{en:'Nogoum FM',ar:'نجوم إف إم'},        f:'100.6', u:'https://streaming.radiostreamlive.com/radionogoum_devices'},
+  {n:{en:'Nile FM',ar:'نايل إف إم'},          f:'104.2', u:'https://streaming.radiostreamlive.com/radionilefm_devices'},
+  {n:{en:'Radio Hits',ar:'راديو هيتس'},       f:'88.2',  u:'https://streaming.radiostreamlive.com/radiohits_devices'},
+  {n:{en:'Nagham FM',ar:'نغم إف إم'},         f:'105.3', u:'https://streaming.radiostreamlive.com/radionagham_devices'},
+  {n:{en:'Mega FM',ar:'ميجا إف إم'},          f:'92.7',  u:'https://streaming.radiostreamlive.com/radiomega_devices'},
+  {n:{en:'Energy FM',ar:'إنرچي إف إم'},       f:'93.7',  u:'https://streaming.radiostreamlive.com/radioenergy_devices'},
+  {n:{en:'Shaabi FM',ar:'شعبي إف إم'},        f:'',      u:'https://streaming.radiostreamlive.com/radioshaabi_devices'},
+  {n:{en:'Radio Masr',ar:'راديو مصر'},        f:'88.7',  u:'https://n10.radiojar.com/8s5u5tpdtwzuv'},
+  {n:{en:'Quran Kareem',ar:'إذاعة القرآن'},   f:'98.2',  u:'https://stream.radiojar.com/8s5u5tpdtwzuv'},
+  {n:{en:'General Programme',ar:'البرنامج العام'}, f:'95.4', u:'https://streaming.radiostreamlive.com/radiomasr_devices'},
+  {n:{en:'Middle East Radio',ar:'إذاعة الشرق الأوسط'}, f:'95.2', u:'https://audiostreaming.itworkscdn.com:9066/stream'},
+  {n:{en:'Greater Cairo',ar:'إذاعة القاهرة الكبرى'}, f:'95.7', u:'https://audiostreaming.itworkscdn.com:9068/stream'},
+  {n:{en:'Al-Shabab wal Riyada',ar:'الشباب والرياضة'}, f:'104.2', u:'https://audiostreaming.itworkscdn.com:9060/stream'},
+  {n:{en:'Radio Sawa',ar:'راديو سوا'},        f:'91.7',  u:'https://audiostreaming.itworkscdn.com:9074/stream'},
+  {n:{en:'Al-Aghany',ar:'إذاعة الأغاني'},     f:'97.2',  u:'https://audiostreaming.itworkscdn.com:9078/stream'},
+  {n:{en:'Alexandria Radio',ar:'إذاعة إسكندرية'}, f:'99.0', u:'https://streaming.radiostreamlive.com/radioalex_devices'}
+];
+const RADIO = {
+  el:null, on:false, i:0, vol:.6, tries:0,
+  init(){ if (this.el) return;
+    const a = document.createElement('audio'); a.preload = 'none'; a.crossOrigin = 'anonymous';
+    document.body.appendChild(a); this.el = a; this.apply();
+    a.addEventListener('error', () => {
+      if (this.on && this.tries < RADIO_ST.length - 1) { this.tries++; this.tune(this.i + 1); }
+      else { this.tries = 0; try { UI.toast(t('radio_none')); } catch(e) {} }
+    });
+    a.addEventListener('playing', () => { this.tries = 0; });
+  },
+  get gain(){ try { const V = GAME.save.set.vol; return (V.music ?? .75)*(V.master ?? 1); } catch(e) { return .6; } },
+  apply(){ if (this.el) { try { this.el.volume = Math.max(0, Math.min(1, this.vol*this.gain)); } catch(e) {} } },
+  power(on){ this.init(); this.tries = 0; this.on = on == null ? !this.on : !!on;
+    if (this.on) this.tune(this.i); else { try { this.el.pause(); } catch(e) {} }
+    this.paint(); },
+  tune(i){ this.init(); this.i = (i + RADIO_ST.length) % RADIO_ST.length;
+    const a = this.el;
+    try { a.src = RADIO_ST[this.i].u; this.apply();
+      if (this.on) { a.play().catch(() => {}); } } catch(e) {}
+    this.paint(); },
+  next(d){ this.tune(this.i + d); },
+  setVol(v){ this.vol = Math.max(0, Math.min(1, v)); this.init(); this.apply(); this.paint(); },
+  paint(){
+    const el = document.getElementById('radioCard'); if (!el) return;
+    const st = RADIO_ST[this.i];
+    el.classList.toggle('off', !this.on);
+    const nm = el.querySelector('.rst'), fr = el.querySelector('.rfr'), vb = el.querySelector('.rvb i'), vn = el.querySelector('.rvn');
+    if (nm) nm.textContent = this.on ? tn(st.n) : t('radio_off');
+    if (fr) fr.textContent = this.on && st.f ? st.f + ' FM' : '';
+    if (vb) vb.style.width = Math.round(this.vol*100) + '%';
+    if (vn) vn.textContent = Math.round(this.vol*100);
+  }
+};
+document.head.insertAdjacentHTML('beforeend', `<style>
+#radioBtn{position:absolute;z-index:7;pointer-events:auto;width:calc(var(--u)*5.2);height:calc(var(--u)*5.2);
+  border-radius:50%;border:1px solid rgba(255,255,255,.14);cursor:pointer;
+  background:radial-gradient(circle at 34% 28%, #4a5568 0%, #2a3240 46%, #151b26 100%);
+  box-shadow:0 5px 12px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.22), inset 0 -3px 6px rgba(0,0,0,.5);
+  display:grid;place-items:center;font-size:calc(var(--u)*2.4);color:#ffd98a;
+  transition:transform .12s, box-shadow .12s}
+#radioBtn:active{transform:translateY(2px);box-shadow:0 2px 6px rgba(0,0,0,.6), inset 0 2px 6px rgba(0,0,0,.6)}
+#radioBtn.on{color:#7ce0b0;border-color:rgba(124,224,176,.5);box-shadow:0 5px 12px rgba(0,0,0,.55), 0 0 14px rgba(124,224,176,.35), inset 0 1px 0 rgba(255,255,255,.22)}
+#radioOv{position:fixed;inset:0;z-index:60;display:none;place-items:center;
+  background:rgba(6,9,15,.35);backdrop-filter:blur(5px)}
+#radioOv.show{display:grid}
+#radioCard{container-type:inline-size;position:relative;width:min(80vw,calc(var(--u)*66));aspect-ratio:512/120;
+  background:url('assets/ui_radio.webp') center/100% 100% no-repeat;
+  filter:drop-shadow(0 14px 34px rgba(0,0,0,.7))}
+#radioCard .z{position:absolute;background:transparent;border:0;padding:0;cursor:pointer}
+#radioCard .scr{position:absolute;left:22.3%;right:20.3%;top:10%;bottom:20%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2%;
+  color:#7ce0b0;text-shadow:0 0 7px rgba(124,224,176,.5);pointer-events:none;overflow:hidden;
+  font-family:Cairo,Rajdhani,sans-serif}
+#radioCard .rst{font-weight:800;font-size:clamp(10px,4.6cqw,24px);white-space:nowrap;max-width:96%;
+  overflow:hidden;text-overflow:ellipsis}
+#radioCard .rfr{font-weight:600;font-size:clamp(8px,3cqw,15px);opacity:.85;font-family:Rajdhani,sans-serif}
+#radioCard .lo{display:flex;align-items:center;gap:.5em;font-size:clamp(8px,2.8cqw,13px)}
+#radioCard .rvb{width:26cqw;height:3.2cqw;min-height:4px;border-radius:99px;background:rgba(124,224,176,.22);overflow:hidden}
+#radioCard .rvb i{display:block;height:100%;background:#7ce0b0}
+#radioCard.off .scr{color:#4a5560;text-shadow:none}
+#radioCard.off .rvb i{background:#4a5560}
+#radioClose{position:absolute;top:calc(var(--u)*2);right:calc(var(--u)*2);z-index:2;
+  background:rgba(10,16,28,.8);color:#dfe6f1;border:1px solid rgba(255,255,255,.14);
+  border-radius:999px;padding:.5em 1.1em;font:inherit;font-weight:800;cursor:pointer}
+</style>`);
+function radioOverlay(){
+  let ov = document.getElementById('radioOv');
+  if (!ov) {
+    ov = document.createElement('div'); ov.id = 'radioOv';
+    const zone = (a2, l, t2, w, h) => `<button class="z" data-a="${a2}" style="left:${l}%;top:${t2}%;width:${w}%;height:${h}%"></button>`;
+    ov.innerHTML = `<button id="radioClose" data-a="radClose">✕ ${t('radio_close')}</button>
+      <div id="radioCard" class="off">
+        ${zone('radPow',  3.2, 10, 9.2, 38)}${zone('radMute', 3.2, 54, 9.2, 38)}
+        ${zone('radUp',  12.6, 10, 9.2, 38)}${zone('radDown',12.6, 54, 9.2, 38)}
+        ${zone('radNext',82.0, 10, 9.6, 38)}${zone('radPrev',82.0, 54, 9.6, 38)}
+        <div class="scr"><div class="rst">--</div><div class="rfr"></div>
+          <div class="lo"><span class="rvn">60</span><span class="rvb"><i style="width:60%"></i></span></div></div>
+      </div>`;
+    document.body.appendChild(ov);
+    ov.addEventListener('click', e => { if (e.target === ov) UI.hudAct('radClose'); });
+  }
+  ov.classList.add('show'); RADIO.init(); RADIO.paint();
+}
+{ const _bh = UI.buildHud;
+  UI.buildHud = function(G){ const r = _bh.apply(this, arguments);
+    try {
+      const hud = document.getElementById('hud');
+      if (hud && !document.getElementById('radioBtn')) {
+        const btn = document.createElement('button');
+        btn.id = 'radioBtn'; btn.dataset.a = 'radOpen'; btn.textContent = '📻';
+        const tr = hud.querySelector('.h-tr'); (tr || hud).appendChild(btn);
+      }
+    } catch(e) {}
+    return r; }; }
+{ const _ha = UI.hudAct;
+  UI.hudAct = function(a, p){
+    if (a === 'radOpen') { radioOverlay(); return; }
+    if (a === 'radClose') { const ov = document.getElementById('radioOv'); if (ov) ov.classList.remove('show'); return; }
+    if (a === 'radPow') { RADIO.power(); const b = document.getElementById('radioBtn'); if (b) b.classList.toggle('on', RADIO.on); return; }
+    if (a === 'radNext') return RADIO.next(1);
+    if (a === 'radPrev') return RADIO.next(-1);
+    if (a === 'radUp') return RADIO.setVol(RADIO.vol + .1);
+    if (a === 'radDown') return RADIO.setVol(RADIO.vol - .1);
+    if (a === 'radMute') { RADIO.pre = RADIO.vol > 0 ? RADIO.vol : (RADIO.pre || .6);
+      return RADIO.setVol(RADIO.vol > 0 ? 0 : RADIO.pre); }
+    return _ha.apply(this, arguments); }; }
+{ const _a = UI.act;
+  UI.act = function(a, p, el){ if (a && a.indexOf('rad') === 0) return UI.hudAct(a, p);
+    return _a.apply(this, arguments); }; }
 
 try{window.__ogStage='2b (game code parsed, starting)'}catch(e){}
 (async function boot(){
