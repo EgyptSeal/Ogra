@@ -6916,6 +6916,68 @@ setInterval(() => {
     } catch(e) {}
   }; }
 
+
+/* ---- nothing on the road may be invisible ----
+   'truck' had no entry in AISPR, and with the vector fallback switched off for
+   AI it drew nothing while still colliding. Give it artwork, and catch any
+   future gap by assigning a stand-in of the right size. */
+if (typeof AISPR !== 'undefined') {
+  AISPR.truck = AISPR.truck || ['water_truck','garbage_truck','cherry_picker'];
+}
+const SPR_BY_SIZE = [
+  {max:2.6,  keys:['moto_cg','moto_red','tuk_blue','tuk_red']},
+  {max:4.9,  keys:['fiat128','lada','verna','lanos','sunny','aveo']},
+  {max:6.4,  keys:['hiace','joylong','sprinter','amb_van','civdef_van']},
+  {max:8.6,  keys:['water_truck','garbage_truck','rosa','coaster','fire_pump']},
+  {max:99,   keys:['horus','mcv','kinglong','fire_ladder']}
+];
+function ensureSprite(o){
+  if (!o) return o;
+  if (o.spr && SPR[o.spr] && SPR[o.spr].m) return o;
+  const L = o.L || 4.5;
+  const band = SPR_BY_SIZE.find(b => L <= b.max) || SPR_BY_SIZE[SPR_BY_SIZE.length - 1];
+  const pool = band.keys.filter(k => SPR[k] && SPR[k].m);
+  if (!pool.length) { o.aiOnly = false; return o; }   /* last resort: let it draw as a shape */
+  const k = pool[Math.floor(Math.random()*pool.length)], m = SPR[k].m;
+  o.spr = k; o.L = m.L; o.H = m.H;
+  if (m.wb) { o.wb = m.wb; o.wr = m.wr; }
+  if (m.mid) o.mid = m.mid;
+  o.rider = m.rider || 0;
+  return o;
+}
+{ const _ma = mkAI;
+  mkAI = function(G, type, x, lane, v){ return ensureSprite(_ma.apply(this, arguments)); }; }
+/* and sweep anything already on the road that slipped through */
+{ const _up = updPeople; updPeople = function(G, dt){ _up(G, dt);
+    try { if (GAME.state === 'play' && G.traffic) {
+      G._sprT = (G._sprT || 0) + dt;
+      if (G._sprT > 1) { G._sprT = 0; for (const o of G.traffic) ensureSprite(o); }
+    } } catch(e) {} }; }
+
+
+document.head.insertAdjacentHTML('beforeend', `<style>
+/* Hints stack downward from the top-left, which is exactly where the vehicle
+   sits. Cap the column so it can never reach the car, and keep the newest
+   three legible rather than a growing wall of text. */
+#hud .feed{max-height:min(22vh,calc(var(--u)*16))!important;overflow:hidden!important;
+  display:flex!important;flex-direction:column!important;gap:calc(var(--u)*.45)!important;
+  max-width:min(30vw,calc(var(--u)*30))!important;pointer-events:none}
+#hud .feed>*{flex:0 0 auto}
+#hud .feed>*:nth-child(n+4){display:none!important}
+#hud .fi{font-size:calc(var(--u)*1.55)!important;padding:.34em .7em!important;
+  background:rgba(10,16,28,.62)!important;backdrop-filter:blur(4px)}
+@media (orientation:portrait){
+  #hud .feed{max-height:min(16vh,calc(var(--u)*13))!important;max-width:min(52vw,calc(var(--u)*40))!important}
+  #hud .feed>*:nth-child(n+3){display:none!important}
+}
+/* speech bubbles ride higher so they clear the roof of the vehicle */
+.bub{transform-origin:bottom center}
+@keyframes bubFade{0%{opacity:0;transform:translate(-50%,-150%) scale(.96)}
+ 12%{opacity:1;transform:translate(-50%,-165%) scale(1)}
+ 78%{opacity:1;transform:translate(-50%,-165%)}
+ 100%{opacity:0;transform:translate(-50%,-180%)}}
+</style>`);
+
 try{window.__ogStage='2b (game code parsed, starting)'}catch(e){}
 (async function boot(){
   RD.cv = $('#cv'); RD.ctx = RD.cv.getContext('2d'); RD.initStatics();
