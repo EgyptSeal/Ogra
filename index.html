@@ -230,6 +230,8 @@ input[type=text]{font-family:inherit;font-size:calc(var(--u)*2.2);padding:.5em .
 #rotate{position:fixed;inset:0;z-index:60;background:#05080f;display:none;place-items:center;text-align:center;font-weight:800;font-size:5vw;padding:10vw;color:var(--amb2)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js" defer></script>
+<script src="assets/net.js" defer></script>
 </head>
 <body>
 <canvas id="cv"></canvas>
@@ -419,6 +421,30 @@ const REGIONS = [
 /* ============ PEOPLE ============ */
 const NAMES_M = [['Ahmed','أحمد'],['Mohamed','محمد'],['Mahmoud','محمود'],['Mostafa','مصطفى'],['Omar','عمر'],['Youssef','يوسف'],['Karim','كريم'],['Hassan','حسن'],['Ali','علي'],['Tarek','طارق'],['Sherif','شريف'],['Amr','عمرو'],['Hany','هاني'],['Ziad','زياد'],['Khaled','خالد']];
 const NAMES_F = [['Mariam','مريم'],['Nour','نور'],['Salma','سلمى'],['Yasmin','ياسمين'],['Aya','آية'],['Hana','هنا'],['Farida','فريدة'],['Rana','رنا'],['Dina','دينا'],['Mona','منى'],['Habiba','حبيبة'],['Menna','منة'],['Laila','ليلى']];
+/* every sign carries a trade name and a second line, the way real Cairo
+   shopfronts do: the owner or specialism, and a phone number */
+const SHOP_SUB = {
+ 'صيدلية':['د. هاني نبيل','د. منى شريف','فرع رئيسي'],
+ 'كشري':['الأصل والشركة','الفرع الرئيسي','من 1962'],
+ 'قهوة':['شيشة ومشروبات','مفتوح 24 ساعة','ليالي الحلمية'],
+ 'كافيه':['قهوة مختصة','تيك أواي'],
+ 'حلاق':['حلاقة وحمام كريم','للرجال فقط'],
+ 'مخبز':['عيش وفينو','بلدي وسن'],
+ 'جزارة':['لحوم بلدي','ضأن وبتلو'],
+ 'بصريات':['نظارات طبية','فحص نظر مجاني'],
+ 'موبايلات':['صيانة وبيع','كل الماركات'],
+ 'ترزي':['تفصيل وتعديل','بدل أفراح'],
+ 'عطارة':['أعشاب وبهارات','عسل وحبة بركة'],
+ 'كبابجي':['كباب وكفتة','مشويات على الفحم'],
+ 'سوبر ماركت':['كل احتياجاتك','توصيل للمنازل'],
+ 'غيار زيت':['خدمة سريعة','فلاتر أصلي'],
+ 'كهربائي':['تأسيس وصيانة','خدمة 24 ساعة'],
+ 'سباك':['تسليك وتركيب','اتصل الآن']
+};
+function shopSub(R, n){ const a = SHOP_SUB[n]; if (a) return a[Math.floor(R()*a.length)];
+  const pre = ['الفرع الرئيسي','خدمة ممتازة','أسعار الجملة','مفتوح يومياً'];
+  return pre[Math.floor(R()*pre.length)]; }
+function shopPhone(R){ return '0' + (2 + Math.floor(R()*2)) + ' ' + (2000 + Math.floor(R()*7999)) + 'XXXX'; }
 const SHOPS = ['كشري','فول وطعمية','صيدلية','حلواني','عصير قصب','مكتبة','موبايلات','سوبر ماركت','كافيه','قهوة','ترزي','جزارة','مخبز','بصريات','أدوات منزلية','عطارة','كبابجي','حلاق','فطاطري','خضار وفاكهة','سمك','مكوجي','غيار زيت','كهربائي','سباك','ستائر','موبيليا','لعب أطفال','ورد','خردوات','كوافير','جيم','فراخ','بقالة','شاورما','دراي كلين','محمصة بن','تصوير مستندات','هدايا','أحذية','ملابس','إطارات','زجاج','نجارة','عصائر','بيتزا','سمكري','دهان'];
 const AWN = ['#2e8b57','#c0392b','#2f5fa5','#d68910','#6c3483','#1abc9c','#b03a2e','#1f618d','#7d6608','#148f77','#873600','#5b2c6f'];
 const SHOPS_EN = ['PHARMACY','CAFÉ','MOBILE','BAKERY','OPTICS','BOUTIQUE','BANK','GYM'];
@@ -910,7 +936,9 @@ class World {
     p.units = []; const cityish = T.city;
     for (let k = 0; k < 8; k++) { const r = R();
       /* mostly homes and blank frontage; a shop is the exception, as on a real street */
-      if (r < (cityish ? .20 : .08)) p.units.push({n:this.pickShop(R), awn:pick(AWN), lit:R() < .55});
+      if (r < (cityish ? .20 : .08)) { const nm = this.pickShop(R);
+        p.units.push({n:nm, sub:shopSub(R, nm), tel:R() < .6 ? shopPhone(R) : '',
+          awn:pick(AWN), lit:R() < .55, lamps:R() < .7}); }
       else if (r < (cityish ? .32 : .18)) p.units.push({shut:true, tag:R() < .3});
       else p.units.push({plain:true, door:R() < .5, grille:R() < .45, step:R() < .4}); }
     /* upper-floor character: balconies, washing, dishes, aircon boxes */
@@ -1063,9 +1091,26 @@ RD.facade = function(b){
       box(x0 + .45, sy0 - .12, w - .9, .16, '#3c4249'); return; }
     const sn = u.n, aw = u.awn || b.awn;
     box(x0 + .3, gh - 1.1, w - .6, .9, '#1d2530'); c.fillStyle = aw; c.fillRect(X(x0 + .3), Y(gh - .2), (w - .6)*s, .12*s);
-    c.fillStyle = '#f7e9c6'; c.font = `800 ${Math.max(6, .52*s)}px Cairo, Tahoma, sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; RD.ftext(c, sn, X(x0 + w/2), Y(gh - .65));
+    c.fillStyle = '#f7e9c6'; c.font = `800 ${Math.max(6, .46*s)}px Cairo, Tahoma, sans-serif`;
+    c.textAlign = 'center'; c.textBaseline = 'middle'; RD.ftext(c, sn, X(x0 + w/2), Y(gh - .78));
+    if (u.sub && s > 11) {                       /* owner / specialism line */
+      c.fillStyle = 'rgba(247,233,198,.72)'; c.font = `600 ${Math.max(5, .27*s)}px Cairo, Tahoma, sans-serif`;
+      RD.ftext(c, u.sub, X(x0 + w/2), Y(gh - .48));
+    }
+    if (u.tel && s > 13) {                       /* phone, small, like a real sign */
+      c.fillStyle = 'rgba(247,233,198,.5)'; c.font = `600 ${Math.max(4, .22*s)}px Rajdhani, sans-serif`;
+      RD.ftext(c, u.tel, X(x0 + w/2), Y(gh - .28));
+    }
     if (u.lit) b.lit.push([x0 + .3, gh - 1.1, w - .6, .9, 2, aw]);
     for (let q = 0; q < w - .8; q += .7) { c.fillStyle = (q/.7) % 2 < 1 ? aw : '#f2f0ea'; c.fillRect(X(x0 + .4 + q), Y(gh - 1.2), Math.min(.7, w - .8 - q)*s, .8*s); }
+    if (u.lamps) {                              /* bulbs strung under the awning */
+      const n = Math.max(2, Math.floor((w - 1)/0.62));
+      for (let q = 0; q <= n; q++) {
+        const bx = x0 + .5 + q*(w - 1)/n, by = gh - 1.34;
+        c.fillStyle = '#ffe9b0'; c.beginPath(); c.arc(X(bx), Y(by), Math.max(1, .075*s), 0, 6.28); c.fill();
+        if (RD.night > .15) b.lit.push([bx - .16, by - .16, .32, .32, 2, '#ffe9b0']);
+      }
+    }
     const sy = gh - 1.3;
     box(x0 + .5, 0, w - 1, sy, '#2a3340'); box(x0 + .7, .15, w - 1.4, sy - .4, '#e8c67f');
     if (u.lit) b.lit.push([x0 + .7, .15, w - 1.4, sy - .4, 3]);
@@ -1994,7 +2039,8 @@ function newSession(opt){
   if (opt.mode !== 'attract') { G.car.on = false; G.car.sel = 'N'; } else { G.car.on = true; G.car.sel = 'D'; G.auto = true; }
   G.feedAdd = (k, v, type) => { G.feed.unshift({k, v, type:type || 'info', t:0}); if (G.feed.length > 4) G.feed.pop(); if (type === 'warn') AU.alert(); UI.feed && UI.feed(G); };
   G.say = (k, v) => G.feedAdd(k, v, 'info');
-  G.bubble = (text, x) => { G.bubbles.push({text, t:0, x:x ?? G.car.x}); if (G.bubbles.length > 2) G.bubbles.shift(); };
+  G.bubble = (text, x, tag) => { G.bubbles.push({text, tag:tag || null, t:0, x:x ?? G.car.x});
+    if (G.bubbles.length > 2) G.bubbles.shift(); };
   G.modal = (k, d) => UI.gameModal && UI.gameModal(k, d);
   G.setWeather = (w, dur) => { G.weather = w; G.wxT = dur; G.feedAdd('wx_' + w, {}, 'info'); if (w === 'rain') AU.thunder(); };
   G.onImpact = (ax, cv, kind) => { const car = G.car, i = clamp((cv - .8)/2.2, .05, 1); AU.bump(i); if (kind === 'stop') AU.clunk(i);
@@ -3457,7 +3503,11 @@ UI.feed = function(G){ const f = $('#hFeed'); if (!f) return; const now = G.feed
   for (const x of now) { x.id = x.id || ('f' + (++UI.fid)); ids.add(x.id); let el = f.querySelector(`[data-id="${x.id}"]`); if (!el) { el = document.createElement('div'); el.dataset.id = x.id; el.className = 'fi fin2 ' + x.type; el.textContent = t(x.k, x.v); f.prepend(el); requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show'))); } if (x.t > 5.4) el.classList.add('out'); }
   [...f.children].forEach(el => { if (!ids.has(el.dataset.id) && !el.dataset.dead) { el.dataset.dead = 1; el.classList.add('out'); setTimeout(() => el.remove(), 600); } }); };
 UI.bubblesDraw = function(G, dt){ const bb = $('#hBub'), cs = RD.carScr; if (!bb || !cs) return; const live = new Set();
-  G.bubbles.forEach((b, i) => { b.id = b.id || ++UI.fid; live.add('b' + b.id); let el = bb.querySelector(`[data-b="${b.id}"]`); if (!el) { el = document.createElement('div'); el.className = 'bub bub2'; el.dataset.b = b.id; el.textContent = b.text; bb.appendChild(el); requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show'))); }
+  G.bubbles.forEach((b, i) => { b.id = b.id || ++UI.fid; live.add('b' + b.id); let el = bb.querySelector(`[data-b="${b.id}"]`); if (!el) { el = document.createElement('div'); el.className = 'bub bub2'; el.dataset.b = b.id;
+      if (b.tag) { const tg = document.createElement('span'); tg.className = 'bubTag';
+        tg.textContent = '[' + b.tag + ']'; el.appendChild(tg);
+        el.appendChild(document.createTextNode(b.text)); }
+      else el.textContent = b.text; bb.appendChild(el); requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show'))); }
     el.style.left = (cs[0] - 10) + 'px'; el.style.top = (cs[1] - 16 - (G.bubbles.length - 1 - i)*38) + 'px'; if (b.t > 2.6) el.classList.add('out'); });
   for (const p of (G.pops || [])) { p.t += dt; p.id = p.id || ++UI.fid; live.add('p' + p.id); let el = bb.querySelector(`[data-p="${p.id}"]`); if (!el) { el = document.createElement('div'); el.className = 'popn'; el.dataset.p = p.id; el.textContent = p.txt; bb.appendChild(el); }
     el.style.left = cs[0] + 'px'; el.style.top = (cs[1] - 40 - p.t*46) + 'px'; el.style.opacity = Math.max(0, 1 - p.t/1.5); }
@@ -3607,7 +3657,7 @@ AU.voice = function(key, force){ const now = performance.now(); if (this.paused 
 /* ---------- gameplay ---------- */
 const pickTx = k => { const a = VOX[k], p = a[Math.floor(Math.random()*a.length)]; return LANG.cur === 'ar' ? p[0] : p[1]; };
 { const _fi = FEAT.init; FEAT.init = function(G){ _fi(G); const car = G.car; G.shouts = []; G.bq = []; G.evLast = {};
-  const ob = G.bubble; G.bubble = (text, x) => { if (!text) return; if (G._lb && G._lb.text === text && G.clock - G._lb.t < 25) return; if (G.bubbles.some(b => b.t < 2.8)) { if (G.bq.length < 2 && !G.bq.includes(text)) G.bq.push(text); return; } G.bubbles.length = 0; ob(text, x); G._lb = {text, t:G.clock}; };
+  const ob = G.bubble; G.bubble = (text, x, tag) => { if (!text) return; if (G._lb && G._lb.text === text && G.clock - G._lb.t < 25) return; if (G.bubbles.some(b => b.t < 2.8)) { if (G.bq.length < 2 && !G.bq.some(q => (q && q.text || q) === text)) G.bq.push({text, tag}); return; } G.bubbles.length = 0; ob(text, x, tag); G._lb = {text, t:G.clock}; };
   G.shout = (o, text) => { if (!text || G.shouts.some(s => s.o === o && s.t < 3)) return; G.shouts.push({o, text, t:0}); if (G.shouts.length > 2) G.shouts.shift(); };
   G.onLight = (o, side, rel) => { AU.clunk(.3); AU.burst('white', .12, 'bandpass', 2400, 2, .04); RD.shake = Math.max(RD.shake, .12); FEAT.comboBreak(G); AU.haptic(30); G.onboard.forEach(p => p.mood -= 3); o.flash = 1.4;
     const pan = clamp((o.x - car.x)/25, -1, 1); AU.distantHorn(pan, .1); setTimeout(() => AU.distantHorn(pan, .09), 380); G.shout(o, AU.voice('angry') || pickTx('angry')); };
@@ -3620,7 +3670,7 @@ const pickTx = k => { const a = VOX[k], p = a[Math.floor(Math.random()*a.length)
   for (const o of G.traffic) { if (o.hurryT > 0) { o.hurryT -= dt; if (o.hurryT <= 0) o.v0 = Math.max(4, o.v0 - 4); }
     if (o.yieldT > 0) { o.yieldT -= dt; o.yLp = lerp(o.yLp ?? o.lp, -.62, Math.min(1, dt*2)); o.lp = o.yLp; o.v = Math.min(o.v, 2.5); if (o.yieldT <= 0 && Math.abs(o.x - car.x) < (o.L + car.spec.L)/2 + 3) o.yieldT = .4; if (o.yieldT <= 0) o.yLp = null; } } }; }
 FEAT.v6 = function(G, dt){ if (G.mode === 'attract') return; const car = G.car, W = G.world, stopped = Math.abs(car.vx) < .45 && car.lane < .35;
-  if (G.bq.length && !G.bubbles.some(b => b.t < 3)) G.bubble(G.bq.shift());
+  if (G.bq.length && !G.bubbles.some(b => b.t < 3)) { const q = G.bq.shift(); G.bubble(q && q.text || q, undefined, q && q.tag); }
   for (const s of G.shouts) s.t += dt; G.shouts = G.shouts.filter(s => s.t < 3.2);
   // drop-offs between stops actually happen when you stop nearby
   for (const p of G.onboard) if (p.req && p.mid == null) p.req = false;
@@ -6979,6 +7029,106 @@ document.head.insertAdjacentHTML('beforeend', `<style>
  100%{opacity:0;transform:translate(-50%,-180%)}}
 </style>`);
 
+
+
+/* ---- who is speaking, shown above the line ---- */
+const PAX_KIND = [
+  ['Tourist','سائح أجنبي'], ['Student','طالب'], ['Employee','موظف'],
+  ['Teacher','مدرّس'], ['Nurse','ممرضة'], ['Engineer','مهندس'],
+  ['Elderly man','راجل كبير'], ['Housewife','ست بيت'], ['Worker','عامل'],
+  ['Delivery rider','دليفري'], ['Doctor','دكتور'], ['Shopkeeper','صاحب محل']
+];
+function paxKind(){ const p = PAX_KIND[Math.floor(Math.random()*PAX_KIND.length)];
+  return LANG.cur === 'ar' ? p[1] : p[0]; }
+{ const _pc = paxChatter;
+  paxChatter = function(G, dt){
+    if (!G || GAME.state !== 'play' || !G.onboard || !G.onboard.length) { if (G) G.paxT = null; return; }
+    G.paxT = (G.paxT == null ? 20 + Math.random()*25 : G.paxT) - dt;
+    if (G.paxT > 0) return;
+    G.paxT = 26 + Math.random()*34;
+    const p = PAX_TALK[Math.floor(Math.random()*PAX_TALK.length)];
+    G.bubble(arabicOf(p), undefined, paxKind());
+  }; }
+document.head.insertAdjacentHTML('beforeend', `<style>
+.bub .bubTag{display:block;font-size:.78em;font-weight:800;opacity:.75;margin-bottom:.12em;
+  color:#ffd98a;letter-spacing:.02em}
+</style>`);
+
+
+/* ================= online hooks =================
+   With a server present, money and progress are its business. Locally we
+   only keep what the server sends back, plus cosmetic state. */
+function ogOnline(){ return !!(window.OGRA_NET && OGRA_NET.online && !OGRA_NET.practice); }
+
+/* a finished run is reported, not self-paid */
+{ const _fs = (typeof finishSession === 'function') ? finishSession : null;
+  if (_fs) finishSession = function(G, quit){
+    try {
+      if (ogOnline() && G && G.route && !G._reported) {
+        G._reported = true;
+        const t = G.trip || {};
+        OGRA_NET.reportTrip({
+          routeId:   G.route.id,
+          vehicleId: (G.car && G.car.spec && G.car.spec.id) || S().cur.line,
+          durationS: Math.round(G.clock || 0),
+          passengers: t.pax || t.paxN || (G.onboard ? G.onboard.length : 0),
+          onTime:    !!t.onTime,
+          rating:    t.rating || 0,
+          fines:     t.fineKeys || [],
+          overBy:    t.overBy || 0,
+          litresUsed: Math.max(0, t.fuelUsed || 0)
+        }).then(res => {
+          if (res && res.breakdown) {
+            const b = res.breakdown;
+            try { UI.toast((LANG.cur === 'ar' ? 'صافي الرحلة: ' : 'Trip net: ') + fmt(b.net)); } catch(e) {}
+          }
+        });
+      }
+    } catch(e) { console.warn('trip report', e); }
+    return _fs.apply(this, arguments);
+  };
+}
+
+/* purchases go through the server when one is present */
+{ const _a = UI.act;
+  UI.act = function(a, p, el){
+    if (ogOnline()) {
+      try {
+        if (a === 'buy' || a === 'buyVeh')  { OGRA_NET.buy('vehicle', {id:p}).then(r => r && r.ok && UI.refresh()); return; }
+        if (a === 'licBuy')                 { OGRA_NET.buy('licence', {id:p}).then(r => r && r.ok && UI.refresh()); return; }
+        if (a === 'gasBuy') {
+          const s = S(), u = UI.sel, vid = u.tab === 'go' ? (u.gvid || s.cur.go) : (u.vid || s.cur.line);
+          const sp = vehById(vid), own = s.owned[vid];
+          if (sp && own) { const E = effSpec(sp, own);
+            const need = Math.max(0, E.tank - own.fuel);
+            const l = p === 'full' ? need : Math.min(need, +p);
+            OGRA_NET.buy('fuel', {vehicleId:vid, litres:l}).then(r => r && r.ok && UI.refresh());
+            return; }
+        }
+      } catch(e) { console.warn('purchase', e); }
+    }
+    return _a.apply(this, arguments);
+  }; }
+
+/* the local anti-cheat stands down when the server is in charge */
+{ try { if (ogOnline() && typeof AC !== 'undefined') AC.allow = Number.MAX_SAFE_INTEGER; } catch(e) {} }
+
+/* a small badge so the player knows which mode they are in */
+function ogBadge(){
+  let el = document.getElementById('ogMode');
+  if (!el) { el = document.createElement('div'); el.id = 'ogMode'; document.body.appendChild(el); }
+  const on = ogOnline();
+  el.className = on ? 'on' : 'off';
+  el.textContent = on ? (LANG.cur === 'ar' ? '● متصل' : '● online')
+                      : (LANG.cur === 'ar' ? '○ تدريب' : '○ practice');
+}
+document.head.insertAdjacentHTML('beforeend', `<style>
+#ogMode{position:fixed;bottom:4px;left:6px;z-index:2147482000;pointer-events:none;
+  font:700 11px Cairo,system-ui,sans-serif;padding:2px 8px;border-radius:99px;
+  background:rgba(8,12,20,.6);backdrop-filter:blur(4px)}
+#ogMode.on{color:#7ce0b0} #ogMode.off{color:#8e9bb0}
+</style>`);
+setInterval(() => { try { ogBadge(); } catch(e) {} }, 2000);
 
 (async function boot(){
   RD.cv = $('#cv'); RD.ctx = RD.cv.getContext('2d'); RD.initStatics();
